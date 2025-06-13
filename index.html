@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="scroll-behavior: smooth; scroll-padding-top: 6rem;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -72,6 +72,16 @@
         .nav-link:hover::after {
             width: 100%;
         }
+        /* Ajuste para el encabezado fijo */
+        header {
+            position: fixed; /* Asegura que el encabezado se quede arriba */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Asegura que esté sobre otros elementos */
+            background-color: rgba(13, 13, 13, 0.9); /* Fondo oscuro semitransparente para que no choque con el scroll */
+            backdrop-filter: blur(5px);
+        }
     </style>
 </head>
 <body class="min-h-screen antialiased">
@@ -80,8 +90,12 @@
     <header class="bg-transparent absolute top-0 left-0 w-full z-10 p-4">
         <nav class="container mx-auto flex justify-between items-center py-4 px-6">
             <div class="flex items-center space-x-2">
-                <!-- Asegúrate de reemplazar 'Diseño sin título (16).png' con la ruta correcta a tu logo una vez que esté alojado. -->
-                <img src="Diseño sin título (16).png" alt="Logo de OroBit" class="h-10 rounded-full shadow-lg">
+                <!-- Ruta del logo corregida para apuntar a la carpeta 'images' -->
+                <!-- OPCIONES DE TAMAÑO PARA EL LOGO: -->
+                <!-- h-12 para un poco más grande -->
+                <!-- h-16 para un tamaño más notorio -->
+                <!-- h-20 para un tamaño aún más grande, pero quizás ya muy grande -->
+                <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="h-16 rounded-full shadow-lg">
                 <span class="text-2xl font-extrabold gold-text">OroBit</span>
             </div>
             <ul class="flex space-x-8 text-lg font-semibold">
@@ -108,7 +122,7 @@
                     <a href="#acerca" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl">
                         Descubre OroBit <i class="fas fa-arrow-right ml-3"></i>
                     </a>
-                    <a href="#" id="launchAppBtn" class="px-8 py-4 text-xl btn-blue shadow-2xl hover:shadow-blue-xl">
+                    <a href="app/orobit_withdraw.html" id="launchAppBtn" class="px-8 py-4 text-xl btn-blue shadow-2xl hover:shadow-blue-xl" target="_blank">
                         Lanzar App de Staking <i class="fas fa-external-link-alt ml-3"></i>
                     </a>
                 </div>
@@ -269,12 +283,12 @@
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // Enlace al botón "Lanzar App de Staking"
-        document.getElementById('launchAppBtn').addEventListener('click', function(e) {
-            e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
-            // Asegúrate de reemplazar 'http://localhost:8000/orobit_withdraw.html' con la URL real de tu aplicación de staking cuando esté alojada.
-            window.open('http://localhost:8000/orobit_withdraw.html', '_blank');
-        });
+        // No es necesario un event listener si el href es un path directo en el HTML.
+        // El 'target="_blank"' abrirá la app en una nueva pestaña.
+        // document.getElementById('launchAppBtn').addEventListener('click', function(e) {
+        //     e.preventDefault(); 
+        //     window.open('app/orobit_withdraw.html', '_blank');
+        // });
     </script>
 </body>
 </html>
