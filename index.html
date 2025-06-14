@@ -1,382 +1,320 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="scroll-behavior: smooth; scroll-padding-top: 6rem;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OroBit: El Refugio Dorado de la Nueva Economía Digital</title>
-    
-    <!-- Favicon de OroBit - Usando la imagen de tu logo -->
-    <link rel="icon" href="images/Diseño sin título (16).png" type="image/png">
-
+    <link rel="icon" href="https://placehold.co/32x32/FFD700/000000?text=OB" type="image/x-icon">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* Un fondo oscuro para contraste */
+            background-color: #0d0d0d; /* Fondo muy oscuro, casi negro */
+            color: #e2e8f0; /* Gris claro para el texto general */
+        }
+        .section-gradient {
+            background: linear-gradient(to bottom, #1a202c, #0d0d0d); /* De gris oscuro a negro */
+        }
+        .gold-text {
+            color: #FFD700; /* Color oro */
+        }
+        .btc-blue {
+            color: #4CAF50; /* Verde Bitcoin */
+        }
+        .card {
+            background-color: rgba(26, 32, 44, 0.7); /* bg-gray-800 con opacidad */
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .btn-gold {
+            background: linear-gradient(to right, #FFD700, #DAA520); /* Degradado de oro */
+            color: #1a202c; /* Texto oscuro sobre oro */
+            font-weight: 700;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 215, 0, 0.3);
+        }
+        .btn-blue {
+            background-color: #4CAF50; /* Verde Bitcoin */
             color: white;
-            line-height: 1.6;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background-color: rgba(26, 32, 44, 0.9); /* Fondo ligeramente transparente para el header */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            position: sticky;
+        .btn-blue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(76, 175, 80, 0.3);
+        }
+        .nav-link {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #FFD700;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        /* Ajuste para el encabezado fijo */
+        header {
+            position: fixed; /* Asegura que el encabezado se quede arriba */
             top: 0;
-            z-index: 1000;
-        }
-        .logo-container {
-            display: flex;
-            align-items: center;
-        }
-        .main-content {
-            text-align: center;
-            padding: 6rem 1rem 4rem; /* Más padding superior para dejar espacio al header fijo */
-            min-height: calc(100vh - 100px); /* Ajuste para asegurar que ocupe casi toda la pantalla */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .button-group {
-            margin-top: 2rem;
-            display: flex;
-            flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
-            justify-content: center;
-            gap: 1rem; /* Espacio entre botones */
-        }
-        section {
-            padding: 4rem 1rem;
-        }
-        .section-dark {
-            background-color: #1a202c; /* Color de fondo oscuro */
-        }
-        .section-light {
-            background-color: #2d3748; /* Color de fondo ligeramente más claro */
-        }
-        /* Responsividad para pantallas pequeñas */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                padding: 1rem;
-            }
-            .header nav {
-                margin-top: 1rem;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 0.5rem; /* Espacio reducido entre los enlaces de navegación */
-            }
-            .main-content {
-                padding: 4rem 1rem 2rem;
-            }
-            .main-content h1 {
-                font-size: 3rem; /* Tamaño de fuente más pequeño para el título principal */
-            }
-            .main-content p {
-                font-size: 1rem; /* Tamaño de fuente más pequeño para el párrafo */
-            }
-            .button-group a {
-                width: 100%; /* Botones de ancho completo en móviles */
-                justify-content: center;
-            }
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Asegura que esté sobre otros elementos */
+            background-color: rgba(13, 13, 13, 0.9); /* Fondo oscuro semitransparente para que no choque con el scroll */
+            backdrop-filter: blur(5px);
         }
     </style>
 </head>
-<body class="bg-gray-900">
-    <!-- Header/Navigation Bar -->
-    <header class="header bg-gray-800 shadow-lg">
-        <div class="logo-container">
-            <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="h-12 rounded-full mr-3 shadow-lg">
-            <span class="text-2xl font-bold text-yellow-400">OroBit</span>
-        </div>
-        <nav>
-            <a href="#inicio" class="text-gray-300 hover:text-white mx-3 py-2 px-3 rounded-lg transition duration-200">Inicio</a>
-            <a href="#acerca" class="text-gray-300 hover:text-white mx-3 py-2 px-3 rounded-lg transition duration-200">Acerca de</a>
-            <a href="#caracteristicas" class="text-gray-300 hover:text-white mx-3 py-2 px-3 rounded-lg transition duration-200">Características</a>
-            <a href="#comunidad" class="text-gray-300 hover:text-white mx-3 py-2 px-3 rounded-lg transition duration-200">Comunidad</a>
-            <a href="#contacto" class="text-gray-300 hover:text-white mx-3 py-2 px-3 rounded-lg transition duration-200">Contacto</a>
+<body class="min-h-screen antialiased">
+
+    <!-- Header y Navegación -->
+    <header class="bg-transparent absolute top-0 left-0 w-full z-10 p-4">
+        <nav class="container mx-auto flex justify-between items-center py-4 px-6">
+            <div class="flex items-center space-x-2">
+                <!-- Ruta del logo corregida para apuntar a la carpeta 'images' -->
+                <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="h-16 rounded-full shadow-lg">
+                <span class="text-2xl font-extrabold gold-text">OroBit</span>
+            </div>
+            <ul class="flex space-x-8 text-lg font-semibold">
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="#acerca" class="nav-link">Acerca de</a></li>
+                <li><a href="#caracteristicas" class="nav-link">Características</a></li>
+                <li><a href="#seguridad-auditoria" class="nav-link">Auditoría</a></li> <!-- Nuevo enlace de navegación -->
+                <li><a href="#comunidad" class="nav-link">Comunidad</a></li>
+                <li><a href="#contacto" class="nav-link">Contacto</a></li>
+            </ul>
         </nav>
     </header>
 
-    <!-- Main Content / Hero Section -->
-    <main id="inicio" class="main-content bg-gradient-to-br from-gray-900 to-black text-white">
-        <h1 class="text-6xl font-extrabold text-yellow-300 drop-shadow-lg leading-tight">
-            OroBit: Donde el Oro y el Futuro se <span class="block mt-4">Encuentran</span>
-        </h1>
-        <p class="text-xl text-gray-300 mt-6 max-w-2xl mx-auto">
-            El Refugio Dorado de la Nueva Economía Digital. Poder Dorado. Potencial Infinito.
-        </p>
-        <div class="button-group">
-            <a href="#" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-xl inline-flex items-center transition duration-300 transform hover:scale-105 shadow-lg">
-                Descubre OroBit <i class="fas fa-arrow-right ml-2"></i>
-            </a>
-            <a href="app/orobit_withdraw.html" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl inline-flex items-center transition duration-300 transform hover:scale-105 shadow-lg">
-                Lanzar App de Staking <i class="fas fa-external-link-alt ml-2"></i>
-            </a>
-        </div>
+    <main>
+        <!-- Sección de Inicio (Hero) -->
+        <section id="inicio" class="relative min-h-screen flex items-center justify-center text-center section-gradient pt-24 pb-12">
+            <div class="container mx-auto px-6 z-10">
+                <h1 class="text-6xl md:text-7xl font-extrabold leading-tight mb-6 gold-text drop-shadow-xl">
+                    OroBit: <br class="md:hidden"> Donde el Oro y el Futuro se Encuentran
+                </h1>
+                <p class="text-2xl md:text-3xl font-medium text-gray-300 mb-8 max-w-3xl mx-auto">
+                    El Refugio Dorado de la Nueva Economía Digital. Poder Dorado. Potencial Infinito.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="#acerca" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl">
+                        Descubre OroBit <i class="fas fa-arrow-right ml-3"></i>
+                    </a>
+                    <a href="app/orobit_withdraw.html" id="launchAppBtn" class="px-8 py-4 text-xl btn-blue shadow-2xl hover:shadow-blue-xl" target="_blank">
+                        Lanzar App de Staking <i class="fas fa-external-link-alt ml-3"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center opacity-10">
+                <!-- Reemplaza con un elemento visual abstracto o de circuito para el fondo -->
+                <img src="https://placehold.co/1920x1080/0d0d0d/e2e8f0?text=Circuito+Digital+Oro+Bitcoin" alt="Fondo de circuito digital" class="w-full h-full object-cover">
+            </div>
+        </section>
+
+        <!-- Sección Acerca de OroBit -->
+        <section id="acerca" class="py-20 section-gradient px-6">
+            <div class="container mx-auto card p-10">
+                <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <i class="fas fa-info-circle mr-4 btc-blue"></i> Acerca de OroBit
+                </h2>
+                <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
+                    <p>
+                        OroBit es un proyecto pionero en la intersección de la estabilidad del oro físico y la innovación de las criptomonedas. Nuestro objetivo es ofrecer una solución de valor estable y creciente, combinando la confianza histórica del oro con la eficiencia y accesibilidad de la tecnología blockchain.
+                    </p>
+                    <p>
+                        A través de nuestro token **OroBit**, facilitamos la participación en un ecosistema robusto diseñado para la acumulación de valor y la generación de ingresos pasivos mediante el staking. Nos enfocamos en la seguridad, la transparencia y la creación de un espacio donde tanto inversores experimentados como nuevos participantes puedan prosperar.
+                    </p>
+                    <div class="p-6 bg-gray-900 bg-opacity-70 border border-yellow-700 rounded-lg shadow-inner">
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300"><i class="fas fa-exclamation-triangle mr-2"></i> Aclaración Importante sobre el Nombre:</h3>
+                        <p>
+                            Para evitar cualquier confusión, queremos dejar claro que **"OroBit" es el nombre de nuestro token principal**. Sin embargo, el **proyecto más amplio o el ecosistema general detrás de OroBit podría adoptar un nombre más distintivo y representativo en el futuro**. Esto nos permitirá construir una marca integral y única que abarque todas nuestras futuras innovaciones, más allá de la singularidad de nuestro token. ¡Estamos construyendo un futuro dorado!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Características -->
+        <section id="caracteristicas" class="py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h2 class="text-5xl font-extrabold mb-12 gold-text">
+                    <i class="fas fa-star mr-4 btc-blue"></i> Nuestras Características
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="card p-8 flex flex-col items-center">
+                        <div class="text-6xl gold-text mb-4"><i class="fas fa-lock"></i></div>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Seguridad Inigualable</h3>
+                        <p class="text-gray-300">
+                            Nuestros contratos inteligentes están construidos con las mejores prácticas de seguridad y son sometidos a rigurosas pruebas, garantizando la protección de sus activos.
+                        </p>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center">
+                        <div class="text-6xl btc-blue mb-4"><i class="fas fa-coins"></i></div>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Staking Rentable</h3>
+                        <p class="text-gray-300">
+                            Participe en nuestros pools de staking con APRs competitivos, diseñados para generar ingresos pasivos significativos y maximizar su potencial de crecimiento.
+                        </p>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center">
+                        <div class="text-6xl gold-text mb-4"><i class="fas fa-users"></i></div>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Comunidad Fuerte</h3>
+                        <p class="text-gray-300">
+                            Únase a una comunidad creciente de entusiastas y expertos, donde el conocimiento y el apoyo mutuo impulsan el éxito colectivo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nueva Sección de Seguridad y Auditoría -->
+        <section id="seguridad-auditoria" class="py-20 px-6 section-gradient">
+            <div class="container mx-auto card p-10">
+                <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <i class="fas fa-shield-alt mr-4 btc-blue"></i> Seguridad y Auditoría
+                </h2>
+                <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
+                    <p>
+                        En OroBit, la seguridad de sus activos es nuestra máxima prioridad. Hemos sometido nuestros contratos inteligentes a una **auditoría manual exhaustiva**, analizando su código para identificar posibles vulnerabilidades, optimizaciones y asegurar que la lógica se alinee con el comportamiento esperado.
+                    </p>
+                    <p>
+                        Nuestro contrato de staking, **OroBitStakingVault**, ha demostrado una **arquitectura sólida y segura**, utilizando las mejores prácticas y estándares de la industria (como OpenZeppelin para la propiedad, la prevención de reentradas y la capacidad de pausa). Las pruebas rigurosas en la red de prueba (Testnet) han validado todas las funcionalidades clave: staking, cálculo de recompensas, retiros (con y sin penalizaciones), y la gestión administrativa.
+                    </p>
+                    <p>
+                        Confirmamos que el proyecto OroBit, en base a la revisión de su contrato de staking, muestra un **alto nivel de preparación para su despliegue en la red principal**. Sin embargo, como siempre, recomendamos una auditoría de seguridad profesional e independiente antes de su lanzamiento en Mainnet para una validación externa y la máxima confianza.
+                    </p>
+                    <!-- Podrías añadir un enlace a la auditoría completa aquí si está publicada en algún lugar -->
+                    <!--
+                    <div class="flex justify-center mt-6">
+                        <a href="URL_A_TU_AUDITORIA_COMPLETA" target="_blank" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl inline-block">
+                            Ver Informe de Auditoría Completo <i class="fas fa-file-alt ml-3"></i>
+                        </a>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Sección de Tokenomics/Contrato -->
+        <section id="tokenomics" class="py-20 px-6 section-gradient">
+            <div class="container mx-auto card p-10">
+                <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <i class="fas fa-file-contract mr-4 btc-blue"></i> Tokenomics & Contrato
+                </h2>
+                <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
+                    <p>
+                        El token OroBit (`OROBIT`) es el corazón de nuestro ecosistema. Está diseñado con una tokenomía transparente y justa, priorizando la sostenibilidad y el beneficio del holder.
+                    </p>
+                    <p class="mb-4">
+                        Cada transacción con OroBit contribuye al crecimiento del proyecto, con una parte de las comisiones destinada a marketing y quema de tokens, reduciendo la oferta y aumentando el valor a largo plazo. Las tarifas actuales están optimizadas para la máxima viabilidad y atractivo para el staking.
+                    </p>
+                    <div class="bg-gray-900 bg-opacity-70 p-6 rounded-lg shadow-inner border border-yellow-700">
+                        <h3 class="text-2xl font-bold mb-3 text-yellow-300">Dirección del Contrato del Token OroBit:</h3>
+                        <p class="font-mono break-all text-sm md:text-base mb-4">
+                            <code>0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3</code>
+                        </p>
+                        <a href="https://testnet.bscscan.com/address/0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3" target="_blank" class="text-blue-400 hover:underline flex items-center justify-center md:justify-start">
+                            <i class="fas fa-external-link-alt mr-2"></i> Ver en BSCScan (Testnet)
+                        </a>
+                        <p class="text-xs text-gray-400 mt-2">Esta es la dirección del contrato en BNB Smart Chain Testnet. Para Mainnet, la dirección será diferente.</p>
+                    </div>
+                    <div class="bg-gray-900 bg-opacity-70 p-6 rounded-lg shadow-inner border border-yellow-700 mt-6">
+                        <h3 class="text-2xl font-bold mb-3 text-yellow-300">Dirección del Contrato de Staking OroBit:</h3>
+                        <p class="font-mono break-all text-sm md:text-base mb-4">
+                            <code>0x8278ebadbc25beea94d6370174b8eeb7b5bfd253</code>
+                        </p>
+                        <a href="https://testnet.bscscan.com/address/0x8278ebadbc25beea94d6370174b8eeb7b5bfd253" target="_blank" class="text-blue-400 hover:underline flex items-center justify-center md:justify-start">
+                            <i class="fas fa-external-link-alt mr-2"></i> Ver en BSCScan (Testnet)
+                        </a>
+                        <p class="text-xs text-gray-400 mt-2">Esta es la dirección del contrato en BNB Smart Chain Testnet. Para Mainnet, la dirección será diferente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Comunidad y Redes Sociales -->
+        <section id="comunidad" class="py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h2 class="text-5xl font-extrabold mb-12 gold-text">
+                    <i class="fas fa-globe mr-4 btc-blue"></i> Únete a Nuestra Comunidad
+                </h2>
+                <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+                    Conéctate con OroBit en nuestras plataformas sociales para estar al día con las últimas noticias, actualizaciones y eventos.
+                </p>
+                <div class="flex flex-wrap justify-center gap-8 text-4xl">
+                    <a href="https://www.youtube.com/@Cripto%C3%81guila" target="_blank" class="text-red-600 hover:text-red-700 transition duration-300 transform hover:scale-110" aria-label="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@chefpaulogomes" target="_blank" class="text-gray-400 hover:text-gray-300 transition duration-300 transform hover:scale-110" aria-label="TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://www.instagram.com/chefpaulo_gomes/" target="_blank" class="text-pink-500 hover:text-pink-600 transition duration-300 transform hover:scale-110" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <!-- Puedes añadir más iconos y enlaces aquí (ej. Telegram, Twitter, Discord) -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Contacto -->
+        <section id="contacto" class="py-20 px-6 section-gradient">
+            <div class="container mx-auto card p-10 text-center">
+                <h2 class="text-5xl font-extrabold mb-8 gold-text">
+                    <i class="fas fa-envelope mr-4 btc-blue"></i> Contáctanos
+                </h2>
+                <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+                    ¿Tienes preguntas, sugerencias o quieres saber más sobre OroBit? Envíanos un mensaje o síguenos en nuestras redes.
+                </p>
+                <!-- Aquí puedes añadir un formulario de contacto o un enlace de correo electrónico -->
+                <a href="mailto:tu-email@orobit.com" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl inline-block">
+                    Enviar un Correo <i class="fas fa-paper-plane ml-3"></i>
+                </a>
+            </div>
+        </section>
     </main>
 
-    <!-- Acerca de OroBit Section -->
-    <section id="acerca" class="section-dark text-center">
-        <h2 class="text-4xl font-bold text-yellow-300 mb-6">Acerca de OroBit</h2>
-        <p class="text-lg text-gray-300 max-w-3xl mx-auto">
-            OroBit es un proyecto innovador que busca fusionar la estabilidad del oro con la eficiencia y descententralización de la tecnología blockchain. Nuestro token, OroBit (OROBIT), representa una nueva forma de interactuar con el valor y las finanzas.
-            <span class="font-semibold text-yellow-300">¡Aunque el token se llama "OroBit", el proyecto más amplio o el ecosistema general detrás de OroBit podría adoptar un nombre más distintivo y representativo en el futuro para evitar confusiones!</span>
-        </p>
-    </section>
-
-    <!-- Características Clave Section -->
-    <section id="caracteristicas" class="section-light text-center">
-        <h2 class="text-4xl font-bold text-yellow-300 mb-6">Características Clave</h2>
-        <div class="flex flex-wrap justify-center gap-8 mt-8">
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg w-72">
-                <i class="fas fa-lock text-5xl text-blue-400 mb-4"></i>
-                <h3 class="text-2xl font-semibold mb-2">Staking Seguro</h3>
-                <p class="text-gray-300">Gana recompensas pasivas bloqueando tus tokens OroBit en nuestros vaults seguros.</p>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg w-72">
-                <i class="fas fa-chart-line text-5xl text-green-400 mb-4"></i>
-                <h3 class="text-2xl font-semibold mb-2">APRs Competitivos</h3>
-                <p class="text-gray-300">Ofrecemos porcentajes de rendimiento anual (APRs) atractivos para maximizar tus ganancias.</p>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg w-72">
-                <i class="fas fa-handshake text-5xl text-purple-400 mb-4"></i>
-                <h3 class="text-2xl font-semibold mb-2">Comunidad Activa</h3>
-                <p class="text-gray-300">Únete a nuestra creciente comunidad y participa en el futuro de OroBit.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Comunidad OroBit Section -->
-    <section id="comunidad" class="section-dark text-center">
-        <h2 class="text-4xl font-bold text-yellow-300 mb-6">Comunidad OroBit</h2>
-        <p class="text-lg text-gray-300 max-w-3xl mx-auto mb-8">
-            Conéctate con nosotros en nuestras redes sociales para las últimas actualizaciones y discusiones.
-        </p>
-        <div class="flex justify-center space-x-6">
-            <a href="https://www.youtube.com/@Cripto%C3%81guila" target="_blank" class="text-gray-300 hover:text-red-500 transition duration-300"><i class="fab fa-youtube text-5xl"></i></a>
-            <a href="https://www.tiktok.com/@chefpaulogomes" target="_blank" class="text-gray-300 hover:text-black transition duration-300"><i class="fab fa-tiktok text-5xl"></i></a>
-            <a href="https://www.instagram.com/chefpaulo_gomes/" target="_blank" class="text-gray-300 hover:text-pink-500 transition duration-300"><i class="fab fa-instagram text-5xl"></i></a>
-            <!-- Añadir más enlaces de redes sociales según sea necesario -->
-        </div>
-    </section>
-
-    <!-- Contacto Section -->
-    <section id="contacto" class="section-light text-center">
-        <h2 class="text-4xl font-bold text-yellow-300 mb-6">Contacto</h2>
-        <p class="text-lg text-gray-300 max-w-2xl mx-auto">
-            Para consultas y soporte, por favor, póngase en contacto con nuestro equipo.
-        </p>
-        <!-- Aquí se podría añadir un formulario de contacto o un enlace de correo electrónico si se desea -->
-    </section>
-
     <!-- Footer -->
-    <footer class="bg-gray-800 p-6 text-center text-gray-400 text-sm">
-        <p>&copy; 2023 OroBit. Todos los derechos reservados.</p>
+    <footer class="bg-gray-900 text-gray-400 py-8 px-6 text-center text-sm">
+        <div class="container mx-auto">
+            <p>&copy; <span id="currentYear"></span> OroBit. Todos los derechos reservados.</p>
+            <p class="mt-2">
+                "OroBit" se refiere al token OROBIT. El proyecto o ecosistema más amplio puede tener un nombre distinto.
+            </p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="#" class="hover:text-gold-text">Política de Privacidad</a>
+                <a href="#" class="hover:text-gold-text">Términos de Servicio</a>
+            </div>
+        </div>
     </footer>
 
-    <!-- MetaMask Status Display -->
-    <div id="metaMaskStatusDisplay" class="fixed bottom-4 right-4 bg-gray-800 bg-opacity-70 text-white text-xs p-3 rounded-lg shadow-lg hidden">
-        <p id="footerWalletStatus" class="font-semibold"></p>
-        <p id="footerAccountAddress" class="break-all"></p>
-        <p id="footerErrorMessage" class="text-red-400 mt-1"></p>
-    </div>
-
-    <!-- Web3.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
     <script>
-        // --- Configuraciones de la Blockchain ---
-        const STAKING_CONTRACT_ADDRESS = "0x8278ebadbc25beea94d6370174b8eeb7b5bfd253"; // Dirección del contrato de Staking en Testnet
-        const OROBIT_TOKEN_ADDRESS = "0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3"; // Dirección del token OroBit en Testnet
-        const BNB_TESTNET_CHAIN_ID = '0x61'; // Chain ID para BNB Smart Chain Testnet (97 en decimal)
-        const BNB_TESTNET_RPC_URL = 'https://data-seed-prebsc-1-s1.binance.org:8545/'; // RPC URL de la testnet
-        const OWNER_WALLET_ADDRESS = "0x0C6DA70B1BB307D78d154ec6adbD57ff696E0660"; // Su cartera de propietario
-        const ADRIANA_WALLET_ADDRESS = "0x74ee74CA4e9deE9b15bC34aAc6615F324BAf2Bc5"; // Cartera de ADRIANA (para pruebas)
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // --- Referencias a Elementos del DOM para el estado de MetaMask ---
-        const footerWalletStatus = document.getElementById('footerWalletStatus');
-        const footerAccountAddress = document.getElementById('footerAccountAddress');
-        const footerErrorMessage = document.getElementById('footerErrorMessage');
-        const metaMaskStatusDisplay = document.getElementById('metaMaskStatusDisplay');
-
-        let web3; // Instancia de Web3
-        let currentAccount; // Cuenta de MetaMask conectada
-        let stakingContractInstance; // Instancia simplificada del contrato de staking (solo para funciones de vista si se necesitan)
-
-        // Función para decodificar mensajes de revert (simplificada)
-        function decodeRevertReason(hexString) {
-            if (!hexString || hexString.length < 10) return "Razón de revert desconocida";
-            if (hexString.startsWith('0x08c379a0')) { // Selector de error para Solidity's `Error(string)`
-                try {
-                    const dataPart = hexString.substring(10);
-                    let decoded = '';
-                    for (let i = 0; i < dataPart.length; i += 2) {
-                        decoded += String.fromCharCode(parseInt(dataPart.substr(i, 2), 16));
-                    }
-                    decoded = decoded.replace(/[^ -~]+/g, ''); // Limpiar caracteres no ASCII
-                    if (decoded.length > 0) return `Revert: "${decoded.trim()}"`;
-                } catch (e) {
-                    console.warn("Error decodificando razón de revert:", e);
-                }
-            }
-            return "Revert: Sin mensaje de error claro.";
-        }
-
-        // Función para actualizar el estado visual de MetaMask en el pie de página
-        function updateMetaMaskStatus(status, message = '', error = '') {
-            metaMaskStatusDisplay.classList.remove('hidden'); // Mostrar el div de estado
-            footerWalletStatus.textContent = message;
-            footerAccountAddress.textContent = currentAccount ? `Cuenta: ${currentAccount.substring(0, 6)}...${currentAccount.substring(currentAccount.length - 4)}` : 'No conectada';
-            footerErrorMessage.textContent = error;
-
-            // Ajustar estilos del display según el estado
-            if (status === 'connected') {
-                metaMaskStatusDisplay.classList.remove('bg-red-800');
-                metaMaskStatusDisplay.classList.add('bg-green-800');
-            } else if (status === 'error' || status === 'disconnected') {
-                metaMaskStatusDisplay.classList.remove('bg-green-800');
-                metaMaskStatusDisplay.classList.add('bg-red-800');
-            } else { // connecting, etc.
-                metaMaskStatusDisplay.classList.remove('bg-red-800', 'bg-green-800');
-                metaMaskStatusDisplay.classList.add('bg-gray-800');
-            }
-        }
-
-
-        // Lógica de Conexión a MetaMask simplificada para la landing page
-        async function connectWalletLandingPage() {
-            console.log("DEBUG: connectWalletLandingPage: Iniciando conexión a MetaMask...");
-            updateMetaMaskStatus('connecting', 'Conectando MetaMask...');
-
-            // Paso 1: Detectar MetaMask
-            if (typeof window.ethereum === 'undefined' || !window.ethereum) {
-                updateMetaMaskStatus('error', 'MetaMask no detectado.', 'Por favor, instale MetaMask.');
-                console.error("DEBUG: MetaMask no detectado.");
-                return;
-            }
-
-            // Paso 2: Manejar múltiples proveedores (si aplica, priorizar MetaMask)
-            if (window.ethereum.providers && window.ethereum.providers.length > 1) {
-                const metamaskProvider = window.ethereum.providers.find((provider) => provider.isMetaMask);
-                if (metamaskProvider) {
-                    window.ethereum = metamaskProvider;
-                    console.log("DEBUG: Múltiples proveedores detectados, priorizando MetaMask.");
-                } else {
-                    updateMetaMaskStatus('error', 'Error: Billeteras en conflicto.', 'Deshabilite otras extensiones de billetera.');
-                    console.error("DEBUG: Múltiples billeteras en conflicto, MetaMask no es el proveedor primario.");
-                    return;
-                }
-            }
-
-            try {
-                // Paso 3: Inicializar Web3
-                web3 = new Web3(window.ethereum);
-                console.log("DEBUG: Web3 inicializado.");
-
-                // Paso 4: Solicitar acceso a las cuentas
-                const accountsFromMetaMask = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                
-                if (accountsFromMetaMask.length === 0) {
-                    updateMetaMaskStatus('disconnected', 'Ninguna cuenta conectada.', 'Conecte una cuenta en MetaMask.');
-                    console.warn("DEBUG: No se devolvieron cuentas de MetaMask.");
-                    return;
-                }
-
-                currentAccount = window.ethereum.selectedAddress || accountsFromMetaMask[0];
-                
-                // Paso 5: Verificar y cambiar la red si es necesario
-                const currentChainId = await web3.eth.getChainId();
-                if (currentChainId !== parseInt(BNB_TESTNET_CHAIN_ID, 16)) {
-                    console.log("DEBUG: Red incorrecta. Intentando cambiar a BNB Testnet.");
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_switchEthereumChain',
-                            params: [{ chainId: BNB_TESTNET_CHAIN_ID }],
-                        });
-                        updateMetaMaskStatus('connected', 'MetaMask Conectado (Red cambiada)');
-                        console.log("DEBUG: Red cambiada con éxito.");
-                    } catch (switchError) {
-                        if (switchError.code === 4902) { // La red no ha sido añadida en MetaMask
-                            console.log("DEBUG: Red no añadida. Intentando añadirla.");
-                            try {
-                                await window.ethereum.request({
-                                    method: 'wallet_addEthereumChain',
-                                    params: [{
-                                        chainId: BNB_TESTNET_CHAIN_ID,
-                                        chainName: 'BNB Smart Chain Testnet',
-                                        rpcUrls: [BNB_TESTNET_RPC_URL],
-                                        nativeCurrency: { name: 'BNB', symbol: 'tBNB', decimals: 18 },
-                                        blockExplorerUrls: ['https://testnet.bscscan.com/'],
-                                    }],
-                                });
-                                updateMetaMaskStatus('connected', 'MetaMask Conectado (Red añadida y cambiada)');
-                                console.log("DEBUG: Red añadida y cambiada con éxito.");
-                            } catch (addError) {
-                                console.error('Error al añadir la red:', addError);
-                                updateMetaMaskStatus('error', 'Error de Conexión', `No se pudo añadir/cambiar a BNB Testnet: ${addError.message}`);
-                                return;
-                            }
-                        } else {
-                            console.error('Error al cambiar la red:', switchError);
-                            updateMetaMaskStatus('error', 'Error de Conexión', `No se pudo cambiar a BNB Testnet: ${switchError.message}`);
-                            return;
-                        }
-                    }
-                } else {
-                    updateMetaMaskStatus('connected', 'MetaMask Conectado');
-                }
-
-                // Opcional: Verificar si es la cuenta del propietario (se mantiene para la consistencia de la lógica)
-                const STAKING_CONTRACT_ABI_SIMPLIFIED = [
-                    { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }
-                ];
-                stakingContractInstance = new web3.eth.Contract(STAKING_CONTRACT_ABI_SIMPLIFIED, STAKING_CONTRACT_ADDRESS);
-                const contractOwner = await stakingContractInstance.methods.owner().call();
-                const isOwner = (currentAccount.toLowerCase() === OWNER_WALLET_ADDRESS.toLowerCase());
-
-                if (isOwner) {
-                    footerWalletStatus.textContent = `MetaMask Conectado (Propietario)`;
-                }
-
-            } catch (error) {
-                console.error('Error general al conectar MetaMask en la landing page:', error);
-                updateMetaMaskStatus('error', 'Error al conectar MetaMask.', `Error: ${error.message}`);
-            }
-        }
-
-        // --- Manejo de Eventos de MetaMask para la landing page ---
-        if (window.ethereum) {
-            window.ethereum.on('accountsChanged', (newAccounts) => {
-                console.log("DEBUG: accountsChanged event en landing page. Nuevas cuentas:", newAccounts);
-                if (newAccounts.length > 0) {
-                    currentAccount = newAccounts[0];
-                    connectWalletLandingPage(); // Re-ejecutar la lógica de conexión para la nueva cuenta
-                } else {
-                    currentAccount = null;
-                    updateMetaMaskStatus('disconnected', 'Ninguna cuenta conectada.');
-                }
-            });
-
-            window.ethereum.on('chainChanged', async (chainId) => {
-                console.log("DEBUG: chainChanged event en landing page. Nuevo Chain ID:", chainId);
-                connectWalletLandingPage(); // Re-ejecutar la lógica de conexión para la nueva red
-            });
-        }
-
-
-        // --- Inicialización al cargar la ventana ---
-        window.addEventListener('load', () => {
-            connectWalletLandingPage(); // Inicia la conexión a MetaMask al cargar la página
-        });
+        // No es necesario un event listener si el href es un path directo en el HTML.
+        // El 'target="_blank"' abrirá la app en una nueva pestaña.
+        // document.getElementById('launchAppBtn').addEventListener('click', function(e) {
+        //     e.preventDefault(); 
+        //     window.open('app/orobit_withdraw.html', '_blank');
+        // });
     </script>
 </body>
 </html>
