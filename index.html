@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OroBit: El Refugio Dorado de la Nueva Economía Digital</title>
-    <link rel="icon" href="https://placehold.co/32x32/FFD700/000000?text=OB" type="image/x-icon">
+    <title>OroBitverse: El Universo Dorado de la Nueva Economía Digital</title>
+    <link rel="icon" href="images/Diseño sin título (16).png" type="image/png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
@@ -14,11 +14,46 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow-x: hidden; /* Evita el scroll horizontal */
             background-color: #0d0d0d; /* Fondo muy oscuro, casi negro */
             color: #e2e8f0; /* Gris claro para el texto general */
         }
+        /* Estilos para el video de fondo */
+        .video-background {
+            position: fixed; /* Cambiado a fixed para cubrir toda la ventana sin scroll */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2; /* Más bajo que el header y el content */
+        }
+        .video-background video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover; /* Asegura que el video cubra todo el espacio */
+            filter: brightness(0.5) contrast(1.2); /* Oscurece y aumenta contraste del video */
+        }
+        /* Capa oscura sobre el video para mejorar la legibilidad del texto */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Capa semi-transparente oscura */
+            z-index: -1; /* Sobre el video, debajo del contenido */
+        }
+
         .section-gradient {
-            background: linear-gradient(to bottom, #1a202c, #0d0d0d); /* De gris oscuro a negro */
+            background: linear-gradient(to bottom, rgba(26, 32, 44, 0.7), rgba(13, 13, 13, 0.7)); /* Degradado sobre la opacidad para el contenido */
         }
         .gold-text {
             color: #FFD700; /* Color oro */
@@ -74,31 +109,46 @@
         }
         /* Ajuste para el encabezado fijo */
         header {
-            position: fixed; /* Asegura que el encabezado se quede arriba */
+            position: sticky; /* Cambiado a sticky para mejor comportamiento con el video fixed */
             top: 0;
             left: 0;
             width: 100%;
             z-index: 1000; /* Asegura que esté sobre otros elementos */
-            background-color: rgba(13, 13, 13, 0.9); /* Fondo oscuro semitransparente para que no choque con el scroll */
+            background-color: rgba(13, 13, 13, 0.8); /* Fondo oscuro semitransparente para que no choque con el scroll */
             backdrop-filter: blur(5px);
+        }
+        main {
+            position: relative; /* Para asegurar que el z-index del contenido funcione */
+            z-index: 1; /* Para que el contenido esté sobre el video y el overlay */
         }
     </style>
 </head>
 <body class="min-h-screen antialiased">
+    <!-- Contenedor del video de fondo -->
+    <div class="video-background">
+        <!-- Puedes usar un video de stock gratuito de sitios como Pexels, Pixabay, etc. -->
+        <!-- Asegúrate de que el video sea relevante para blockchain/futuro y no sea demasiado grande -->
+        <!-- Ruta de ejemplo: `./videos/blockchain_background.mp4` -->
+        <video autoplay muted loop playsinline>
+            <source src="./videos/blockchain_background.mp4" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+    </div>
+    <!-- Capa oscura sobre el video para mejorar la legibilidad del texto -->
+    <div class="video-overlay"></div>
 
     <!-- Header y Navegación -->
-    <header class="bg-transparent absolute top-0 left-0 w-full z-10 p-4">
+    <header class="bg-transparent shadow-lg">
         <nav class="container mx-auto flex justify-between items-center py-4 px-6">
             <div class="flex items-center space-x-2">
-                <!-- Ruta del logo corregida para apuntar a la carpeta 'images' -->
                 <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="h-16 rounded-full shadow-lg">
-                <span class="text-2xl font-extrabold gold-text">OroBit</span>
+                <span class="text-2xl font-extrabold gold-text">OroBitverse</span>
             </div>
             <ul class="flex space-x-8 text-lg font-semibold">
                 <li><a href="#inicio" class="nav-link">Inicio</a></li>
                 <li><a href="#acerca" class="nav-link">Acerca de</a></li>
                 <li><a href="#caracteristicas" class="nav-link">Características</a></li>
-                <li><a href="#seguridad-auditoria" class="nav-link">Auditoría</a></li> <!-- Nuevo enlace de navegación -->
+                <li><a href="#seguridad-auditoria" class="nav-link">Auditoría</a></li>
                 <li><a href="#comunidad" class="nav-link">Comunidad</a></li>
                 <li><a href="#contacto" class="nav-link">Contacto</a></li>
             </ul>
@@ -107,46 +157,42 @@
 
     <main>
         <!-- Sección de Inicio (Hero) -->
-        <section id="inicio" class="relative min-h-screen flex items-center justify-center text-center section-gradient pt-24 pb-12">
+        <section id="inicio" class="relative min-h-screen flex items-center justify-center text-center pt-24 pb-12">
             <div class="container mx-auto px-6 z-10">
                 <h1 class="text-6xl md:text-7xl font-extrabold leading-tight mb-6 gold-text drop-shadow-xl">
-                    OroBit: <br class="md:hidden"> Donde el Oro y el Futuro se Encuentran
+                    OroBitverse: <br class="md:hidden"> El Universo Donde el Valor se Encuentra
                 </h1>
                 <p class="text-2xl md:text-3xl font-medium text-gray-300 mb-8 max-w-3xl mx-auto">
-                    El Refugio Dorado de la Nueva Economía Digital. Poder Dorado. Potencial Infinito.
+                    Explora la Nueva Economía Digital. Impulsado por el token OroBit.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
                     <a href="#acerca" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl">
-                        Descubre OroBit <i class="fas fa-arrow-right ml-3"></i>
+                        Descubre el OroBitverse <i class="fas fa-arrow-right ml-3"></i>
                     </a>
                     <a href="app/orobit_withdraw.html" id="launchAppBtn" class="px-8 py-4 text-xl btn-blue shadow-2xl hover:shadow-blue-xl" target="_blank">
                         Lanzar App de Staking <i class="fas fa-external-link-alt ml-3"></i>
                     </a>
                 </div>
             </div>
-            <div class="absolute inset-0 flex items-center justify-center opacity-10">
-                <!-- Reemplaza con un elemento visual abstracto o de circuito para el fondo -->
-                <img src="https://placehold.co/1920x1080/0d0d0d/e2e8f0?text=Circuito+Digital+Oro+Bitcoin" alt="Fondo de circuito digital" class="w-full h-full object-cover">
-            </div>
         </section>
 
-        <!-- Sección Acerca de OroBit -->
+        <!-- Sección Acerca de OroBitverse -->
         <section id="acerca" class="py-20 section-gradient px-6">
             <div class="container mx-auto card p-10">
                 <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
-                    <i class="fas fa-info-circle mr-4 btc-blue"></i> Acerca de OroBit
+                    <i class="fas fa-info-circle mr-4 btc-blue"></i> Acerca del OroBitverse
                 </h2>
                 <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
                     <p>
-                        OroBit es un proyecto pionero en la intersección de la estabilidad del oro físico y la innovación de las criptomonedas. Nuestro objetivo es ofrecer una solución de valor estable y creciente, combinando la confianza histórica del oro con la eficiencia y accesibilidad de la tecnología blockchain.
+                        OroBitverse es un ecosistema digital visionario que fusiona la solidez del oro con la vanguardia de la tecnología blockchain. Nuestro compromiso es crear un entorno donde la seguridad, la innovación y el potencial de crecimiento converjan para el beneficio de nuestra comunidad.
                     </p>
                     <p>
-                        A través de nuestro token **OroBit**, facilitamos la participación en un ecosistema robusto diseñado para la acumulación de valor y la generación de ingresos pasivos mediante el staking. Nos enfocamos en la seguridad, la transparencia y la creación de un espacio donde tanto inversores experimentados como nuevos participantes puedan prosperar.
+                        En el corazón de este universo se encuentra el token **OroBit**, diseñado para ser una piedra angular de valor y liquidez. A través de OroBitverse, facilitamos la participación en un sistema robusto que permite la acumulación de activos y la generación de ingresos pasivos a través de mecanismos de staking de última generación.
                     </p>
                     <div class="p-6 bg-gray-900 bg-opacity-70 border border-yellow-700 rounded-lg shadow-inner">
-                        <h3 class="text-2xl font-bold mb-4 text-yellow-300"><i class="fas fa-exclamation-triangle mr-2"></i> Aclaración Importante sobre el Nombre:</h3>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300"><i class="fas fa-lightbulb mr-2"></i> Una Clarificación Importante:</h3>
                         <p>
-                            Para evitar cualquier confusión, queremos dejar claro que **"OroBit" es el nombre de nuestro token principal**. Sin embargo, el **proyecto más amplio o el ecosistema general detrás de OroBit podría adoptar un nombre más distintivo y representativo en el futuro**. Esto nos permitirá construir una marca integral y única que abarque todas nuestras futuras innovaciones, más allá de la singularidad de nuestro token. ¡Estamos construyendo un futuro dorado!
+                            **OroBit** es el nombre de nuestro **token principal**. **OroBitverse** es el nombre del **proyecto, ecosistema o universo más amplio** que lo abarca todo. Esta distinción es importante para evitar cualquier confusión y para destacar la magnitud y la visión de nuestro proyecto. ¡Estamos construyendo un futuro dorado para todos!
                         </p>
                     </div>
                 </div>
@@ -157,68 +203,59 @@
         <section id="caracteristicas" class="py-20 px-6">
             <div class="container mx-auto text-center">
                 <h2 class="text-5xl font-extrabold mb-12 gold-text">
-                    <i class="fas fa-star mr-4 btc-blue"></i> Nuestras Características
+                    <i class="fas fa-star mr-4 btc-blue"></i> Características del OroBitverse
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="card p-8 flex flex-col items-center">
-                        <div class="text-6xl gold-text mb-4"><i class="fas fa-lock"></i></div>
-                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Seguridad Inigualable</h3>
+                        <div class="text-6xl gold-text mb-4"><i class="fas fa-shield-alt"></i></div>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Staking Avanzado</h3>
                         <p class="text-gray-300">
-                            Nuestros contratos inteligentes están construidos con las mejores prácticas de seguridad y son sometidos a rigurosas pruebas, garantizando la protección de sus activos.
+                            Bloquea tus tokens OroBit en vaults inteligentes y seguros, diseñados para generar rendimientos pasivos estables y maximizar tu inversión.
                         </p>
                     </div>
                     <div class="card p-8 flex flex-col items-center">
                         <div class="text-6xl btc-blue mb-4"><i class="fas fa-coins"></i></div>
-                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Staking Rentable</h3>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Tokenomics Sostenible</h3>
                         <p class="text-gray-300">
-                            Participe en nuestros pools de staking con APRs competitivos, diseñados para generar ingresos pasivos significativos y maximizar su potencial de crecimiento.
+                            El token OroBit (`OROBIT`) está respaldado por una economía transparente, con mecanismos que promueven el crecimiento de valor a largo plazo.
                         </p>
                     </div>
                     <div class="card p-8 flex flex-col items-center">
-                        <div class="text-6xl gold-text mb-4"><i class="fas fa-users"></i></div>
-                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Comunidad Fuerte</h3>
+                        <div class="text-6xl gold-text mb-4"><i class="fas fa-users-rays"></i></div>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Comunidad Vibrante</h3>
                         <p class="text-gray-300">
-                            Únase a una comunidad creciente de entusiastas y expertos, donde el conocimiento y el apoyo mutuo impulsan el éxito colectivo.
+                            Únete a una red global de visionarios y entusiastas. Crece, aprende y contribuye al futuro del OroBitverse.
                         </p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Nueva Sección de Seguridad y Auditoría -->
+        <!-- Sección de Seguridad y Auditoría (Contenido existente, solo ajustado el título) -->
         <section id="seguridad-auditoria" class="py-20 px-6 section-gradient">
             <div class="container mx-auto card p-10">
                 <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
-                    <i class="fas fa-shield-alt mr-4 btc-blue"></i> Seguridad y Auditoría
+                    <i class="fas fa-shield-check mr-4 btc-blue"></i> Seguridad y Auditoría del OroBitverse
                 </h2>
                 <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
                     <p>
-                        En OroBit, la seguridad de sus activos es nuestra máxima prioridad. Hemos sometido nuestros contratos inteligentes a una **auditoría manual exhaustiva**, analizando su código para identificar posibles vulnerabilidades, optimizaciones y asegurar que la lógica se alinee con el comportamiento esperado.
+                        En OroBitverse, la seguridad de sus activos es nuestra máxima prioridad. Hemos sometido nuestros contratos inteligentes a una **auditoría manual exhaustiva**, analizando su código para identificar posibles vulnerabilidades, optimizaciones y asegurar que la lógica se alinee con el comportamiento esperado.
                     </p>
                     <p>
                         Nuestro contrato de staking, **OroBitStakingVault**, ha demostrado una **arquitectura sólida y segura**, utilizando las mejores prácticas y estándares de la industria (como OpenZeppelin para la propiedad, la prevención de reentradas y la capacidad de pausa). Las pruebas rigurosas en la red de prueba (Testnet) han validado todas las funcionalidades clave: staking, cálculo de recompensas, retiros (con y sin penalizaciones), y la gestión administrativa.
                     </p>
                     <p>
-                        Confirmamos que el proyecto OroBit, en base a la revisión de su contrato de staking, muestra un **alto nivel de preparación para su despliegue en la red principal**. Sin embargo, como siempre, recomendamos una auditoría de seguridad profesional e independiente antes de su lanzamiento en Mainnet para una validación externa y la máxima confianza.
+                        Confirmamos que el proyecto OroBitverse, en base a la revisión de su contrato de staking, muestra un **alto nivel de preparación para su despliegue en la red principal**. Sin embargo, como siempre, recomendamos una auditoría de seguridad profesional e independiente antes de su lanzamiento en Mainnet para una validación externa y la máxima confianza.
                     </p>
-                    <!-- Podrías añadir un enlace a la auditoría completa aquí si está publicada en algún lugar -->
-                    <!--
-                    <div class="flex justify-center mt-6">
-                        <a href="URL_A_TU_AUDITORIA_COMPLETA" target="_blank" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl inline-block">
-                            Ver Informe de Auditoría Completo <i class="fas fa-file-alt ml-3"></i>
-                        </a>
-                    </div>
-                    -->
                 </div>
             </div>
         </section>
 
-
-        <!-- Sección de Tokenomics/Contrato -->
+        <!-- Sección de Tokenomics/Contrato (Contenido existente, solo ajustado el título) -->
         <section id="tokenomics" class="py-20 px-6 section-gradient">
             <div class="container mx-auto card p-10">
                 <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
-                    <i class="fas fa-file-contract mr-4 btc-blue"></i> Tokenomics & Contrato
+                    <i class="fas fa-file-contract mr-4 btc-blue"></i> Token OroBit y Contratos del OroBitverse
                 </h2>
                 <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
                     <p>
@@ -251,17 +288,18 @@
             </div>
         </section>
 
-        <!-- Sección de Comunidad y Redes Sociales -->
+        <!-- Sección de Comunidad y Redes Sociales (Contenido existente, solo ajustado el título) -->
         <section id="comunidad" class="py-20 px-6">
             <div class="container mx-auto text-center">
                 <h2 class="text-5xl font-extrabold mb-12 gold-text">
-                    <i class="fas fa-globe mr-4 btc-blue"></i> Únete a Nuestra Comunidad
+                    <i class="fas fa-handshake-angle mr-4 btc-blue"></i> Únete a la Comunidad OroBitverse
                 </h2>
                 <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-                    Conéctate con OroBit en nuestras plataformas sociales para estar al día con las últimas noticias, actualizaciones y eventos.
+                    Conéctate con el OroBitverse en nuestras plataformas sociales para estar al día con las últimas noticias, actualizaciones y eventos.
                 </p>
                 <div class="flex flex-wrap justify-center gap-8 text-4xl">
-                    <a href="https://www.youtube.com/@Cripto%C3%81guila" target="_blank" class="text-red-600 hover:text-red-700 transition duration-300 transform hover:scale-110" aria-label="YouTube">
+                    <!-- Enlace actualizado a tu canal @OroBitverse en YouTube -->
+                    <a href="https://www.youtube.com/@OroBitverse" target="_blank" class="text-red-600 hover:text-red-700 transition duration-300 transform hover:scale-110" aria-label="YouTube">
                         <i class="fab fa-youtube"></i>
                     </a>
                     <a href="https://www.tiktok.com/@chefpaulogomes" target="_blank" class="text-gray-400 hover:text-gray-300 transition duration-300 transform hover:scale-110" aria-label="TikTok">
@@ -275,17 +313,17 @@
             </div>
         </section>
 
-        <!-- Sección de Contacto -->
+        <!-- Sección de Contacto (Contenido existente, solo ajustado el título) -->
         <section id="contacto" class="py-20 px-6 section-gradient">
             <div class="container mx-auto card p-10 text-center">
                 <h2 class="text-5xl font-extrabold mb-8 gold-text">
-                    <i class="fas fa-envelope mr-4 btc-blue"></i> Contáctanos
+                    <i class="fas fa-envelope-open-text mr-4 btc-blue"></i> Contáctanos
                 </h2>
                 <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-                    ¿Tienes preguntas, sugerencias o quieres saber más sobre OroBit? Envíanos un mensaje o síguenos en nuestras redes.
+                    ¿Tienes preguntas, sugerencias o quieres saber más sobre el OroBitverse? Envíanos un mensaje o síguenos en nuestras redes.
                 </p>
                 <!-- Aquí puedes añadir un formulario de contacto o un enlace de correo electrónico -->
-                <a href="mailto:tu-email@orobit.com" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl inline-block">
+                <a href="mailto:info@orobitverse.com" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl inline-block">
                     Enviar un Correo <i class="fas fa-paper-plane ml-3"></i>
                 </a>
             </div>
@@ -295,9 +333,9 @@
     <!-- Footer -->
     <footer class="bg-gray-900 text-gray-400 py-8 px-6 text-center text-sm">
         <div class="container mx-auto">
-            <p>&copy; <span id="currentYear"></span> OroBit. Todos los derechos reservados.</p>
+            <p>&copy; <span id="currentYear"></span> OroBitverse. Todos los derechos reservados.</p>
             <p class="mt-2">
-                "OroBit" se refiere al token OROBIT. El proyecto o ecosistema más amplio puede tener un nombre distinto.
+                "OroBit" se refiere al token OROBIT. "OroBitverse" es el ecosistema completo.
             </p>
             <div class="flex justify-center space-x-4 mt-4">
                 <a href="#" class="hover:text-gold-text">Política de Privacidad</a>
@@ -308,13 +346,6 @@
 
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-        // No es necesario un event listener si el href es un path directo en el HTML.
-        // El 'target="_blank"' abrirá la app en una nueva pestaña.
-        // document.getElementById('launchAppBtn').addEventListener('click', function(e) {
-        //     e.preventDefault(); 
-        //     window.open('app/orobit_withdraw.html', '_blank');
-        // });
     </script>
 </body>
 </html>
