@@ -55,8 +55,14 @@
         .section-gradient {
             background: linear-gradient(to bottom, rgba(26, 32, 44, 0.7), rgba(13, 13, 13, 0.7)); /* Degradado sobre la opacidad para el contenido */
         }
+        /* ESTILO MEJORADO PARA EL TEXTO DORADO */
         .gold-text {
-            color: #FFD700; /* Color oro */
+            color: transparent; /* Hace el texto transparente para que el degradado sea visible */
+            background: linear-gradient(to right, #FFD700, #DAA520, #FFD700); /* Degradado de oro más rico */
+            -webkit-background-clip: text; /* Recorta el degradado a la forma del texto */
+            background-clip: text;
+            -webkit-text-fill-color: transparent; /* Oculta el color original del texto */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4); /* Sombra para darle profundidad */
         }
         .btc-blue {
             color: #4CAF50; /* Verde Bitcoin */
@@ -114,21 +120,28 @@
             left: 0;
             width: 100%;
             z-index: 1000; /* Asegura que esté sobre otros elementos */
-            background-color: rgba(13, 13, 13, 0.8); /* Fondo oscuro semitransparente para que no choque con el scroll */
+            background-color: rgba(13, 13, 13, 0.95); /* Fondo más opaco para el header */
             backdrop-filter: blur(5px);
         }
         main {
             position: relative; /* Para asegurar que el z-index del contenido funcione */
             z-index: 1; /* Para que el contenido esté sobre el video y el overlay */
         }
+        /* Estilo para el logotipo en los títulos de sección */
+        .section-title-logo {
+            display: inline-block;
+            height: 2.5rem; /* Tamaño adecuado para un logo inline */
+            width: 2.5rem;
+            margin-right: 1rem;
+            vertical-align: middle; /* Alineación con el texto */
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); /* Sombra dorada */
+        }
     </style>
 </head>
 <body class="min-h-screen antialiased">
     <!-- Contenedor del video de fondo -->
     <div class="video-background">
-        <!-- Puedes usar un video de stock gratuito de sitios como Pexels, Pixabay, etc. -->
-        <!-- Asegúrate de que el video sea relevante para blockchain/futuro y no sea demasiado grande -->
-        <!-- Ruta de ejemplo: `./videos/blockchain_background.mp4` -->
         <video autoplay muted loop playsinline>
             <source src="./videos/blockchain_background.mp4" type="video/mp4">
             Tu navegador no soporta el elemento de video.
@@ -140,10 +153,11 @@
     <!-- Header y Navegación -->
     <header class="bg-transparent shadow-lg">
         <nav class="container mx-auto flex justify-between items-center py-4 px-6">
-            <div class="flex items-center space-x-2">
+            <!-- LOGO Y NOMBRE CLICABLE PARA VOLVER AL INICIO -->
+            <a href="#inicio" class="flex items-center space-x-2 cursor-pointer">
                 <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="h-16 rounded-full shadow-lg">
                 <span class="text-2xl font-extrabold gold-text">OroBitverse</span>
-            </div>
+            </a>
             <ul class="flex space-x-8 text-lg font-semibold">
                 <li><a href="#inicio" class="nav-link">Inicio</a></li>
                 <li><a href="#acerca" class="nav-link">Acerca de</a></li>
@@ -159,8 +173,8 @@
         <!-- Sección de Inicio (Hero) -->
         <section id="inicio" class="relative min-h-screen flex items-center justify-center text-center pt-24 pb-12">
             <div class="container mx-auto px-6 z-10">
-                <h1 class="text-6xl md:text-7xl font-extrabold leading-tight mb-6 gold-text drop-shadow-xl">
-                    OroBitverse: <br class="md:hidden"> El Universo Donde el Valor se Encuentra
+                <h1 class="text-6xl md:text-7xl font-extrabold leading-tight mb-6 gold-text drop-shadow-xl" style="line-height: 1.1;">
+                    OroBitverse: <span class="block md:inline-block">El Universo Donde el Valor se Encuentra</span>
                 </h1>
                 <p class="text-2xl md:text-3xl font-medium text-gray-300 mb-8 max-w-3xl mx-auto">
                     Explora la Nueva Economía Digital. Impulsado por el token OroBit.
@@ -180,6 +194,7 @@
         <section id="acerca" class="py-20 section-gradient px-6">
             <div class="container mx-auto card p-10">
                 <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="section-title-logo" />
                     <i class="fas fa-info-circle mr-4 btc-blue"></i> Acerca del OroBitverse
                 </h2>
                 <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
@@ -203,6 +218,7 @@
         <section id="caracteristicas" class="py-20 px-6">
             <div class="container mx-auto text-center">
                 <h2 class="text-5xl font-extrabold mb-12 gold-text">
+                    <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="section-title-logo" />
                     <i class="fas fa-star mr-4 btc-blue"></i> Características del OroBitverse
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -235,6 +251,7 @@
         <section id="seguridad-auditoria" class="py-20 px-6 section-gradient">
             <div class="container mx-auto card p-10">
                 <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="section-title-logo" />
                     <i class="fas fa-shield-check mr-4 btc-blue"></i> Seguridad y Auditoría del OroBitverse
                 </h2>
                 <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
@@ -255,6 +272,7 @@
         <section id="tokenomics" class="py-20 px-6 section-gradient">
             <div class="container mx-auto card p-10">
                 <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="section-title-logo" />
                     <i class="fas fa-file-contract mr-4 btc-blue"></i> Token OroBit y Contratos del OroBitverse
                 </h2>
                 <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
@@ -292,6 +310,7 @@
         <section id="comunidad" class="py-20 px-6">
             <div class="container mx-auto text-center">
                 <h2 class="text-5xl font-extrabold mb-12 gold-text">
+                    <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="section-title-logo" />
                     <i class="fas fa-handshake-angle mr-4 btc-blue"></i> Únete a la Comunidad OroBitverse
                 </h2>
                 <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
@@ -316,7 +335,8 @@
         <!-- Sección de Contacto (Contenido existente, solo ajustado el título) -->
         <section id="contacto" class="py-20 px-6 section-gradient">
             <div class="container mx-auto card p-10 text-center">
-                <h2 class="text-5xl font-extrabold mb-8 gold-text">
+                <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="section-title-logo" />
                     <i class="fas fa-envelope-open-text mr-4 btc-blue"></i> Contáctanos
                 </h2>
                 <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
