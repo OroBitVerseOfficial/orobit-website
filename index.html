@@ -1,3 +1,320 @@
+<!DOCTYPE html>
+<html lang="es" style="scroll-behavior: smooth; scroll-padding-top: 6rem;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OroBitverse: El Universo Dorado de la Nueva Economía Digital</title>
+    <link rel="icon" href="images/Diseño sin título (16).png" type="image/png">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow-x: hidden; /* Evita el scroll horizontal */
+            background-color: #0d0d0d; /* Fondo muy oscuro, casi negro */
+            color: #e2e8f0; /* Gris claro para el texto general */
+        }
+        /* Estilos para el video de fondo */
+        .video-background {
+            position: fixed; /* Cambiado a fixed para cubrir toda la ventana sin scroll */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2; /* Más bajo que el header y el content */
+        }
+        .video-background video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover; /* Asegura que el video cubra todo el espacio */
+            filter: brightness(0.5) contrast(1.2); /* Oscurece y aumenta contraste del video */
+        }
+        /* Capa oscura sobre el video para mejorar la legibilidad del texto */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Capa semi-transparente oscura */
+            z-index: -1; /* Sobre el video, debajo del contenido */
+        }
+
+        .section-gradient {
+            background: linear-gradient(to bottom, rgba(26, 32, 44, 0.7), rgba(13, 13, 13, 0.7)); /* Degradado sobre la opacidad para el contenido */
+        }
+        .gold-text {
+            color: #FFD700; /* Color oro */
+        }
+        .btc-blue {
+            color: #4CAF50; /* Verde Bitcoin */
+        }
+        .card {
+            background-color: rgba(26, 32, 44, 0.7); /* bg-gray-800 con opacidad */
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .btn-gold {
+            background: linear-gradient(to right, #FFD700, #DAA520); /* Degradado de oro */
+            color: #1a202c; /* Texto oscuro sobre oro */
+            font-weight: 700;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 215, 0, 0.3);
+        }
+        .btn-blue {
+            background-color: #4CAF50; /* Verde Bitcoin */
+            color: white;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .btn-blue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(76, 175, 80, 0.3);
+        }
+        .nav-link {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #FFD700;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        /* Ajuste para el encabezado fijo */
+        header {
+            position: sticky; /* Cambiado a sticky para mejor comportamiento con el video fixed */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Asegura que esté sobre otros elementos */
+            background-color: rgba(13, 13, 13, 0.8); /* Fondo oscuro semitransparente para que no choque con el scroll */
+            backdrop-filter: blur(5px);
+        }
+        main {
+            position: relative; /* Para asegurar que el z-index del contenido funcione */
+            z-index: 1; /* Para que el contenido esté sobre el video y el overlay */
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased">
+    <!-- Contenedor del video de fondo -->
+    <div class="video-background">
+        <!-- Puedes usar un video de stock gratuito de sitios como Pexels, Pixabay, etc. -->
+        <!-- Asegúrate de que el video sea relevante para blockchain/futuro y no sea demasiado grande -->
+        <!-- Ruta de ejemplo: `./videos/blockchain_background.mp4` -->
+        <video autoplay muted loop playsinline>
+            <source src="./videos/blockchain_background.mp4" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+    </div>
+    <!-- Capa oscura sobre el video para mejorar la legibilidad del texto -->
+    <div class="video-overlay"></div>
+
+    <!-- Header y Navegación -->
+    <header class="bg-transparent shadow-lg">
+        <nav class="container mx-auto flex justify-between items-center py-4 px-6">
+            <div class="flex items-center space-x-2">
+                <img src="images/Diseño sin título (16).png" alt="Logo de OroBit" class="h-16 rounded-full shadow-lg">
+                <span class="text-2xl font-extrabold gold-text">OroBitverse</span>
+            </div>
+            <ul class="flex space-x-8 text-lg font-semibold">
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="#acerca" class="nav-link">Acerca de</a></li>
+                <li><a href="#caracteristicas" class="nav-link">Características</a></li>
+                <li><a href="#seguridad-auditoria" class="nav-link">Auditoría</a></li>
+                <li><a href="#comunidad" class="nav-link">Comunidad</a></li>
+                <li><a href="#contacto" class="nav-link">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Sección de Inicio (Hero) -->
+        <section id="inicio" class="relative min-h-screen flex items-center justify-center text-center pt-24 pb-12">
+            <div class="container mx-auto px-6 z-10">
+                <h1 class="text-6xl md:text-7xl font-extrabold leading-tight mb-6 gold-text drop-shadow-xl">
+                    OroBitverse: <br class="md:hidden"> El Universo Donde el Valor se Encuentra
+                </h1>
+                <p class="text-2xl md:text-3xl font-medium text-gray-300 mb-8 max-w-3xl mx-auto">
+                    Explora la Nueva Economía Digital. Impulsado por el token OroBit.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="#acerca" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl">
+                        Descubre el OroBitverse <i class="fas fa-arrow-right ml-3"></i>
+                    </a>
+                    <a href="app/orobit_withdraw.html" id="launchAppBtn" class="px-8 py-4 text-xl btn-blue shadow-2xl hover:shadow-blue-xl" target="_blank">
+                        Lanzar App de Staking <i class="fas fa-external-link-alt ml-3"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Acerca de OroBitverse -->
+        <section id="acerca" class="py-20 section-gradient px-6">
+            <div class="container mx-auto card p-10">
+                <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <i class="fas fa-info-circle mr-4 btc-blue"></i> Acerca del OroBitverse
+                </h2>
+                <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
+                    <p>
+                        OroBitverse es un ecosistema digital visionario que fusiona la solidez del oro con la vanguardia de la tecnología blockchain. Nuestro compromiso es crear un entorno donde la seguridad, la innovación y el potencial de crecimiento converjan para el beneficio de nuestra comunidad.
+                    </p>
+                    <p>
+                        En el corazón de este universo se encuentra el token **OroBit**, diseñado para ser una piedra angular de valor y liquidez. A través de OroBitverse, facilitamos la participación en un sistema robusto que permite la acumulación de activos y la generación de ingresos pasivos a través de mecanismos de staking de última generación.
+                    </p>
+                    <div class="p-6 bg-gray-900 bg-opacity-70 border border-yellow-700 rounded-lg shadow-inner">
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300"><i class="fas fa-lightbulb mr-2"></i> Una Clarificación Importante:</h3>
+                        <p>
+                            **OroBit** es el nombre de nuestro **token principal**. **OroBitverse** es el nombre del **proyecto, ecosistema o universo más amplio** que lo abarca todo. Esta distinción es importante para evitar cualquier confusión y para destacar la magnitud y la visión de nuestro proyecto. ¡Estamos construyendo un futuro dorado para todos!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Características -->
+        <section id="caracteristicas" class="py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h2 class="text-5xl font-extrabold mb-12 gold-text">
+                    <i class="fas fa-star mr-4 btc-blue"></i> Características del OroBitverse
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="card p-8 flex flex-col items-center">
+                        <div class="text-6xl gold-text mb-4"><i class="fas fa-shield-alt"></i></div>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Staking Avanzado</h3>
+                        <p class="text-gray-300">
+                            Bloquea tus tokens OroBit en vaults inteligentes y seguros, diseñados para generar rendimientos pasivos estables y maximizar tu inversión.
+                        </p>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center">
+                        <div class="text-6xl btc-blue mb-4"><i class="fas fa-coins"></i></div>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Tokenomics Sostenible</h3>
+                        <p class="text-gray-300">
+                            El token OroBit (`OROBIT`) está respaldado por una economía transparente, con mecanismos que promueven el crecimiento de valor a largo plazo.
+                        </p>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center">
+                        <div class="text-6xl gold-text mb-4"><i class="fas fa-users-rays"></i></div>
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-300">Comunidad Vibrante</h3>
+                        <p class="text-gray-300">
+                            Únete a una red global de visionarios y entusiastas. Crece, aprende y contribuye al futuro del OroBitverse.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Seguridad y Auditoría (Contenido existente, solo ajustado el título) -->
+        <section id="seguridad-auditoria" class="py-20 px-6 section-gradient">
+            <div class="container mx-auto card p-10">
+                <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <i class="fas fa-shield-check mr-4 btc-blue"></i> Seguridad y Auditoría del OroBitverse
+                </h2>
+                <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
+                    <p>
+                        En OroBitverse, la seguridad de sus activos es nuestra máxima prioridad. Hemos sometido nuestros contratos inteligentes a una **auditoría manual exhaustiva**, analizando su código para identificar posibles vulnerabilidades, optimizaciones y asegurar que la lógica se alinee con el comportamiento esperado.
+                    </p>
+                    <p>
+                        Nuestro contrato de staking, **OroBitStakingVault**, ha demostrado una **arquitectura sólida y segura**, utilizando las mejores prácticas y estándares de la industria (como OpenZeppelin para la propiedad, la prevención de reentradas y la capacidad de pausa). Las pruebas rigurosas en la red de prueba (Testnet) han validado todas las funcionalidades clave: staking, cálculo de recompensas, retiros (con y sin penalizaciones), y la gestión administrativa.
+                    </p>
+                    <p>
+                        Confirmamos que el proyecto OroBitverse, en base a la revisión de su contrato de staking, muestra un **alto nivel de preparación para su despliegue en la red principal**. Sin embargo, como siempre, recomendamos una auditoría de seguridad profesional e independiente antes de su lanzamiento en Mainnet para una validación externa y la máxima confianza.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Tokenomics/Contrato (Contenido existente, solo ajustado el título) -->
+        <section id="tokenomics" class="py-20 px-6 section-gradient">
+            <div class="container mx-auto card p-10">
+                <h2 class="text-5xl font-extrabold mb-8 text-center gold-text">
+                    <i class="fas fa-file-contract mr-4 btc-blue"></i> Token OroBit y Contratos del OroBitverse
+                </h2>
+                <div class="text-lg text-gray-300 leading-relaxed space-y-6 max-w-4xl mx-auto">
+                    <p>
+                        El token OroBit (`OROBIT`) es el corazón de nuestro ecosistema. Está diseñado con una tokenomía transparente y justa, priorizando la sostenibilidad y el beneficio del holder.
+                    </p>
+                    <p class="mb-4">
+                        Cada transacción con OroBit contribuye al crecimiento del proyecto, con una parte de las comisiones destinada a marketing y quema de tokens, reduciendo la oferta y aumentando el valor a largo plazo. Las tarifas actuales están optimizadas para la máxima viabilidad y atractivo para el staking.
+                    </p>
+                    <div class="bg-gray-900 bg-opacity-70 p-6 rounded-lg shadow-inner border border-yellow-700">
+                        <h3 class="text-2xl font-bold mb-3 text-yellow-300">Dirección del Contrato del Token OroBit:</h3>
+                        <p class="font-mono break-all text-sm md:text-base mb-4">
+                            <code>0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3</code>
+                        </p>
+                        <a href="https://testnet.bscscan.com/address/0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3" target="_blank" class="text-blue-400 hover:underline flex items-center justify-center md:justify-start">
+                            <i class="fas fa-external-link-alt mr-2"></i> Ver en BSCScan (Testnet)
+                        </a>
+                        <p class="text-xs text-gray-400 mt-2">Esta es la dirección del contrato en BNB Smart Chain Testnet. Para Mainnet, la dirección será diferente.</p>
+                    </div>
+                    <div class="bg-gray-900 bg-opacity-70 p-6 rounded-lg shadow-inner border border-yellow-700 mt-6">
+                        <h3 class="text-2xl font-bold mb-3 text-yellow-300">Dirección del Contrato de Staking OroBit:</h3>
+                        <p class="font-mono break-all text-sm md:text-base mb-4">
+                            <code>0x8278ebadbc25beea94d6370174b8eeb7b5bfd253</code>
+                        </p>
+                        <a href="https://testnet.bscscan.com/address/0x8278ebadbc25beea94d6370174b8eeb7b5bfd253" target="_blank" class="text-blue-400 hover:underline flex items-center justify-center md:justify-start">
+                            <i class="fas fa-external-link-alt mr-2"></i> Ver en BSCScan (Testnet)
+                        </a>
+                        <p class="text-xs text-gray-400 mt-2">Esta es la dirección del contrato en BNB Smart Chain Testnet. Para Mainnet, la dirección será diferente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Comunidad y Redes Sociales (Contenido existente, solo ajustado el título) -->
+        <section id="comunidad" class="py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h2 class="text-5xl font-extrabold mb-12 gold-text">
+                    <i class="fas fa-handshake-angle mr-4 btc-blue"></i> Únete a la Comunidad OroBitverse
+                </h2>
+                <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+                    Conéctate con el OroBitverse en nuestras plataformas sociales para estar al día con las últimas noticias, actualizaciones y eventos.
+                </p>
+                <div class="flex flex-wrap justify-center gap-8 text-4xl">
+                    <!-- Enlace actualizado a tu canal @OroBitverse en YouTube -->
+                    <a href="https://www.youtube.com/@OroBitverse" target="_blank" class="text-red-600 hover:text-red-700 transition duration-300 transform hover:scale-110" aria-label="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@chefpaulogomes" target="_blank" class="text-gray-400 hover:text-gray-300 transition duration-300 transform hover:scale-110" aria-label="TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://www.instagram.com/chefpaulo_gomes/" target="_blank" class="text-pink-500 hover:text-pink-600 transition duration-300 transform hover:scale-110" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <!-- Puedes añadir más iconos y enlaces aquí (ej. Telegram, Twitter, Discord) -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Contacto (Contenido existente, solo ajustado el título) -->
+        <section id="contacto" class="py-20 px-6 section-gradient">
             <div class="container mx-auto card p-10 text-center">
                 <h2 class="text-5xl font-extrabold mb-8 gold-text">
                     <i class="fas fa-envelope-open-text mr-4 btc-blue"></i> Contáctanos
