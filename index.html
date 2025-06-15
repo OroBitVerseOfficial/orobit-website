@@ -18,8 +18,8 @@
 
     <!-- Twitter Card Meta Tags (Específicas para Twitter) -->
     <meta name="twitter:card" content="summary_large_image"> <!-- Tipo de Twitter Card, ej. summary_large_image -->
-    <meta name="twitter:site" content="@tuTwitterUsuario"> <!-- Opcional: Tu usuario de Twitter, ej. @OroBitverse_ES -->
-    <meta name="twitter:creator" content="@tuTwitterUsuario"> <!-- Opcional: El creador del contenido, si es diferente al sitio -->
+    <meta name="twitter:site" content="@OroBitverse"> <!-- Tu usuario de Twitter -->
+    <meta name="twitter:creator" content="@OroBitverse"> <!-- El creador del contenido -->
     <meta name="twitter:title" content="OroBitverse: El Futuro Dorado de las Finanzas Descentralizadas">
     <meta name="twitter:description" content="Descubre OroBitverse: Donde la solidez del oro se une al potencial de la blockchain. ¡Staking seguro y sostenible!">
     <meta name="twitter:image" content="https://orobitverse.com/images/orobit_logo_1280x720.png">
@@ -124,7 +124,7 @@
             width: 2.5rem;
             margin-right: 1rem;
             vertical-align: middle; /* Alineación con el texto */
-            border-radius: 50%;
+            border-radius: 0.5rem; /* Cambiado de 50% a rounded-lg para mantener la forma rectangular */
             box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); /* Sombra dorada */
         }
     </style>
@@ -137,7 +137,7 @@
         <nav class="container mx-auto flex justify-between items-center py-4 px-6">
             <!-- LOGO Y NOMBRE CLICABLE PARA VOLVER AL INICIO -->
             <a href="#inicio" class="flex items-center space-x-2 cursor-pointer">
-                <img src="images/orobit_logo_1280x720.png" alt="Logo de OroBit" class="h-16 rounded-full shadow-lg">
+                <img src="images/orobit_logo_1280x720.png" alt="Logo de OroBit" class="h-16 rounded-lg shadow-lg"> <!-- Cambiado de rounded-full a rounded-lg -->
                 <span class="text-2xl font-extrabold gold-text">OroBitverse</span>
             </a>
             <ul class="flex space-x-8 text-lg font-semibold">
@@ -300,16 +300,22 @@
                 </p>
                 <div class="flex flex-wrap justify-center gap-8 text-4xl">
                     <!-- Enlace actualizado a tu canal @OroBitverse en YouTube -->
-                    <a href="https://www.youtube.com/@OroBitverse" target="_blank" class="text-red-600 hover:text-red-700 transition duration-300 transform hover:scale-110" aria-label="YouTube">
+                    <a href="https://www.youtube.com/OroBitverse" target="_blank" class="text-red-600 hover:text-red-700 transition duration-300 transform hover:scale-110" aria-label="YouTube">
                         <i class="fab fa-youtube"></i>
                     </a>
-                    <a href="https://www.tiktok.com/@chefpaulogomes" target="_blank" class="text-gray-400 hover:text-gray-300 transition duration-300 transform hover:scale-110" aria-label="TikTok">
+                    <a href="https://www.tiktok.com/@orobitverse.com" target="_blank" class="text-gray-400 hover:text-gray-300 transition duration-300 transform hover:scale-110" aria-label="TikTok">
                         <i class="fab fa-tiktok"></i>
                     </a>
-                    <a href="https://www.instagram.com/chefpaulo_gomes/" target="_blank" class="text-pink-500 hover:text-pink-600 transition duration-300 transform hover:scale-110" aria-label="Instagram">
+                    <a href="https://www.instagram.com/orobitverse/" target="_blank" class="text-pink-500 hover:text-pink-600 transition duration-300 transform hover:scale-110" aria-label="Instagram">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <!-- Puedes añadir más iconos y enlaces aquí (ej. Telegram, Twitter, Discord) -->
+                    <a href="https://x.com/OroBitverse" target="_blank" class="text-blue-400 hover:text-blue-500 transition duration-300 transform hover:scale-110" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://www.facebook.com/orobitverse" target="_blank" class="text-blue-700 hover:text-blue-800 transition duration-300 transform hover:scale-110" aria-label="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <!-- Puedes añadir más iconos y enlaces aquí (ej. Telegram, Discord) -->
                 </div>
             </div>
         </section>
