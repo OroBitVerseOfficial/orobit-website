@@ -12,6 +12,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Content Security Policy (CSP) - ¡IMPORTANTE! Se añadió 'unsafe-eval' para la funcionalidad de web3.js -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' data: https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        img-src 'self' data: https://placehold.co https://* ;
+        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
+        connect-src 'self' https://testnet.bscscan.com https://api-testnet.bscscan.com https://data-seed-prebsc-1-s1.binance.org:8545 https://bsc-testnet.public.blastapi.io https://bsc-testnet.drpc.org;
+        object-src 'none';
+        base-uri 'self';
+    ">
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -196,16 +209,16 @@
     <header class="app-header">
         <div class="logo-container">
             <!-- El logo es un botón que lleva a la página de inicio -->
-            <a href="../index.html" target="_blank" class="flex items-center">
+            <a href="../index.html" class="flex items-center">
                 <img src="../images/orobit_logo_1280x720.png" alt="Logo de OroBit" class="h-10 rounded-full mr-3 shadow-lg">
                 <span class="text-2xl font-bold text-yellow-400">OroBitverse</span>
             </a>
         </div>
         <nav>
-            <!-- Enlaces de navegación a otras páginas del ecosistema -->
+            <!-- Enlaces de navegación a otras páginas del ecosistema (rutas ajustadas para estar en subdirectorio 'app') -->
             <a href="../whitepaper.html" target="_blank">White Paper</a>
             <a href="../index.html" target="_blank">Inicio</a>
-            <!-- Enlace al panel de administración -->
+            <!-- Enlace al panel de administración (apuntando a un archivo en la raíz por ahora para evitar 404) -->
             <a href="../admin_panel.html" target="_blank">Panel Admin</a>
         </nav>
     </header>
@@ -513,14 +526,14 @@
 
         // --- Utilidades ---
         function showMessage(element, message, type = 'info') {
-            element.textContent = message;
+            element.innerHTML = message; // Usar innerHTML para permitir enlaces
             element.className = `message-box mt-2 ${type}`;
             element.classList.remove('hidden');
         }
 
         function hideMessage(element) {
             element.classList.add('hidden');
-            element.textContent = '';
+            element.innerHTML = '';
         }
 
         function formatEther(amountWei) {
@@ -533,28 +546,73 @@
             return web3.utils.toWei(amountEther, 'ether');
         }
 
-        // Función para decodificar mensajes de revert (simplificada)
-        function decodeRevertReason(hexString) {
-            if (!hexString || hexString.length < 10) return "Razón de revert desconocida";
-            if (hexString.startsWith('0x08c379a0')) { // Selector de error para Solidity's `Error(string)`
-                try {
-                    const dataPart = hexString.substring(10);
-                    let decoded = '';
-                    for (let i = 0; i < dataPart.length; i += 2) {
-                        decoded += String.fromCharCode(parseInt(dataPart.substr(i, 2), 16));
+        // Función para decodificar mensajes de revert (simplificada y mejorada)
+        function decodeRevertReason(errorMessage) {
+            let reason = "Transacción revertida: error desconocido";
+            if (errorMessage && typeof errorMessage === 'string') {
+                // MetaMask's JSON RPC error format
+                const jsonMatch = errorMessage.match(/{.*}/s);
+                if (jsonMatch) {
+                    try {
+                        const errorObj = JSON.parse(jsonMatch[0]);
+                        if (errorObj.data && typeof errorObj.data === 'string') {
+                            // Extract revert reason from error data (common in EVM reverts)
+                            const data = errorObj.data;
+                            if (data.startsWith('0x08c379a0')) { // Solidity Error(string) selector
+                                const hexReason = data.substring(138); // After selector + offset
+                                try {
+                                    const decoded = web3.utils.hexToUtf8(hexReason);
+                                    reason = decoded;
+                                } catch (e) {
+                                    reason = `Revert (decodificación fallida): ${hexReason}`;
+                                }
+                            } else if (errorObj.message) {
+                                reason = errorObj.message;
+                            } else {
+                                reason = `Revert (código): ${data}`;
+                            }
+                        } else if (errorObj.message) {
+                            reason = errorObj.message;
+                        }
+                    } catch (e) {
+                        // Fallback to simpler parsing if JSON parsing fails
+                        reason = errorMessage.split('reverted with reason string ')[1] || errorMessage;
+                        if (reason.includes("User denied transaction signature")) {
+                            reason = "Transacción denegada por el usuario en MetaMask.";
+                        } else if (reason.includes("MetaMask Tx Signature: User denied transaction signature")) {
+                             reason = "Transacción denegada por el usuario en MetaMask.";
+                        } else if (reason.includes("execution reverted:")) {
+                            reason = reason.split("execution reverted: ")[1];
+                        } else if (reason.includes("reverted with reason string")) {
+                            reason = reason.split("reverted with reason string ")[1].replace(/'/g, '');
+                        }
                     }
-                    decoded = decoded.replace(/[^ -~]+/g, ''); // Limpiar caracteres no ASCII
-                    if (decoded.length > 0) return `Revert: "${decoded.trim()}"`;
-                } catch (e) {
-                    console.warn("Error decodificando razón de revert:", e);
+                } else {
+                    // General error message parsing
+                    if (errorMessage.includes("User denied transaction signature")) {
+                        reason = "Transacción denegada por el usuario en MetaMask.";
+                    } else if (errorMessage.includes("MetaMask Tx Signature: User denied transaction signature")) {
+                        reason = "Transacción denegada por el usuario en MetaMask.";
+                    } else if (errorMessage.includes("execution reverted:")) {
+                        reason = errorMessage.split("execution reverted: ")[1];
+                    } else if (errorMessage.includes("reverted with reason string")) {
+                        reason = errorMessage.split("reverted with reason string ")[1].replace(/'/g, '');
+                    } else {
+                        reason = errorMessage;
+                    }
                 }
+            } else if (typeof errorMessage === 'object' && errorMessage.message) {
+                reason = errorMessage.message;
             }
-            return "Revert: Sin mensaje de error claro.";
+            return `Error: ${reason}`;
         }
+
 
         // --- Funciones de Conexión a MetaMask y Red ---
         async function connectWallet() {
             console.log("Intentando conectar a MetaMask...");
+            showMessage(connectionStatus, 'Conectando a MetaMask...', 'info');
+
             if (typeof window.ethereum === 'undefined' || !window.ethereum) {
                 showMessage(connectionStatus, 'MetaMask no detectado. Por favor, instale MetaMask.', 'error');
                 return;
@@ -714,16 +772,19 @@
         // --- Funciones de Carga de Datos ---
         async function loadPools() {
             if (!stakingContract) {
-                console.warn("Contrato de Staking no inicializado.");
+                console.warn("loadPools: Contrato de Staking no inicializado. Esperando conexión.");
+                poolSelect.innerHTML = '<option value="">Cargando pools...</option>';
                 return;
             }
             try {
                 const poolsLength = await stakingContract.methods.getStakingPoolsLength().call();
                 poolSelect.innerHTML = ''; // Limpiar opciones existentes
 
+                let activePoolsFound = false;
                 for (let i = 0; i < poolsLength; i++) {
                     const pool = await stakingContract.methods.getPool(i).call();
                     if (pool.isActive) {
+                        activePoolsFound = true;
                         const option = document.createElement('option');
                         option.value = i; // Guardar el ID del pool
                         const durationText = pool.isFlexible ? "Flexible" : `${pool.duration / (24 * 60 * 60)} días`;
@@ -735,13 +796,20 @@
                 if (poolSelect.options.length > 0) {
                     selectedPoolId = parseInt(poolSelect.value);
                     updateSelectedPoolDetails();
+                    approveButton.disabled = false;
+                    stakeButton.disabled = false;
                 } else {
                     selectedPoolApr.textContent = '--';
                     selectedPoolDuration.textContent = '--';
+                    approveButton.disabled = true;
+                    stakeButton.disabled = true;
+                    showMessage(stakeMessage, 'No hay pools de staking activos disponibles. Contacta al administrador.', 'warning');
                 }
             } catch (error) {
                 console.error("Error al cargar pools:", error);
-                showMessage(stakeMessage, `Error al cargar pools: ${error.message || error}`, 'error');
+                showMessage(stakeMessage, `Error al cargar pools: ${decodeRevertReason(error.message)}`, 'error');
+                approveButton.disabled = true;
+                stakeButton.disabled = true;
             }
         }
 
@@ -785,28 +853,26 @@
                 const stakesLength = await stakingContract.methods.getUserStakesLength(currentAccount).call();
                 userStakesDisplay.innerHTML = ''; // Limpiar stakes existentes
 
-                if (stakesLength === 0) {
+                if (parseInt(stakesLength) === 0) { // Usar parseInt para comparar BigInts/Strings
                     userStakesDisplay.innerHTML = '<p class="col-span-full text-center text-gray-400">No tienes stakes activos.</p>';
                 } else {
-                    for (let i = 0; i < stakesLength; i++) {
+                    for (let i = 0; i < parseInt(stakesLength); i++) { // Usar parseInt para iterar
                         const stake = await stakingContract.methods.getUserStake(currentAccount, i).call();
                         
                         // Solo mostrar stakes no retirados para mantener el dashboard limpio
                         if (!stake.withdrawn) {
                             const reward = await stakingContract.methods.calculateReward(currentAccount, i).call();
                             const startTime = new Date(parseInt(stake.startTime) * 1000);
-                            const endTime = new Date((parseInt(stake.startTime) + parseInt(stake.duration)) * 1000);
+                            const durationSeconds = parseInt(stake.duration);
+                            const endTime = new Date((parseInt(stake.startTime) + durationSeconds) * 1000);
                             const now = new Date();
 
                             let statusText = "Activo";
                             let statusClass = "active";
-                            if (stake.withdrawn) {
-                                statusText = "Retirado";
-                                statusClass = "withdrawn";
-                            } else if (stake.duration > 0 && now > endTime) {
+                            if (durationSeconds > 0 && now > endTime) {
                                 statusText = "Terminado"; // Fijo y ya pasó el tiempo
                                 statusClass = "active"; // Sigue siendo "activo" en el sentido de que se puede retirar
-                            } else if (stake.duration === 0) {
+                            } else if (durationSeconds === 0) {
                                 statusText = "Flexible";
                                 statusClass = "active";
                             }
@@ -817,21 +883,21 @@
                                     <p><strong>Cantidad:</strong> ${formatEther(stake.amount)} OROBIT</p>
                                     <p><strong>APR:</strong> ${stake.aprBP / 100}%</p>
                                     <p><strong>Inicio:</strong> ${startTime.toLocaleString()}</p>
-                                    <p><strong>Duración:</strong> ${stake.duration === '0' ? 'Flexible' : `${stake.duration / (24 * 60 * 60)} días`}</p>
-                                    <p><strong>Fin:</strong> ${stake.duration === '0' ? 'N/A' : endTime.toLocaleString()}</p>
+                                    <p><strong>Duración:</strong> ${durationSeconds === 0 ? 'Flexible' : `${durationSeconds / (24 * 60 * 60)} días`}</p>
+                                    <p><strong>Fin:</strong> ${durationSeconds === 0 ? 'N/A' : endTime.toLocaleString()}</p>
                                     <p><strong>Recompensa Acumulada:</strong> <span class="text-green-400">${formatEther(reward)} OROBIT</span></p>
                                 </div>
                             `;
                             userStakesDisplay.innerHTML += stakeCard;
                         }
                     }
-                    if (userStakesDisplay.innerHTML === '') {
+                    if (userStakesDisplay.innerHTML === '') { // Si no se encontraron stakes activos después del filtrado
                         userStakesDisplay.innerHTML = '<p class="col-span-full text-center text-gray-400">No tienes stakes activos.</p>';
                     }
                 }
             } catch (error) {
                 console.error("Error al actualizar el dashboard:", error);
-                showMessage(dashboardMessage, `Error al cargar dashboard: ${error.message || error}`, 'error');
+                showMessage(dashboardMessage, `Error al cargar dashboard: ${decodeRevertReason(error.message)}`, 'error');
             }
         }
 
@@ -861,7 +927,7 @@
 
             } catch (error) {
                 console.error("Error al cargar datos del administrador:", error);
-                showMessage(adminMessage, `Error al cargar datos del admin: ${error.message || error}`, 'error');
+                showMessage(adminMessage, `Error al cargar datos del admin: ${decodeRevertReason(error.message)}`, 'error');
             }
         }
 
@@ -1043,7 +1109,7 @@
             try {
                 showMessage(updatePoolStatusMessage, 'Enviando transacción de actualización de pool... Por favor, confirme en MetaMask.', 'info');
                 const tx = await stakingContract.methods.setPoolStatus(poolId, isActive).send({ from: currentAccount });
-                showMessage(updatePoolStatusMessage, `Estado del pool actualizado exitosamente. Hash: <a href="https://testnet.bscscan.com/tx/${tx.transactionHash}" target="_blank" class="text-blue-300 hover:underline">Ver Transacción</a>`, 'success');
+                showMessage(updatePoolStatusMessage, `Estado del pool ${poolId} actualizado exitosamente a ${isActive ? 'activo' : 'inactivo'}. Hash: <a href="https://testnet.bscscan.com/tx/${tx.transactionHash}" target="_blank" class="text-blue-300 hover:underline">Ver Transacción</a>`, 'success');
                 console.log("Estado del pool actualizado:", tx);
                 loadPools(); // Recargar la lista de pools en la pestaña de Stakear
             } catch (error) {
@@ -1111,7 +1177,7 @@
             hideMessage(setWhaleThresholdMessage);
 
             const threshold = whaleThresholdInput.value;
-            if (threshold === '' || parseInt(threshold) <= 0) {
+            if (threshold === '' || parseFloat(threshold) <= 0) { // Usar parseFloat para comparar flotantes
                 showMessage(setWhaleThresholdMessage, 'Por favor, introduzca un umbral de ballena válido (cantidad de OroBit).', 'error');
                 return;
             }
@@ -1206,7 +1272,7 @@
                 return;
             }
             if (tokenAddress.toLowerCase() === OROBIT_TOKEN_ADDRESS.toLowerCase()) {
-                 showMessage(emergencyWithdrawMessage, '¡No se puede retirar el token principal de staking (OroBit) con esta función!', 'error');
+                 showMessage(emergencyWithdrawMessage, '¡No se puede retirar el token principal de staking (OroBit) con esta función! Use la función de retiro normal si aplica.', 'error');
                  return;
             }
             if (amount <= 0) {
