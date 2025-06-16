@@ -3,88 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OroBitverse - Oro Digital, Minería de Datos, Ecosistema de Inversión</title>
+    <title>OroBitverse - Tu Universo de Staking</title>
     <!-- Favicon de OroBit -->
-    <link rel="icon" href="images/orobit_logo_rectangular.png" type="image/png">
-    
-    <!-- Meta tags para SEO y Open Graph (compartir en redes sociales) -->
-    <meta name="description" content="OroBitverse: Descubre el futuro del oro digital y la minería de datos. Invierte, gana y crece en nuestro ecosistema impulsado por la IA.">
-    <meta name="keywords" content="OroBit, Oro digital, Bitcoin, Minería de datos, IA, Inversión, Criptomoneda, Staking, Finanzas descentralizadas, DeFi, Blockchain, OroBitverse, AI, web3, crypto, blockchain">
-    <meta name="author" content="OroBitverse Team">
+    <link rel="icon" href="./images/orobit_logo_1280x720.png" type="image/png">
 
-    <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://orobitverse.com/">
-    <meta property="og:title" content="OroBitverse - Oro Digital, Minería de Datos, Ecosistema de Inversión">
-    <meta property="og:description" content="Descubre el futuro del oro digital y la minería de datos. Invierte, gana y crece en nuestro ecosistema impulsado por la IA.">
-    <meta property="og:image" content="https://orobitverse.com/images/Diseño%20sin%20t%C3%ADtulo%20(16)%20meta.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="OroBitverse">
-    <meta property="fb:app_id" content="TU_APP_ID_DE_FACEBOOK"> <!-- ¡IMPORTANTE! Reemplaza con tu ID de aplicación de Facebook real -->
-
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://orobitverse.com/">
-    <meta property="twitter:title" content="OroBitverse - Oro Digital, Minería de Datos, Ecosistema de Inversión">
-    <meta property="twitter:description" content="Descubre el futuro del oro digital y la minería de datos. Invierte, gana y crece en nuestro ecosistema impulsado por la IA.">
-    <meta property="twitter:image" content="https://orobitverse.com/images/Diseño%20sin%20t%C3%ADtulo%20(16)%20meta.png">
+    <!-- Content Security Policy (CSP) -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' data: https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com;
+        style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://fonts.googleapis.com;
+        img-src 'self' data: https://placehold.co https://* ;
+        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
+        object-src 'none';
+        base-uri 'self';
+    ">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
+    <!-- Font Awesome para iconos de redes sociales -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #1a202c; /* bg-gray-900 oscuro */
             color: #e2e8f0; /* text-gray-200 */
         }
-        /* Clases de utilidad para gradientes y sombras */
-        .btn-gold {
-            background: linear-gradient(to right, #FFD700, #FFA500);
+        .btn-primary {
+            background: linear-gradient(to right, #FFD700, #FFA500); /* Dorado */
             color: #333;
             transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
         }
-        .btn-gold:hover {
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+        .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
             transform: translateY(-2px);
-        }
-        .btn-blue {
-            background: linear-gradient(to right, #6366f1, #8b5cf6); /* indigo-500 to purple-500 */
-            color: white;
-            transition: all 0.3s ease;
-        }
-        .btn-blue:hover {
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.7);
-            transform: translateY(-2px);
-        }
-        .shadow-gold-xl {
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.4), 0 6px 6px rgba(255, 215, 0, 0.2);
-        }
-        .shadow-blue-xl {
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4), 0 6px 6px rgba(99, 102, 241, 0.2);
-        }
-        .text-gold-gradient {
-            background: linear-gradient(to right, #FFD700, #FFA500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent; /* Fallback for browsers not supporting text-fill-color */
-        }
-        .section-gradient {
-            background: linear-gradient(to bottom, #1a202c, #2d3748); /* From dark gray to slightly lighter */
         }
         .card {
             background-color: rgba(45, 55, 72, 0.6); /* bg-gray-700 con opacidad */
             backdrop-filter: blur(5px);
             border: 1px solid rgba(74, 85, 104, 0.5); /* border-gray-600 con opacidad */
         }
-
         /* Animación para el logo */
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -94,306 +55,121 @@
         .animate-pulse-effect {
             animation: pulse 2s infinite ease-in-out;
         }
-
-        /* Estilos para el efecto de luz de neón */
+        /* Estilos para el texto de neón (OroBitverse) */
         .neon-text {
             text-shadow: 0 0 5px #8B5CF6, 0 0 10px #8B5CF6, 0 0 15px #8B5CF6, 0 0 20px #8B5CF6; /* purple-500 */
         }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .hero-section {
-                padding-top: 4rem;
-                padding-bottom: 4rem;
-            }
-            .hero-content h1 {
-                font-size: 2.5rem; /* Ajustar tamaño de fuente para móviles */
-            }
-            .hero-content p {
-                font-size: 1rem;
-            }
-            .feature-grid {
-                grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-            }
-            .roadmap-timeline > div {
-                flex-direction: column; /* Apilar en vertical en móviles */
-                align-items: center;
-                text-align: center;
-            }
-            .roadmap-timeline .line, .roadmap-timeline .dot {
-                margin: 0.5rem 0;
-            }
-            .roadmap-timeline .line {
-                width: 2px;
-                height: 40px; /* Short vertical line */
-            }
-            .roadmap-timeline .dot {
-                order: -1; /* Move dot to top */
-            }
-            .roadmap-timeline div:nth-child(even) .dot {
-                order: -1;
-            }
-            .social-icons-footer {
-                flex-direction: column;
-            }
-            .social-icons-footer a {
-                margin-bottom: 0.5rem;
-            }
+        /* Estilo para los iconos de redes sociales */
+        .social-icon {
+            color: #e2e8f0; /* text-gray-200 */
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .social-icon:hover {
+            color: #FFD700; /* yellow-400 */
+            transform: translateY(-3px);
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-200">
+<body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col items-center">
 
     <!-- Header / Navbar -->
-    <header class="bg-gray-800 bg-opacity-70 backdrop-filter backdrop-blur-lg sticky top-0 z-50 shadow-lg">
-        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+    <header class="w-full bg-gray-800 bg-opacity-70 backdrop-filter backdrop-blur-lg sticky top-0 z-50 shadow-lg py-4">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
             <div class="flex items-center">
-                <img src="images/orobit_logo_rectangular.png" alt="OroBitverse Logo" class="h-10 mr-3 animate-pulse-effect rounded-lg"> <!-- Added rounded-lg -->
+                <!-- Logo con animación -->
+                <img src="./images/orobit_logo_1280x720.png" alt="OroBitverse Logo" class="h-10 mr-3 animate-pulse-effect rounded-lg">
                 <a href="#" class="text-2xl font-bold text-yellow-400 neon-text">OroBitverse</a>
             </div>
-            <div class="flex space-x-6">
-                <a href="#features" class="hover:text-yellow-400 transition duration-300">Características</a>
-                <a href="#roadmap" class="hover:text-yellow-400 transition duration-300">Hoja de Ruta</a>
-                <a href="#contact" class="hover:text-yellow-400 transition duration-300">Contacto</a>
+            <div>
+                <a href="./app/orobit_staking_app.html" class="btn-primary font-bold py-2 px-4 rounded-full text-lg">
+                    Lanzar App de Staking
+                </a>
             </div>
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section relative h-screen flex items-center justify-center text-center overflow-hidden bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/0d1117/30363d?text=Fondo+Tecnologico+Abstracto');">
-        <!-- Overlay -->
-        <div class="absolute inset-0 bg-black opacity-60"></div>
-        <div class="relative z-10 hero-content px-4">
-            <h1 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg animate-fade-in-up">
-                <span class="text-gold-gradient block">OroBitverse:</span>
-                <span class="block mt-2">El Futuro del Oro Digital</span>
+    <main class="container mx-auto p-4 mt-12 flex-grow text-center">
+        <!-- Hero Section -->
+        <section class="mb-16">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-yellow-400 leading-tight neon-text mb-6">
+                Bienvenido al <br>OroBitverse
             </h1>
-            <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto animate-fade-in-up delay-200">
-                Un ecosistema revolucionario donde el oro y la minería de datos se fusionan con la inteligencia artificial y la blockchain para redefinir el valor.
+            <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8">
+                Sumérgete en el futuro de las finanzas descentralizadas.
+                Con <span class="font-bold text-yellow-300">OroBit</span>, desbloquea un universo de oportunidades de staking y recompensas.
             </p>
-            <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 animate-fade-in-up delay-400">
-                <a href="app/orobit_staking_app.html" id="launchAppBtn" class="px-8 py-4 text-xl btn-blue shadow-2xl hover:shadow-blue-xl rounded-xl font-semibold flex items-center justify-center" target="_blank">
-                    Lanzar App de Staking <i class="fas fa-external-link-alt ml-3"></i>
-                </a>
-                <a href="#features" class="px-8 py-4 text-xl btn-gold shadow-2xl hover:shadow-gold-xl rounded-xl font-semibold flex items-center justify-center">
-                    Saber Más <i class="fas fa-arrow-right ml-3"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Características (Features) -->
-    <section id="features" class="py-16 md:py-24 bg-gray-800 section-gradient">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-center mb-12 text-yellow-400 neon-text">
-                Características Clave de OroBitverse
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 feature-grid">
-                <!-- Característica 1: Oro Digital y Minería de Datos -->
-                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center transform hover:scale-105 transition duration-300">
-                    <div class="text-5xl text-gold-gradient mb-6">
-                        <i class="fas fa-gem"></i>
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-4 text-yellow-300">Oro Digital y Minería de Datos</h3>
-                    <p class="text-gray-300">
-                        Combina la estabilidad del oro con el potencial de la minería de datos. OroBit representa un activo digital único respaldado por un valor real.
-                    </p>
-                </div>
-                
-                <!-- Característica 2: Ecosistema Impulsado por IA -->
-                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center transform hover:scale-105 transition duration-300">
-                    <div class="text-5xl text-blue-400 mb-6">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-4 text-blue-300">Ecosistema Impulsado por IA</h3>
-                    <p class="text-gray-300">
-                        Nuestra IA optimiza las operaciones de minería, gestiona riesgos y proporciona insights de mercado, maximizando tus retornos.
-                    </p>
-                </div>
-
-                <!-- Característica 3: Staking y Recompensas -->
-                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center transform hover:scale-105 transition duration-300">
-                    <div class="text-5xl text-green-400 mb-6">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-4 text-green-300">Staking y Recompensas</h3>
-                    <p class="text-gray-300">
-                        Participa en el staking de OroBit para asegurar la red y obtener recompensas pasivas. Diferentes pools para diversas estrategias.
-                    </p>
-                </div>
-
-                <!-- Característica 4: Seguridad Blockchain Inquebrantable -->
-                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center transform hover:scale-105 transition duration-300">
-                    <div class="text-5xl text-purple-400 mb-6">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-4 text-purple-300">Seguridad Blockchain Inquebrantable</h3>
-                    <p class="text-gray-300">
-                        Construido sobre una infraestructura blockchain robusta, OroBitverse garantiza transacciones seguras y transparentes.
-                    </p>
-                </div>
-
-                <!-- Característica 5: Acceso Global y Descentralizado -->
-                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center transform hover:scale-105 transition duration-300">
-                    <div class="text-5xl text-indigo-400 mb-6">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-4 text-indigo-300">Acceso Global y Descentralizado</h3>
-                    <p class="text-gray-300">
-                        Accede a OroBitverse desde cualquier lugar del mundo, en cualquier momento, con control total sobre tus activos.
-                    </p>
-                </div>
-                
-                <!-- Característica 6: Comunidad Vibrante -->
-                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center transform hover:scale-105 transition duration-300">
-                    <div class="text-5xl text-red-400 mb-6">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-4 text-red-300">Comunidad Vibrante</h3>
-                    <p class="text-gray-300">
-                        Únete a una red global de visionarios y entusiastas. Crece, aprende y contribuye al futuro del OroBitverse.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Hoja de Ruta (Roadmap) -->
-    <section id="roadmap" class="py-16 md:py-24 bg-gray-900">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-center mb-12 text-yellow-400 neon-text">
-                Nuestra Hoja de Ruta
-            </h2>
-            <div class="relative flex flex-col items-center">
-                <!-- Línea de tiempo central -->
-                <div class="absolute h-full w-1 bg-gray-700 rounded-full left-1/2 transform -translate-x-1/2"></div>
-
-                <!-- Fase 1: Concepción y Desarrollo Inicial -->
-                <div class="mb-12 flex items-center w-full justify-start md:justify-end md:pr-60 relative roadmap-timeline">
-                    <div class="bg-blue-600 w-8 h-8 rounded-full absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center text-white font-bold text-sm z-10 dot">1</div>
-                    <div class="card p-6 rounded-xl shadow-lg w-full md:w-5/12 text-right mr-auto md:mr-0 md:ml-auto">
-                        <h3 class="text-xl font-semibold text-blue-300 mb-2">Q1 2024: Concepción y Desarrollo Inicial</h3>
-                        <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                            <li>Investigación de mercado y concepto de OroBitverse.</li>
-                            <li>Diseño de arquitectura blockchain y tokenómica.</li>
-                            <li>Desarrollo de contrato inteligente para OroBit Token (Testnet).</li>
-                            <li>Creación de sitio web principal y documentos técnicos.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Línea para conectar -->
-                <div class="w-1 h-12 bg-gray-700 rounded-full"></div>
-
-                <!-- Fase 2: Lanzamiento y Expansión -->
-                <div class="mb-12 flex items-center w-full justify-end md:justify-start md:pl-60 relative roadmap-timeline">
-                    <div class="bg-green-600 w-8 h-8 rounded-full absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center text-white font-bold text-sm z-10 dot">2</div>
-                    <div class="card p-6 rounded-xl shadow-lg w-full md:w-5/12 text-left ml-auto md:ml-0 md:mr-auto">
-                        <h3 class="text-xl font-semibold text-green-300 mb-2">Q3 2024: Lanzamiento de la DApp de Staking y Comunidad</h3>
-                        <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                            <li>Lanzamiento oficial de la DApp de Staking de OroBit (Testnet).</li>
-                            <li>Formación de la comunidad inicial y programas de embajadores.</li>
-                            <li>Auditoría de seguridad de contratos inteligentes.</li>
-                            <li>Primeras integraciones con DEX y CEX (listados iniciales).</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Línea para conectar -->
-                <div class="w-1 h-12 bg-gray-700 rounded-full"></div>
-
-                <!-- Fase 3: Innovación y Adopción -->
-                <div class="mb-12 flex items-center w-full justify-start md:justify-end md:pr-60 relative roadmap-timeline">
-                    <div class="bg-purple-600 w-8 h-8 rounded-full absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center text-white font-bold text-sm z-10 dot">3</div>
-                    <div class="card p-6 rounded-xl shadow-lg w-full md:w-5/12 text-right mr-auto md:mr-0 md:ml-auto">
-                        <h3 class="text-xl font-semibold text-purple-300 mb-2">Q1 2025: Integración de IA y Gobernanza</h3>
-                        <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                            <li>Lanzamiento de módulos de IA para optimización de rendimientos.</li>
-                            <li>Introducción del sistema de gobernanza DAO para holders de OroBit.</li>
-                            <li>Expansión de asociaciones estratégicas.</li>
-                            <li>Investigación y desarrollo de nuevas aplicaciones DeFi.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Línea para conectar -->
-                <div class="w-1 h-12 bg-gray-700 rounded-full"></div>
-
-                <!-- Fase 4: Sostenibilidad y Futuro -->
-                <div class="flex items-center w-full justify-end md:justify-start md:pl-60 relative roadmap-timeline">
-                    <div class="bg-yellow-600 w-8 h-8 rounded-full absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center text-white font-bold text-sm z-10 dot">4</div>
-                    <div class="card p-6 rounded-xl shadow-lg w-full md:w-5/12 text-left ml-auto md:ml-0 md:mr-auto">
-                        <h3 class="text-xl font-semibold text-yellow-300 mb-2">Q3 2025: Escalabilidad y Adopción Masiva</h3>
-                        <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                            <li>Optimización de la escalabilidad de la plataforma.</li>
-                            <li>Lanzamiento de herramientas para desarrolladores.</li>
-                            <li>Educación global sobre finanzas descentralizadas y OroBitverse.</li>
-                            <li>Establecimiento de OroBitverse como un estándar en oro digital.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contacto (Contact) -->
-    <section id="contact" class="py-16 md:py-24 bg-gray-800 section-gradient">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold mb-8 text-yellow-400 neon-text">
-                Contáctanos
-            </h2>
-            <p class="text-lg text-gray-300 mb-12 max-w-2xl mx-auto">
-                ¿Tienes preguntas o quieres saber más? Estamos aquí para ayudarte. Ponte en contacto con nuestro equipo.
+            <a href="./app/orobit_staking_app.html" class="btn-primary font-bold py-4 px-8 rounded-full text-xl shadow-lg hover:shadow-xl">
+                ¡Empieza a Stakear Ahora!
+            </a>
+            <!-- Mensaje importante sobre el nombre del token vs. proyecto -->
+            <p class="text-sm text-gray-500 mt-4 italic">
+                Nota: Aunque el token se llama "OroBit", el "OroBitverse" abarca un ecosistema más amplio.
             </p>
-            <div class="flex justify-center flex-wrap gap-6 social-icons-footer">
-                <a href="https://t.me/orobitverse_official" target="_blank" class="text-blue-400 hover:text-blue-500 text-5xl transition duration-300 transform hover:scale-110" aria-label="Telegram">
-                    <i class="fab fa-telegram"></i>
-                </a>
-                <a href="mailto:info@orobitverse.com" class="text-red-400 hover:text-red-500 text-5xl transition duration-300 transform hover:scale-110" aria-label="Email">
-                    <i class="fas fa-envelope"></i>
-                </a>
-                <a href="https://x.com/OroBitverse" target="_blank" class="text-blue-300 hover:text-blue-400 text-5xl transition duration-300 transform hover:scale-110" aria-label="Twitter">
+        </section>
+
+        <!-- Features Section -->
+        <section class="mb-16">
+            <h2 class="text-4xl font-bold text-blue-400 mb-10">Características Principales</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="card p-6 rounded-xl shadow-lg flex flex-col items-center">
+                    <i class="fas fa-lock text-5xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-2xl font-semibold text-white mb-3">Staking Flexible</h3>
+                    <p class="text-gray-300">Elige entre diversas opciones de staking para maximizar tus rendimientos, incluyendo pools flexibles.</p>
+                </div>
+                <div class="card p-6 rounded-xl shadow-lg flex flex-col items-center">
+                    <i class="fas fa-coins text-5xl text-green-400 mb-4"></i>
+                    <h3 class="text-2xl font-semibold text-white mb-3">Recompensas Generosas</h3>
+                    <p class="text-gray-300">Obtén atractivas recompensas APR al participar en el crecimiento del OroBitverse.</p>
+                </div>
+                <div class="card p-6 rounded-xl shadow-lg flex flex-col items-center">
+                    <i class="fas fa-shield-alt text-5xl text-blue-400 mb-4"></i>
+                    <h3 class="text-2xl font-semibold text-white mb-3">Seguridad y Confianza</h3>
+                    <p class="text-gray-300">Nuestro contrato inteligente ha sido auditado para garantizar la seguridad de tus activos.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section (Optional, but good for context) -->
+        <section class="mb-16">
+            <h2 class="text-4xl font-bold text-yellow-400 mb-10">¿Qué es OroBitverse?</h2>
+            <p class="text-lg text-gray-300 max-w-4xl mx-auto">
+                OroBitverse es un ecosistema DeFi innovador construido sobre la BNB Smart Chain Testnet.
+                Con el token OroBit como su base, buscamos ofrecer una plataforma de staking segura y lucrativa,
+                permitiendo a los usuarios participar activamente y beneficiarse de la economía descentralizada.
+                Nuestra misión es democratizar el acceso a las finanzas descentralizadas,
+                proporcionando herramientas potentes y transparentes para la comunidad.
+            </p>
+        </section>
+
+        <!-- Social Media Section -->
+        <section class="mb-16">
+            <h2 class="text-4xl font-bold text-blue-400 mb-8">Únete a Nuestra Comunidad</h2>
+            <div class="flex justify-center space-x-8 text-6xl">
+                <a href="https://twitter.com/orobitverse" target="_blank" aria-label="Twitter" class="social-icon">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a href="https://www.youtube.com/@orobitverse" target="_blank" class="text-red-600 hover:text-red-700 text-5xl transition duration-300 transform hover:scale-110" aria-label="YouTube">
-                    <i class="fab fa-youtube"></i>
+                <a href="https://t.me/orobitverse" target="_blank" aria-label="Telegram" class="social-icon">
+                    <i class="fab fa-telegram-plane"></i>
                 </a>
+                <a href="https://github.com/orobitverse" target="_blank" aria-label="GitHub" class="social-icon">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://discord.com/orobitverse" target="_blank" aria-label="Discord" class="social-icon">
+                    <i class="fab fa-discord"></i>
+                </a>
+                <!-- Puedes añadir más iconos y enlaces aquí -->
             </div>
-        </div>
-    </section>
+        </section>
+
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 py-8">
+    <footer class="w-full bg-gray-800 py-8 mt-auto">
         <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
             <p>&copy; 2025 OroBitverse. Todos los derechos reservados.</p>
-            <p class="mt-2">Diseñado con <i class="fas fa-heart text-red-500"></i> por el Equipo OroBitverse</p>
-            <div class="mt-4 flex justify-center space-x-4">
-                <a href="#" class="hover:text-gray-300">Política de Privacidad</a>
-                <a href="#" class="hover:text-gray-300">Términos de Servicio</a>
-            </div>
+            <p>Hecho con ❤️ para un futuro descentralizado.</p>
         </div>
     </footer>
 
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Sticky header background change on scroll (optional, for more visual flair)
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.classList.add('bg-opacity-90', 'shadow-xl');
-            } else {
-                header.classList.remove('bg-opacity-90', 'shadow-xl');
-            }
-        });
-    </script>
 </body>
 </html>
