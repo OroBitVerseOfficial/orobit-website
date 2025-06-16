@@ -10,11 +10,11 @@
     <!-- Content Security Policy (CSP) - IMPORTANTE PARA PRODUCCIÓN -->
     <!-- Considera habilitar un CSP más estricto en producción. Esto es una base. -->
     <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self' data: https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.ethers.io;
-        style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
-        img-src 'self' data: https://placehold.co https://* ;
-        font-src 'self' https://cdnjs.cloudflare.com;
+        default-src 'self' data: https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
+        img-src 'self' data: https://placehold.co https://*;
+        font-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
         connect-src 'self' https://testnet.bscscan.com https://api-testnet.bscscan.com https://data-seed-prebsc-1-s1.binance.org:8545 https://bsc-testnet.public.blastapi.io https://bsc-testnet.drpc.org;
         object-src 'none';
         base-uri 'self';
@@ -26,8 +26,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Ethers.js CDN para interacción con Web3 -->
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <!-- Ethers.js CDN para interacción con Web3 - ACTUALIZADO A CLOUDFLARE Y VERSIÓN MÁS RECIENTE DE 5.X -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
     <style>
         body {
@@ -563,7 +563,7 @@
          * @returns {string} Cantidad formateada como string.
          */
         function formatUnits(weiAmount) {
-            if (!weiAmount) return "0.00";
+            if (typeof ethers === 'undefined' || !weiAmount) return "0.00";
             return ethers.utils.formatUnits(weiAmount, 18);
         }
 
@@ -573,7 +573,7 @@
          * @returns {BigNumber} Cantidad en wei.
          */
         function parseUnits(tokenAmount) {
-            if (!tokenAmount) return ethers.constants.Zero;
+            if (typeof ethers === 'undefined' || !tokenAmount) return ethers.constants.Zero;
             return ethers.utils.parseUnits(String(tokenAmount), 18);
         }
 
@@ -653,6 +653,14 @@
             if (typeof window.ethereum === 'undefined') {
                 updateConnectionUI('install'); // Actualizar UI a estado de instalación
                 showMessage('MetaMask no está instalado. Por favor, instálalo para usar esta DApp.', 'warning');
+                return;
+            }
+            
+            // Verificar si ethers está disponible antes de usarlo
+            if (typeof ethers === 'undefined') {
+                console.error("Error: ethers.js no está cargado. Asegúrate de que el CDN sea accesible.");
+                showMessage("Error crítico: No se pudo cargar la librería Web3. Por favor, recarga la página.", 'error');
+                updateConnectionUI('disconnected'); // Forzar estado desconectado
                 return;
             }
 
@@ -869,6 +877,15 @@
          * Esta función ahora usa 'publicProvider' para leer los pools sin necesidad de conexión de billetera.
          */
         async function loadStakingPools() {
+            // Verificar si ethers está disponible antes de usarlo
+            if (typeof ethers === 'undefined') {
+                console.error("Error: ethers.js no está cargado, no se pueden cargar los pools de staking.");
+                stakingPoolSelect.innerHTML = '<option value="">Error: Librería Web3 no cargada</option>';
+                stakeBtn.disabled = true;
+                approveBtn.disabled = true;
+                return;
+            }
+
             // Asegurarse de que publicProvider esté inicializado para leer datos del contrato
             if (!publicProvider) {
                 publicProvider = new ethers.providers.JsonRpcProvider(RPC_URL);
@@ -1234,8 +1251,10 @@
             try {
                 const amountWei = parseUnits(amount);
                 showMessage('Depositando recompensas... Confirma en MetaMask. (Asegúrate de haber aprobado los tokens al contrato de staking previamente)', 'info');
-                const tx = await stakingContract.depositRewards(amountWei);
+                const tx = await oroBitTokenContract.approve(STAKING_CONTRACT_ADDRESS, amountWei); // Se añade la aprobación aquí, es un paso previo necesario
                 await tx.wait();
+                const tx2 = await stakingContract.depositRewards(amountWei);
+                await tx2.wait();
                 showMessage('Recompensas depositadas con éxito.', 'success');
                 loadDashboardData(); // Actualizar balance del contrato si se muestra
             } catch (error) {
@@ -1283,7 +1302,10 @@
             }
 
             try {
-                const amountWei = parseUnits(amount); // Asume 18 decimales para el token de emergencia si no se especifica
+                const tokenContract = new ethers.Contract(tokenAddress, OROBIT_TOKEN_ABI, signer); // Asume ABI ERC20 genérica
+                const decimals = 18; // Asume 18 decimales, podría ser necesario una función para obtenerlos del token
+                const amountWei = ethers.utils.parseUnits(String(amount), decimals);
+
                 showMessage('Realizando retiro de emergencia... Confirma en MetaMask.', 'info');
                 const tx = await stakingContract.emergencyWithdrawToken(tokenAddress, amountWei);
                 await tx.wait();
@@ -1331,10 +1353,22 @@
         // --- Inicialización ---
         document.addEventListener('DOMContentLoaded', async () => {
             showTab(dashboardContent, dashboardTab); // Mostrar Dashboard por defecto
-            loadStakingPools(); // Cargar los pools al inicio para fines de marketing, incluso sin billetera conectada
-
+            
             // Inicializar publicProvider aquí para que loadStakingPools pueda usarlo
-            publicProvider = new ethers.providers.JsonRpcProvider(RPC_URL);
+            try {
+                if (typeof ethers !== 'undefined') {
+                    publicProvider = new ethers.providers.JsonRpcProvider(RPC_URL);
+                } else {
+                    console.error("ethers.js no está definido al intentar inicializar publicProvider.");
+                    showMessage("Error al inicializar la aplicación. La librería Web3 no está disponible.", 'error');
+                }
+            } catch (error) {
+                console.error("Error al inicializar publicProvider:", error);
+                showMessage("Error al inicializar la aplicación. Verifique la conexión a la red.", 'error');
+            }
+
+            // Cargar los pools al inicio para fines de marketing, incluso sin billetera conectada
+            loadStakingPools();
 
             if (typeof window.ethereum === 'undefined') {
                 updateConnectionUI('install'); // Mostrar estado de "Instalar MetaMask" si no se detecta
@@ -1354,7 +1388,10 @@
                 updateConnectionUI('disconnected'); // En caso de error, mostrar como desconectado
             } finally {
                 // Asegurarse de que el messageBox esté oculto al final de la inicialización, si no hay un mensaje activo
-                hideMessageBox(); 
+                // Este hideMessageBox solo se ejecuta si no hay un showMessage activo que ya lo esté manejando.
+                if (!messageBoxTimeout) { // Solo ocultar si no hay un timeout de mensaje activo
+                    hideMessageBox(); 
+                }
             }
         });
     </script>
