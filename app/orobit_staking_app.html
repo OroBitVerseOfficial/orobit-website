@@ -371,7 +371,7 @@
         ];
 
         // ABI del Contrato de Staking (OroBitStakingVault) - Este es el ABI que proporcionaste, ya limpio.
-        const STAKING_CONTRACT_ABI = [{"inputs":[{"internalType":"contract IERC20","name":"_oroBitToken","type":"address"},{"internalType":"address","name":"_stakingAdminWallet","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newPenaltyBP","type":"uint256"}],"name":"EarlyWithdrawPenaltyUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"tokenAddress","type":"address"},{"indexed":true,"internalType":"address","name":"ownerAddress","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EmergencyTokensWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"poolId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"duration","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"aprBP","type":"uint256"},{"indexed":false,"internalType":"bool","name":"isFlexible","type":"bool"}],"name":"PoolAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"poolId","type":"uint256"},{"indexed":false,"internalType":"bool","name":"isActive","type":"bool"}],"name":"PoolStatusUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"depositor","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsDeposited","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"poolId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"stakeId","type":"uint256"}],"name":"Staked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"oldAddress","type":"address"},{"indexed":true,"internalType":"address","name":"newAddress","type":"address"}],"name":"StakingAdminWalletUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newAPR_BP","type":"uint256"}],"name":"WhaleBonusAPRUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newThreshold","type":"uint256"}],"name":"WhaleThresholdUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"stakeId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"principalAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"rewardedAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"penaltyAmount","type":"uint256"},{"indexed":false,"internalType":"bool","name":"earlyWithdrawal","type":"bool"}],"name":"Withdrawn","type":"event"},{"inputs":[{"internalType":"uint256","name":"_duration","type":"uint256"},{"internalType":"uint256","name":"_aprBP","type":"uint256"},{"internalType":"bool","name":"_isFlexible","type":"bool"}],"name":"addPool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint256","name":"_stakeId","type":"uint256"}],"name":"calculateReward","outputs":[{"internalType":"uint256","name":"reward","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"depositRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"earlyWithdrawPenaltyBP","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"emergencyWithdrawToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getContractTokenBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_poolId","type":"uint256"}],"name":"getPool","outputs":[{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint56"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"bool","name":"isFlexible","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getStakingPoolsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint256","name":"_stakeId","type":"uint256"}],"name":"getUserStake","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"startTime","type":"uint256"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"withdrawn","type":"bool"},{"internalType":"uint256","name":"lastRewardClaimTime","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserStakesLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"oroBitToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newPenaltyBP","type":"uint256"}],"name":"setEarlyWithdrawPenalty","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_poolId","type":"uint256"},{"internalType":"bool","name":"_isActive","type":"bool"}],"name":"setPoolStatus","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newAdminWallet","type":"address"}],"name":"setStakingAdminWallet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newAPR_BP","type":"uint256"}],"name":"setWhaleBonusAPR","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newThreshold","type":"uint256"}],"name":"setWhaleThreshold","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_poolId","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"stake","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"stakingAdminWallet","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"stakingPools","outputs":[{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"bool","name":"isFlexible","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userStakes","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"startTime","type":"uint256"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"withdrawn","type":"bool"},{"internalType":"uint256","name":"lastRewardClaimTime","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"whaleBonusAPR_BP","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"whaleThreshold","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_stakeId","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+        const STAKING_CONTRACT_ABI = [{"inputs":[{"internalType":"contract IERC20","name":"_oroBitToken","type":"address"},{"internalType":"address","name":"_stakingAdminWallet","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newPenaltyBP","type":"uint256"}],"name":"EarlyWithdrawPenaltyUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"tokenAddress","type":"address"},{"indexed":true,"internalType":"address","name":"ownerAddress","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EmergencyTokensWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"poolId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"duration","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"aprBP","type":"uint256"},{"indexed":false,"internalType":"bool","name":"isFlexible","type":"bool"}],"name":"PoolAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"poolId","type":"uint256"},{"indexed":false,"internalType":"bool","name":"isActive","type":"bool"}],"name":"PoolStatusUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"depositor","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsDeposited","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"poolId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"stakeId","type":"uint256"}],"name":"Staked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"oldAddress","type":"address"},{"indexed":true,"internalType":"address","name":"newAddress","type":"address"}],"name":"StakingAdminWalletUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newAPR_BP","type":"uint256"}],"name":"WhaleBonusAPRUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newThreshold","type":"uint256"}],"name":"WhaleThresholdUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"stakeId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"principalAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"rewardedAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"penaltyAmount","type":"uint256"},{"indexed":false,"internalType":"bool","name":"earlyWithdrawal","type":"bool"}],"name":"Withdrawn","type":"event"},{"inputs":[{"internalType":"uint256","name":"_duration","type":"uint256"},{"internalType":"uint256","name":"_aprBP","type":"uint256"},{"internalType":"bool","name":"_isFlexible","type":"bool"}],"name":"addPool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint256","name":"_stakeId","type":"uint256"}],"name":"calculateReward","outputs":[{"internalType":"uint256","name":"reward","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"depositRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"earlyWithdrawPenaltyBP","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"emergencyWithdrawToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getContractTokenBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_poolId","type":"uint256"}],"name":"getPool","outputs":[{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"bool","name":"isFlexible","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getStakingPoolsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint256","name":"_stakeId","type":"uint256"}],"name":"getUserStake","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"startTime","type":"uint256"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"withdrawn","type":"bool"},{"internalType":"uint256","name":"lastRewardClaimTime","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserStakesLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"oroBitToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newPenaltyBP","type":"uint256"}],"name":"setEarlyWithdrawPenalty","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_poolId","type":"uint256"},{"internalType":"bool","name":"_isActive","type":"bool"}],"name":"setPoolStatus","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newAdminWallet","type":"address"}],"name":"setStakingAdminWallet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newAPR_BP","type":"uint256"}],"name":"setWhaleBonusAPR","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newThreshold","type":"uint256"}],"name":"setWhaleThreshold","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_poolId","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"stake","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"stakingAdminWallet","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"stakingPools","outputs":[{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"bool","name":"isFlexible","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userStakes","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"startTime","type":"uint256"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"withdrawn","type":"bool"},{"internalType":"uint256","name":"lastRewardClaimTime","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"whaleBonusAPR_BP","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"whaleThreshold","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_stakeId","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
 
         // --- Funciones de Utilidad de UI (Message Box) ---
@@ -664,7 +664,7 @@
                                 <div class="card p-4 rounded-xl shadow-md">
                                     <h3 class="text-xl font-semibold mb-2">Stake ID: ${i} | Pool: ${durationText}</h3>
                                     <p class="text-gray-300">Cantidad Staked: <span class="font-bold">${parseFloat(stakedAmountFormatted).toFixed(4)} OROBIT</span></p>
-                                    <p class="text-gray-300">APR: <span class="font-bold">${aprText}%</span></p>
+                                    <p class="text-300">APR: <span class="font-bold">${aprText}%</span></p>
                                     <p class="text-gray-300">Recompensas Acumuladas: <span class="font-bold text-green-300">${parseFloat(rewardAmountFormatted).toFixed(4)} OROBIT</span></p>
                                     <p class="text-gray-300">Estado: <span class="font-bold ${statusColor}">${statusText}</span></p>
                                     <p class="text-gray-300">Inicio: ${new Date(parseInt(stake.startTime) * 1000).toLocaleDateString()}</p>
@@ -699,9 +699,12 @@
         });
 
         document.getElementById('approveBtn').addEventListener('click', async () => {
-            console.log("APPROVE BUTTON CLICKED: Iniciando proceso de aprobación...");
+            console.log("------------------------------------------");
+            console.log("INICIO DE PROCESO DE APROBACIÓN (APPROVE)");
+            console.log("------------------------------------------");
+
             if (!isWalletConnected || !orobitTokenContract) {
-                console.error("APPROVE ERROR: Cartera no conectada o contrato OroBit no inicializado.");
+                console.error("APPROVE ERROR: Cartera no conectada o contrato OroBit no inicializado. Abortando.");
                 await showMessageBox("Por favor, conecta tu cartera y asegúrate de que el token OroBit esté inicializado.", 'warning');
                 return;
             }
@@ -711,51 +714,57 @@
             let amount = parseFloat(amountInput.value);
 
             if (isNaN(amount) || amount <= 0) {
-                console.error("APPROVE ERROR: Cantidad a aprobar inválida o cero.");
+                console.error("APPROVE ERROR: Cantidad a aprobar inválida o cero. Abortando.");
                 await showMessageBox("Introduce una cantidad válida y positiva para aprobar.", 'warning');
                 return;
             }
             
             const amountWei = ethers.utils.parseUnits(amount.toString(), tokenDecimals);
             console.log(`APPROVE LOG: Cantidad a aprobar (Wei): ${amountWei.toString()}`);
-            console.log(`APPROVE LOG: Contrato OroBit Token: ${orobitTokenContract.address}`);
-            console.log(`APPROVE LOG: Dirección del contrato de Staking para aprobación: ${STAKING_CONTRACT_ADDRESS}`);
-
+            console.log(`APPROVE LOG: Contrato OroBit Token Address: ${orobitTokenContract.address}`);
+            console.log(`APPROVE LOG: Contrato de Staking (Spender) Address: ${STAKING_CONTRACT_ADDRESS}`);
 
             hideMessageBox(); // Esconde mensajes anteriores
             await showMessageBox(`Aprobando ${amount} OROBIT para el contrato de staking... Se abrirá MetaMask.`, 'info', true);
             
             try {
-                console.log("APPROVE LOG: Llamando a orobitTokenContract.approve()...");
+                console.log("APPROVE LOG: Intentando enviar transacción de aprobación a MetaMask...");
                 // Esta línea es donde MetaMask debería mostrar la ventana emergente.
                 const tx = await orobitTokenContract.approve(STAKING_CONTRACT_ADDRESS, amountWei);
-                console.log("APPROVE LOG: Transacción de aprobación enviada. Hash de transacción (antes de esperar confirmación):", tx.hash);
+                console.log("APPROVE LOG: Transacción de aprobación enviada (a MetaMask). Hash de Tx (antes de esperar confirmación):", tx.hash);
+                console.log("APPROVE LOG: Esperando confirmación de la transacción en la blockchain...");
                 
                 // Esperar a que la transacción sea minada (confirmada en la blockchain)
                 await tx.wait(); 
-                console.log("APPROVE LOG: Transacción de aprobación confirmada en la blockchain.");
+                console.log("APPROVE LOG: Transacción de aprobación confirmada en la blockchain. Status:", tx.status);
                 
                 await showMessageBox(`Aprobación exitosa. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
                 await updateDashboardData(); // Refrescar balance disponible
             } catch (error) {
-                console.error("APPROVE ERROR: Error durante el proceso de aprobación:", error);
+                console.error("APPROVE CATCH BLOCK: Error detectado durante el proceso de aprobación:", error);
                 let errorMessage = `Error al aprobar tokens: ${error.message}.`;
                 if (error.code === 4001) { // User rejected transaction
                     errorMessage = "Transacción rechazada por el usuario en MetaMask.";
                 } else if (error.data && error.data.message) { // Contract revert message
                     errorMessage = `Error del contrato: ${error.data.message}`;
+                } else if (error.code === -32603 && error.message.includes("could not be found")) {
+                    errorMessage = "Error RPC interno: Transacción no encontrada o problema de nodo. Intenta de nuevo o verifica tu conexión a la red.";
                 }
                 await showMessageBox(errorMessage, 'error');
             } finally {
-                console.log("APPROVE LOG: Proceso de aprobación finalizado (con éxito o error).");
-                hideMessageBox();
+                console.log("------------------------------------------");
+                console.log("FIN DE PROCESO DE APROBACIÓN (APPROVE)");
+                console.log("------------------------------------------");
+                hideMessageBox(); // Asegura que el mensaje se oculte, incluso en caso de error.
             }
         });
 
         document.getElementById('stakeBtn').addEventListener('click', async () => {
-            console.log("STAKE BUTTON CLICKED: Iniciando proceso de staking...");
+            console.log("------------------------------------------");
+            console.log("INICIO DE PROCESO DE STAKING (STAKE)");
+            console.log("------------------------------------------");
             if (!isWalletConnected || !stakingContract || !orobitTokenContract) {
-                console.error("STAKE ERROR: Cartera no conectada o contratos no inicializados.");
+                console.error("STAKE ERROR: Cartera no conectada o contratos no inicializados. Abortando.");
                 await showMessageBox("Por favor, conecta tu cartera y asegúrate de que los contratos estén inicializados.", 'warning');
                 return;
             }
@@ -768,12 +777,12 @@
             const poolId = parseInt(poolSelect.value);
 
             if (isNaN(amount) || amount <= 0) {
-                console.error("STAKE ERROR: Cantidad a stakear inválida o cero.");
+                console.error("STAKE ERROR: Cantidad a stakear inválida o cero. Abortando.");
                 await showMessageBox("Introduce una cantidad válida para stakear.", 'warning');
                 return;
             }
             if (isNaN(poolId) || poolSelect.value === "") {
-                console.error("STAKE ERROR: Pool de staking no seleccionado o inválido.");
+                console.error("STAKE ERROR: Pool de staking no seleccionado o inválido. Abortando.");
                 await showMessageBox("Selecciona un pool de staking válido.", 'warning');
                 return;
             }
@@ -787,22 +796,23 @@
             await showMessageBox(`Confirmando stake de ${amount} OROBIT en el Pool ID ${poolId}... Se abrirá MetaMask.`, 'info', true);
             try {
                 // Verificar aprobación antes de stakear
-                console.log("STAKE LOG: Verificando allowance...");
+                console.log("STAKE LOG: Verificando allowance para el contrato de staking...");
                 const allowance = await orobitTokenContract.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
                 console.log(`STAKE LOG: Allowance actual para ${STAKING_CONTRACT_ADDRESS}: ${ethers.utils.formatUnits(allowance, tokenDecimals)} OROBIT`);
 
                 if (allowance.lt(amountWei)) {
-                    console.warn("STAKE WARNING: Allowance insuficiente. Necesaria aprobación.");
+                    console.warn("STAKE WARNING: Allowance insuficiente. Necesaria aprobación antes de stakear.");
                     await showMessageBox("Necesitas aprobar el contrato de staking para gastar esta cantidad de OroBit primero. Haz clic en 'Aprobar OroBit'.", 'warning');
                     return;
                 }
                 console.log("STAKE LOG: Allowance suficiente. Procediendo a stakear.");
 
-                console.log("STAKE LOG: Llamando a stakingContract.stake()...");
+                console.log("STAKE LOG: Intentando enviar transacción de stake a MetaMask...");
                 const tx = await stakingContract.stake(poolId, amountWei);
-                console.log("STAKE LOG: Transacción de stake enviada. Hash de transacción (antes de esperar confirmación):", tx.hash);
+                console.log("STAKE LOG: Transacción de stake enviada (a MetaMask). Hash de Tx (antes de esperar confirmación):", tx.hash);
+                console.log("STAKE LOG: Esperando confirmación de la transacción en la blockchain...");
                 await tx.wait();
-                console.log("STAKE LOG: Transacción de stake confirmada en la blockchain.");
+                console.log("STAKE LOG: Transacción de stake confirmada en la blockchain. Status:", tx.status);
 
                 await showMessageBox(`¡Stake exitoso! Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
                 
@@ -810,16 +820,20 @@
                 await updateDashboardData();
                 await renderMyStakes();
             } catch (error) {
-                console.error("STAKE ERROR: Error durante el proceso de staking:", error);
+                console.error("STAKE CATCH BLOCK: Error detectado durante el proceso de staking:", error);
                 let errorMessage = `Error al stakear: ${error.message}.`;
                 if (error.code === 4001) { // User rejected transaction
                     errorMessage = "Transacción rechazada por el usuario en MetaMask.";
                 } else if (error.data && error.data.message) { // Contract revert message
                     errorMessage = `Error del contrato: ${error.data.message}`;
+                } else if (error.code === -32603 && error.message.includes("could not be found")) {
+                    errorMessage = "Error RPC interno: Transacción no encontrada o problema de nodo. Intenta de nuevo o verifica tu conexión a la red.";
                 }
                 await showMessageBox(errorMessage, 'error');
             } finally {
-                console.log("STAKE LOG: Proceso de staking finalizado (con éxito o error).");
+                console.log("------------------------------------------");
+                console.log("FIN DE PROCESO DE STAKING (STAKE)");
+                console.log("------------------------------------------");
                 hideMessageBox();
             }
         });
