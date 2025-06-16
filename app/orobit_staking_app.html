@@ -406,7 +406,7 @@
 
         // Admin
         const poolDurationInput = document.getElementById('poolDuration');
-        const poolAPRInput = document = document.getElementById('poolAPR');
+        const poolAPRInput = document.getElementById('poolAPR'); 
         const isFlexiblePoolCheckbox = document.getElementById('isFlexiblePool');
         const addPoolBtn = document.getElementById('addPoolBtn');
         const poolIdStatusInput = document.getElementById('poolIdStatus');
@@ -440,6 +440,11 @@
             messageText.textContent = message;
             messageBox.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-6 rounded-lg shadow-xl z-50'; // Reset classes
             messageBox.classList.remove('hidden');
+
+            // Ocultar automáticamente después de 5 segundos
+            setTimeout(() => {
+                hideMessageBox();
+            }, 5000);
 
             switch (type) {
                 case 'success':
@@ -630,6 +635,7 @@
          * @dev Conecta la billetera del usuario a la DApp.
          */
         async function connectWallet() {
+            // Verificar si MetaMask está instalado
             if (typeof window.ethereum === 'undefined') {
                 updateConnectionUI('install'); // Actualizar UI a estado de instalación
                 showMessage('MetaMask no está instalado. Por favor, instálalo para usar esta DApp.', 'warning');
@@ -648,7 +654,7 @@
                 const networkSwitched = await switchToBscTestnet();
                 if (!networkSwitched) {
                     showMessage('Por favor, conecta MetaMask a la BNB Smart Chain Testnet.', 'error');
-                    disconnectWallet(); // Desconectar si la red no es correcta
+                    disconnectWallet(); // Desconectar si la red no es correcta y revertir UI
                     return;
                 }
 
@@ -697,7 +703,7 @@
             stakingContract = null;
 
             updateConnectionUI('disconnected'); // Actualizar UI a estado "Desconectado"
-            showMessage('Billetera desconectada.', 'info');
+            // REMOVED: showMessage('Billetera desconectada.', 'info'); // This was causing the blocking central message
 
             // Limpiar datos del dashboard y otros elementos de la UI
             oroBitBalanceDisplay.textContent = '0.00 OROBIT';
@@ -934,7 +940,7 @@
             try {
                 // Usar la instancia del contrato con el signer para leer el owner
                 const contractOwner = await stakingContract.owner(); 
-                if (contractOwner.toLowerCase() === userAddress.toLowerCase()) {
+                if (contractOwner.toLowerCase() === OWNER_ADDRESS.toLowerCase()) { // Comparar con OWNER_ADDRESS constante
                     adminPanel.classList.remove('hidden');
                     adminMessage.classList.add('hidden');
                     showMessage('¡Acceso de Administrador Concedido!', 'success');
