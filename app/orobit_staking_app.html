@@ -27,6 +27,7 @@
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Ethers.js CDN para interacción con Web3 -->
+    <!-- MOVIDO EL SCRIPT DE ETHERS AQUI ARRIBA PARA ASEGURAR QUE ESTE CARGADO ANTES DE NUESTRO SCRIPT -->
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
 
     <style>
@@ -363,6 +364,7 @@
         let userAddress;
         let oroBitTokenContract;
         let stakingContract;
+        let publicProvider; // Proveedor público para leer datos sin conexión de usuario
 
         // --- Elementos del DOM ---
         const connectWalletBtn = document.getElementById('connectWalletBtn');
@@ -480,9 +482,13 @@
             if (targetContent === dashboardContent && userAddress) {
                 loadDashboardData();
             }
-            if (targetContent === stakeContent && userAddress) {
+            if (targetContent === stakeContent) { // Cargar pools siempre, incluso sin conexión
                 loadStakingPools();
-                updateAvailableBalance();
+                if (userAddress) { // Solo actualizar balance si hay conexión
+                    updateAvailableBalance();
+                } else {
+                    availableBalanceDisplay.textContent = 'Conecta tu cartera';
+                }
             }
         }
 
@@ -598,6 +604,7 @@
                 provider = new ethers.providers.Web3Provider(window.ethereum);
                 signer = provider.getSigner();
 
+                // Inicializar contratos con el signer (para transacciones)
                 oroBitTokenContract = new ethers.Contract(OROBIT_TOKEN_ADDRESS, OROBIT_TOKEN_ABI, signer);
                 stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_CONTRACT_ABI, signer);
 
@@ -610,7 +617,8 @@
                 // Cargar datos iniciales del dashboard
                 loadDashboardData();
                 checkAdminAccess();
-                loadStakingPools(); // Cargar pools al conectar
+                updateAvailableBalance(); // Actualizar balance disponible
+                // loadStakingPools() ya se llama en la inicialización y al cambiar de pestaña
 
                 // Escuchar cambios de cuenta y red
                 // Solo añadir listeners una vez para evitar duplicados
@@ -651,8 +659,7 @@
             oroBitBalanceDisplay.textContent = '0.00 OROBIT';
             totalRewardsDisplay.textContent = '0.00 OROBIT';
             activeStakesDiv.innerHTML = '<p class="text-gray-400" id="noActiveStakesMessage">No tienes stakes activos.</p>';
-            availableBalanceDisplay.textContent = '0.00 OROBIT';
-            stakingPoolSelect.innerHTML = '';
+            availableBalanceDisplay.textContent = 'Conecta tu cartera'; // Resetear a mensaje de conexión
             adminPanel.classList.add('hidden');
             adminMessage.classList.remove('hidden'); // Mostrar mensaje de acceso restringido
             
@@ -678,12 +685,17 @@
                 showMessage('Tu billetera ha sido desconectada. Por favor, reconecta.', 'warning');
             } else if (accounts[0].toLowerCase() !== userAddress?.toLowerCase()) { // Usar optional chaining y toLowerCase para comparación robusta
                 userAddress = accounts[0];
-                signer = provider.getSigner(); // Actualizar signer con la nueva cuenta
+                // Reinicializar provider/signer/contratos para asegurar que apunten a la nueva cuenta
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                signer = provider.getSigner();
+                oroBitTokenContract = new ethers.Contract(OROBIT_TOKEN_ADDRESS, OROBIT_TOKEN_ABI, signer);
+                stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_CONTRACT_ABI, signer);
+
                 walletAddressDisplay.textContent = `Conectado: ${shortenAddress(userAddress)}`;
                 showMessage(`Cuenta cambiada a: ${shortenAddress(userAddress)}`, 'info');
                 loadDashboardData(); // Recargar datos para la nueva cuenta
                 checkAdminAccess(); // Re-chequear acceso de admin
-                loadStakingPools(); // Recargar pools
+                updateAvailableBalance(); // Actualizar balance
             }
         }
 
@@ -719,7 +731,10 @@
          */
         async function loadDashboardData() {
             if (!userAddress || !oroBitTokenContract || !stakingContract) {
-                showMessage('Por favor, conecta tu billetera para ver el dashboard.', 'info');
+                // Si no hay userAddress, o los contratos no están inicializados con signer, no se puede cargar
+                oroBitBalanceDisplay.textContent = 'Conecta tu cartera';
+                totalRewardsDisplay.textContent = 'Conecta tu cartera';
+                activeStakesDiv.innerHTML = '<p class="text-gray-400" id="noActiveStakesMessage">No tienes stakes activos.</p>';
                 return;
             }
 
@@ -747,8 +762,18 @@
                             const reward = await stakingContract.calculateReward(userAddress, i);
                             totalRewardsAccumulated = totalRewardsAccumulated.add(reward);
 
-                            const durationDays = stake.duration.toNumber() / SECONDS_IN_YEAR;
-                            const endTime = new Date((stake.startTime.toNumber() + stake.duration.toNumber()) * 1000); // Convertir a milisegundos
+                            // Ajustar duración para mostrar en días, o "Flexible"
+                            const durationSeconds = stake.duration.toNumber();
+                            let durationText;
+                            if (durationSeconds === 0) {
+                                durationText = 'Flexible';
+                            } else {
+                                const durationDays = durationSeconds / (60 * 60 * 24); // Segundos a días
+                                durationText = `${durationDays.toFixed(0)} días`;
+                            }
+                            
+                            const startTime = new Date(stake.startTime.toNumber() * 1000).toLocaleString();
+                            const endTime = durationSeconds === 0 ? 'N/A' : new Date((stake.startTime.toNumber() + durationSeconds) * 1000).toLocaleString();
 
                             const stakeCard = document.createElement('div');
                             stakeCard.className = 'card p-6 rounded-xl shadow-md';
@@ -756,9 +781,9 @@
                                 <h4 class="text-xl font-semibold text-yellow-300">Stake ID: ${i}</h4>
                                 <p>Cantidad Stakeada: <span class="font-bold">${formatUnits(stake.amount)} OROBIT</span></p>
                                 <p>APR: <span class="font-bold">${(stake.aprBP.toNumber() / 100).toFixed(2)}%</span></p>
-                                <p>Inicio: ${new Date(stake.startTime.toNumber() * 1000).toLocaleString()}</p>
-                                <p>Duración: ${stake.duration.toNumber() === 0 ? 'Flexible' : `${durationDays.toFixed(2)} días`}</p>
-                                <p>Fin: ${stake.duration.toNumber() === 0 ? 'N/A' : endTime.toLocaleString()}</p>
+                                <p>Inicio: ${startTime}</p>
+                                <p>Duración: ${durationText}</p>
+                                <p>Fin: ${endTime}</p>
                                 <p>Recompensa Acumulada: <span class="font-bold text-green-400">${formatUnits(reward)} OROBIT</span></p>
                             `;
                             activeStakesDiv.appendChild(stakeCard);
@@ -780,24 +805,30 @@
 
         /**
          * @dev Carga los pools de staking disponibles y los muestra en el select.
+         * Esta función ahora usa 'publicProvider' para leer los pools sin necesidad de conexión de billetera.
          */
         async function loadStakingPools() {
-            if (!stakingContract) return;
+            // Asegurarse de que publicProvider esté inicializado para leer datos del contrato
+            if (!publicProvider) {
+                publicProvider = new ethers.providers.JsonRpcProvider(RPC_URL);
+            }
+            // Usar una instancia del contrato de staking con el publicProvider para solo lectura
+            const readOnlyStakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_CONTRACT_ABI, publicProvider);
 
             try {
-                const poolsLength = await stakingContract.getStakingPoolsLength();
+                const poolsLength = await readOnlyStakingContract.getStakingPoolsLength();
                 stakingPoolSelect.innerHTML = ''; // Limpiar opciones existentes
 
                 if (poolsLength === 0) {
                     stakingPoolSelect.innerHTML = '<option value="">No hay pools disponibles</option>';
-                    stakeBtn.disabled = true;
+                    stakeBtn.disabled = true; // El botón de stake sigue deshabilitado si no hay pools
                     approveBtn.disabled = true;
                     return;
                 }
 
                 let activePoolsExist = false;
                 for (let i = 0; i < poolsLength; i++) {
-                    const pool = await stakingContract.getPool(i);
+                    const pool = await readOnlyStakingContract.getPool(i);
                     if (pool.isActive) {
                         activePoolsExist = true;
                         const option = document.createElement('option');
@@ -814,12 +845,19 @@
                     approveBtn.disabled = true;
                     showMessage('No hay pools de staking activos disponibles. Contacta al administrador.', 'warning');
                 } else {
-                    stakeBtn.disabled = false;
-                    approveBtn.disabled = false;
+                    // Si hay pools activos, los botones se habilitan SOLO si el usuario está conectado
+                    stakeBtn.disabled = !userAddress;
+                    approveBtn.disabled = !userAddress;
                 }
 
             } catch (error) {
                 console.error("Error al cargar pools de staking:", error);
+                // Si el error es debido a que el contrato o la red no están disponibles, lo manejamos
+                if (error.message.includes("could not be detected") || error.message.includes("contract not deployed")) {
+                    stakingPoolSelect.innerHTML = '<option value="">Error al cargar pools (Contrato/Red)</option>';
+                } else {
+                    stakingPoolSelect.innerHTML = '<option value="">Error al cargar pools</option>';
+                }
                 showMessage(`Error al cargar pools: ${error.message}`, 'error');
                 stakeBtn.disabled = true;
                 approveBtn.disabled = true;
@@ -838,6 +876,8 @@
                     console.error("Error al actualizar el balance disponible:", error);
                     availableBalanceDisplay.textContent = `Error`;
                 }
+            } else {
+                availableBalanceDisplay.textContent = 'Conecta tu cartera';
             }
         }
 
@@ -851,7 +891,8 @@
                 return;
             }
             try {
-                const contractOwner = await stakingContract.owner();
+                // Usar la instancia del contrato con el signer para leer el owner
+                const contractOwner = await stakingContract.owner(); 
                 if (contractOwner.toLowerCase() === userAddress.toLowerCase()) {
                     adminPanel.classList.remove('hidden');
                     adminMessage.classList.add('hidden');
@@ -885,7 +926,11 @@
         adminTab.addEventListener('click', () => showTab(adminContent, adminTab));
 
         maxStakeBtn.addEventListener('click', () => {
-            stakeAmountInput.value = formatUnits(parseUnits(availableBalanceDisplay.textContent.replace(' OROBIT', '')));
+            if (userAddress && oroBitBalanceDisplay.textContent !== 'Conecta tu cartera') {
+                stakeAmountInput.value = formatUnits(parseUnits(oroBitBalanceDisplay.textContent.replace(' OROBIT', '')));
+            } else {
+                showMessage('Conecta tu cartera para usar la función MAX.', 'warning');
+            }
         });
 
         approveBtn.addEventListener('click', async () => {
@@ -925,7 +970,7 @@
                 showMessage('Por favor, introduce una cantidad válida para stakear.', 'warning');
                 return;
             }
-            if (!poolId) {
+            if (!poolId || poolId === "") { // Asegurarse de que se haya seleccionado un pool
                 showMessage('Por favor, selecciona un pool de staking.', 'warning');
                 return;
             }
@@ -1225,6 +1270,10 @@
         // --- Inicialización ---
         document.addEventListener('DOMContentLoaded', async () => {
             showTab(dashboardContent, dashboardTab); // Mostrar Dashboard por defecto
+            loadStakingPools(); // Cargar los pools al inicio para fines de marketing, incluso sin billetera conectada
+
+            // Inicializar publicProvider aquí para que loadStakingPools pueda usarlo
+            publicProvider = new ethers.providers.JsonRpcProvider(RPC_URL);
 
             if (typeof window.ethereum === 'undefined') {
                 showMessage('MetaMask no detectado. Por favor, instálalo para usar la DApp.', 'warning');
@@ -1241,18 +1290,4 @@
                 } else {
                     // Si no hay cuentas autorizadas, se mantiene en estado "Conectar Cartera"
                     walletAddressDisplay.textContent = 'Desconectado';
-                    walletAddressDisplay.classList.remove('hidden'); // Mostrar "Desconectado" en vez de "Conectando..."
-                    connectWalletBtn.textContent = 'Conectar Cartera';
-                    connectWalletBtn.onclick = connectWallet;
-                }
-            } catch (error) {
-                console.error("Error durante la inicialización al verificar cuentas:", error);
-                showMessage('Error al inicializar la DApp. Por favor, revisa MetaMask.', 'error');
-                // Asegurarse de que el botón de conectar esté visible si hay un error
-                connectWalletBtn.textContent = 'Conectar Cartera';
-                connectWalletBtn.onclick = connectWallet;
-            }
-        });
-    </script>
-</body>
-</html>
+                    walletAddressDispla
