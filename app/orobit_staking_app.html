@@ -11,7 +11,7 @@
     <!-- Se ha actualizado para permitir Google Fonts y cdnjs.cloudflare.com -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' data: https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.ethers.io;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
         style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com;
         img-src 'self' data: https://placehold.co https://* ;
         font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
@@ -26,7 +26,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Ethers.js CDN para interacción con Web3 - CAMBIADO A CNDJS -->
+    <!-- Ethers.js CDN para interacción con Web3 - CAMBIADO A CNDJS. Versión 5.7.2 es la última estable de la v5. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
     <style>
@@ -87,7 +87,8 @@
             <div class="flex items-center">
                 <!-- Logo con animación - Usando orobit_logo_1280x720.png -->
                 <img src="../images/orobit_logo_1280x720.png" alt="OroBitverse Logo" class="h-10 mr-3 animate-pulse-effect rounded-lg">
-                <a href="#" class="text-2xl font-bold text-yellow-400 neon-text">OroBitverse</a>
+                <!-- Enlace del logo y nombre a la página principal -->
+                <a href="../index.html" class="text-2xl font-bold text-yellow-400 neon-text">OroBitverse</a>
             </div>
             <div class="flex items-center space-x-4">
                 <!-- Estado de la billetera: Desconectado, Conectando..., Conectado -->
@@ -325,38 +326,53 @@
 
 
         // ABIs (Application Binary Interfaces)
-        // ABI del Token OroBit (IERC20 simplificado)
+        // ABI del Token OroBit (IERC20 simplificado y CORRECTO)
         const OROBIT_TOKEN_ABI = [
+            // Funciones de vista
+            "function name() view returns (string)",
+            "function symbol() view returns (string)",
+            "function decimals() view returns (uint8)",
+            "function totalSupply() view returns (uint256)",
             "function balanceOf(address account) view returns (uint256)",
-            "function transfer(address to, uint256 amount) returns (bool)",
-            "function approve(address spender, uint256 amount) returns (bool)",
             "function allowance(address owner, address spender) view returns (uint256)",
+            // Funciones de escritura
+            "function approve(address spender, uint256 amount) returns (bool)",
+            "function transfer(address to, uint256 amount) returns (bool)",
+            "function transferFrom(address sender, address recipient, uint256 amount) returns (bool)",
+            // Eventos
             "event Transfer(address indexed from, address indexed to, uint256 value)",
             "event Approval(address indexed owner, address indexed spender, uint256 value)"
         ];
 
-        // ABI del Contrato de Staking (OroBitStakingVault)
+        // ABI del Contrato de Staking (OroBitStakingVault - ABI corregido, SÓLO FUNCIONES Y EVENTOS)
+        // ATENCIÓN: Si tu contrato tiene más funciones, DEBES obtener el ABI completo y limpio
+        // desde la salida de compilación de tu contrato Solidity.
         const STAKING_CONTRACT_ABI = [
+            // Funciones de Vista (view)
             "function owner() view returns (address)",
             "function paused() view returns (bool)",
-            "function addPool(uint256 _duration, uint256 _aprBP, bool _isFlexible) onlyOwner",
-            "function setPoolStatus(uint256 _poolId, bool _isActive) onlyOwner",
-            "function setWhaleBonusAPR(uint256 _newAPR_BP) onlyOwner",
-            "function setWhaleThreshold(uint256 _newThreshold) onlyOwner",
-            "function setEarlyWithdrawPenalty(uint256 _newPenaltyBP) onlyOwner",
-            "function setStakingAdminWallet(address _newAdminWallet) onlyOwner",
-            "function depositRewards(uint256 _amount) nonReentrant onlyOwner",
-            "function emergencyWithdrawToken(address _tokenAddress, uint256 _amount) nonReentrant onlyOwner",
-            "function pause() onlyOwner",
-            "function unpause() onlyOwner",
-            "function stake(uint256 _poolId, uint256 _amount) nonReentrant whenNotPaused",
             "function calculateReward(address _user, uint256 _stakeId) view returns (uint256 reward)",
-            "function withdraw(uint256 _stakeId) nonReentrant whenNotPaused",
             "function getUserStakesLength(address _user) view returns (uint256)",
             "function getUserStake(address _user, uint256 _stakeId) view returns (uint256 amount, uint256 startTime, uint256 duration, uint256 aprBP, bool withdrawn, uint256 lastRewardClaimTime)",
             "function getPool(uint256 _poolId) view returns (uint256 duration, uint256 aprBP, bool isActive, bool isFlexible)",
             "function getStakingPoolsLength() view returns (uint256)",
-            "function getContractTokenBalance() view returns (uint256)"
+            "function getContractTokenBalance() view returns (uint256)",
+            // Funciones de Escritura (nonpayable/payable)
+            "function addPool(uint256 _duration, uint256 _aprBP, bool _isFlexible)",
+            "function setPoolStatus(uint256 _poolId, bool _isActive)",
+            "function setWhaleBonusAPR(uint256 _newAPR_BP)",
+            "function setWhaleThreshold(uint256 _newThreshold)",
+            "function setEarlyWithdrawPenalty(uint256 _newPenaltyBP)",
+            "function setStakingAdminWallet(address _newAdminWallet)",
+            "function depositRewards(uint256 _amount)",
+            "function emergencyWithdrawToken(address _tokenAddress, uint256 _amount)",
+            "function pause()",
+            "function unpause()",
+            "function stake(uint256 _poolId, uint256 _amount)",
+            "function withdraw(uint256 _stakeId)",
+            // Eventos (si los tiene, aunque no se usen explícitamente en el JS, deben ir en el ABI)
+            "event Staked(address indexed user, uint256 indexed stakeId, uint256 amount, uint256 poolId, uint256 startTime)",
+            "event Withdrawn(address indexed user, uint256 indexed stakeId, uint256 amount, uint256 rewards)"
         ];
 
         // --- Variables Globales ---
@@ -366,6 +382,9 @@
         let oroBitTokenContract;
         let stakingContract;
         let publicProvider; // Proveedor público para leer datos sin conexión de usuario
+
+        // Flag para manejar desconexiones manuales y evitar reconexiones instantáneas
+        let isManualDisconnect = false;
 
         // --- Elementos del DOM ---
         const connectWalletBtn = document.getElementById('connectWalletBtn');
@@ -651,6 +670,7 @@
          */
         async function connectWallet() {
             hideMessageBox(); // Asegurarse de que cualquier mensaje previo se oculte al inicio de la conexión
+            isManualDisconnect = false; // Resetear la bandera al intentar conectar
 
             if (typeof window.ethereum === 'undefined') {
                 updateConnectionUI('install'); // Actualizar UI a estado de instalación
@@ -659,7 +679,7 @@
             }
             
             if (typeof ethers === 'undefined') {
-                showMessage('Error: La librería Ethers.js no se ha cargado correctamente. Por favor, recarga la página.', 'error');
+                showMessage('Error: La librería Ethers.js no se ha cargado correctamente. Por favor, confirma tu conexión a internet y recarga la página.', 'error');
                 console.error("Ethers.js no está definida.");
                 return;
             }
@@ -706,7 +726,7 @@
                 console.error("Error en connectWallet:", error);
                 // Si el usuario rechaza la conexión, MetaMask lanza un error con code 4001
                 if (error.code === 4001) {
-                    showMessage('Conexión a MetaMask rechazada. Por favor, acepta la conexión.', 'warning');
+                    showMessage('Conexión a MetaMask rechazada por el usuario. Por favor, acepta la conexión.', 'warning');
                 } else {
                     showMessage(`Error al conectar la billetera: ${error.message}`, 'error');
                 }
@@ -718,6 +738,9 @@
          * @dev Desconecta la billetera del usuario.
          */
         function disconnectWallet() {
+            console.log("[disconnectWallet] Iniciando desconexión manual.");
+            isManualDisconnect = true; // Establecer la bandera para evitar reconexión inmediata
+
             userAddress = null;
             provider = null;
             signer = null;
@@ -736,11 +759,19 @@
             adminMessage.classList.remove('hidden'); // Mostrar mensaje de acceso restringido
             
             // Eliminar listeners para evitar fugas de memoria si se reconecta.
+            // Aunque _has_listeners es una bandera, removeListener es la forma correcta de limpiar.
             if (window.ethereum && window.ethereum._has_listeners) {
                 window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
                 window.ethereum.removeListener('chainChanged', handleChainChanged);
-                window.ethereum._has_listeners = false;
+                window.ethereum._has_listeners = false; // Resetear la bandera personalizada
             }
+
+            // Restablecer la bandera isManualDisconnect después de un breve retraso
+            // para permitir que MetaMask procese la desconexión sin re-disparar inmediatamente.
+            setTimeout(() => {
+                isManualDisconnect = false;
+                console.log("[disconnectWallet] isManualDisconnect reseteado a false.");
+            }, 500); // 500ms de retraso
         }
 
         /**
@@ -749,12 +780,19 @@
          */
         function handleAccountsChanged(accounts) {
             console.log("Accounts changed:", accounts);
+            if (isManualDisconnect) {
+                console.log("Skipping accountsChanged event due to manual disconnect flag.");
+                return; // Ignorar si acabamos de desconectarnos manualmente
+            }
+
             if (accounts.length === 0) {
-                // MetaMask está bloqueado o el usuario desconectó todas las cuentas
-                disconnectWallet();
-                showMessage('Tu billetera ha sido desconectada. Por favor, reconecta.', 'warning');
+                // MetaMask está bloqueado o el usuario desconectó todas las cuentas directamente desde MetaMask UI
+                disconnectWallet(); // Esto iniciará una desconexión "manual" desde nuestra perspectiva
+                showMessage('Tu billetera ha sido desconectada desde MetaMask. Por favor, reconecta si lo deseas.', 'warning');
             } else if (userAddress && accounts[0].toLowerCase() !== userAddress.toLowerCase()) {
+                // El usuario cambió de cuenta en MetaMask
                 userAddress = accounts[0];
+                // Re-inicializar proveedor, signer, contratos para la nueva cuenta
                 provider = new ethers.providers.Web3Provider(window.ethereum);
                 signer = provider.getSigner();
                 oroBitTokenContract = new ethers.Contract(OROBIT_TOKEN_ADDRESS, OROBIT_TOKEN_ABI, signer);
@@ -766,8 +804,9 @@
                 checkAdminAccess(); // Re-chequear acceso de admin
                 updateAvailableBalance(); // Actualizar balance
             } else if (!userAddress && accounts.length > 0) {
-                // Caso en que no estábamos conectados y ahora sí hay cuentas
-                connectWallet(); // Intentar una conexión completa
+                // La DApp no estaba conectada, pero MetaMask ahora tiene cuentas
+                // (ej. el usuario conectó MetaMask a la DApp por primera vez externamente)
+                connectWallet(); // Intentar una conexión completa para inicializar todo
             }
         }
 
@@ -777,6 +816,11 @@
          */
         function handleChainChanged(chainId) {
             console.log("Chain changed to:", chainId);
+            if (isManualDisconnect) {
+                console.log("Skipping chainChanged event due to manual disconnect flag.");
+                return; // Ignorar si acabamos de desconectarnos manualmente
+            }
+
             if (chainId.toLowerCase() !== CHAIN_ID.toLowerCase()) {
                 showMessage('Has cambiado a una red incorrecta. Intentando cambiar a BNB Smart Chain Testnet...', 'warning');
                 switchToBscTestnet().then(success => {
@@ -789,7 +833,9 @@
                 });
             } else {
                 showMessage('Conectado a BNB Smart Chain Testnet.', 'success');
-                connectWallet(); // Re-inicializar si ya estamos en la red correcta
+                // Si la red es correcta y no estábamos en proceso de desconexión manual,
+                // re-inicializar para asegurar que todo el estado del DApp esté sincronizado.
+                connectWallet(); 
             }
         }
 
@@ -1248,8 +1294,8 @@
         });
 
         depositRewardsBtn.addEventListener('click', async () => {
-            if (!signer || !stakingContract || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) {
-                showMessage('Acceso denegado. Solo el propietario puede depositar recompensas.', 'error');
+            if (!signer || !oroBitTokenContract || !stakingContract || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) {
+                showMessage('Acceso denegado o billetera no conectada. Solo el propietario puede depositar recompensas.', 'error');
                 return;
             }
             const amount = rewardsAmountInput.value;
@@ -1259,11 +1305,21 @@
             }
             try {
                 const amountWei = parseUnits(amount);
-                showMessage('Depositando recompensas... Confirma en MetaMask. (Asegúrate de haber aprobado los tokens al contrato de staking previamente)', 'info');
-                const tx = await oroBitTokenContract.approve(STAKING_CONTRACT_ADDRESS, amountWei); // Asegurar aprobación si no se ha hecho
-                await tx.wait();
-                const tx2 = await stakingContract.depositRewards(amountWei);
-                await tx2.wait();
+                showMessage('Depositando recompensas... Primero se requerirá una aprobación en MetaMask si no la has dado ya, luego la confirmación del depósito.', 'info');
+                
+                // Primero, aprobar los tokens al contrato de staking
+                const currentAllowance = await oroBitTokenContract.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                if (currentAllowance.lt(amountWei)) { // Si la aprobación actual es menor que la cantidad a depositar
+                    const approveTx = await oroBitTokenContract.approve(STAKING_CONTRACT_ADDRESS, amountWei);
+                    await approveTx.wait();
+                    showMessage('Tokens aprobados con éxito. Ahora procede a confirmar el depósito.', 'success');
+                } else {
+                    showMessage('Tokens ya aprobados, procediendo directamente al depósito.', 'info');
+                }
+
+                // Luego, depositar las recompensas
+                const depositTx = await stakingContract.depositRewards(amountWei);
+                await depositTx.wait();
                 showMessage('Recompensas depositadas con éxito.', 'success');
                 loadDashboardData(); // Actualizar balance del contrato si se muestra
             } catch (error) {
@@ -1271,6 +1327,7 @@
                 showMessage(`Error al depositar recompensas: ${error.message}`, 'error');
             }
         });
+
 
         setAdminWalletBtn.addEventListener('click', async () => {
             if (!signer || !stakingContract || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) {
@@ -1365,9 +1422,9 @@
 
             // Verificar si ethers está disponible antes de intentar usarlo
             if (typeof ethers === 'undefined') {
-                console.error("DOMContentLoaded: Ethers.js no está definida al cargar la página.");
+                console.error("DOMContentLoaded: Ethers.js no está definida al cargar la página. Podría ser un problema de carga del CDN.");
                 updateConnectionUI('install'); // Podríamos mostrar un estado de error más general si ethers no carga
-                showMessage('Error crítico: La librería Web3 no se ha cargado. Por favor, recarga la página o intenta más tarde.', 'error');
+                showMessage('Error crítico: La librería Web3 (Ethers.js) no se ha cargado. Por favor, confirma tu conexión a internet y recarga la página.', 'error');
                 return; 
             }
 
