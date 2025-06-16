@@ -3,529 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OroBitverse Staking App - Gana OroBit (OROBIT)</title>
-    <!-- Favicon de OroBit -->
-    <link rel="icon" href="../images/orobit_logo_1280x720.png" type="image/png">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Firebase SDK (v9, compat) para autenticación y Firestore -->
-    <script type="module">
-        // Importar las funciones necesarias de Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, onSnapshot, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Variables globales para Firebase y App
-        let app, db, auth, userId, stakingAdminId; // Aseguramos que userId y stakingAdminId sean accesibles globalmente
-        let stakingPools = []; // Para almacenar los datos de los pools
-        let userStakes = []; // Para almacenar los stakes del usuario
-        let isAuthReady = false; // Bandera para indicar que la autenticación está lista
-
-        // Recuperar configuraciones globales
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        // Función para mostrar mensajes en un modal personalizado
-        function showModal(title, message, isError = false) {
-            const modal = document.getElementById('messageModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalMessage = document.getElementById('modalMessage');
-
-            modalTitle.textContent = title;
-            modalMessage.textContent = message;
-
-            if (isError) {
-                modalTitle.classList.remove('text-green-500');
-                modalTitle.classList.add('text-red-500');
-            } else {
-                modalTitle.classList.remove('text-red-500');
-                modalTitle.classList.add('text-green-500');
-            }
-
-            modal.classList.remove('hidden');
-        }
-
-        // Función para ocultar el modal
-        function hideModal() {
-            document.getElementById('messageModal').classList.add('hidden');
-        }
-        // Asignar el evento al botón de cierre del modal
-        document.addEventListener('DOMContentLoaded', () => {
-            const closeModalButton = document.getElementById('closeModalButton');
-            if (closeModalButton) {
-                closeModalButton.addEventListener('click', hideModal);
-            }
-        });
-
-
-        // Inicializar Firebase
-        if (Object.keys(firebaseConfig).length > 0) {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-
-            // Escuchar cambios en el estado de autenticación
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    userId = user.uid; // Usar el UID del usuario autenticado
-                    document.getElementById('user-id-display').textContent = `Tu ID: ${userId}`;
-                    stakingAdminId = 'admin_orobit_staking_id_001'; // ID del administrador de staking
-
-                    if (!isAuthReady) {
-                        isAuthReady = true; // La autenticación está lista
-                        // Cargar datos una vez que la autenticación esté lista
-                        loadStakingPools();
-                        loadUserStakes(userId);
-                    }
-                } else {
-                    // Si no hay usuario autenticado, intentar iniciar sesión anónimamente o con el token
-                    if (initialAuthToken) {
-                        try {
-                            await signInWithCustomToken(auth, initialAuthToken);
-                        } catch (error) {
-                            console.error("Error al iniciar sesión con token personalizado:", error);
-                            // Fallback a inicio de sesión anónimo si el token falla
-                            await signInAnonymously(auth);
-                        }
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                    userId = auth.currentUser?.uid || crypto.randomUUID(); // Fallback si no hay autenticación
-                    document.getElementById('user-id-display').textContent = `Tu ID: ${userId}`;
-                    if (!isAuthReady) {
-                        isAuthReady = true; // La autenticación está lista
-                        // Cargar datos una vez que la autenticación esté lista
-                        loadStakingPools();
-                        loadUserStakes(userId);
-                    }
-                }
-            });
-        } else {
-            console.error("Firebase config is missing. Cannot initialize Firebase.");
-            // Si la configuración de Firebase no está disponible, asignar un userId temporal
-            userId = crypto.randomUUID();
-            document.getElementById('user-id-display').textContent = `Tu ID: ${userId} (offline)`;
-            stakingAdminId = 'admin_orobit_staking_id_001'; // ID del administrador de staking (temporal)
-            isAuthReady = true; // Considerar la app lista aunque sin Firebase real
-            showModal('Error de Configuración', 'La configuración de Firebase no está disponible. La aplicación funcionará en modo limitado (sin persistencia de datos).', true);
-        }
-
-        // Cargar pools de staking desde Firestore
-        async function loadStakingPools() {
-            if (!db || !isAuthReady) {
-                console.log("Firestore no inicializado o autenticación no lista.");
-                return;
-            }
-            try {
-                const q = query(collection(db, `/artifacts/${appId}/public/data/stakingPools`));
-                onSnapshot(q, (snapshot) => {
-                    stakingPools = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    renderStakingPools();
-                });
-            } catch (error) {
-                console.error("Error al cargar los pools de staking:", error);
-                showModal('Error de Carga', 'No se pudieron cargar los pools de staking.', true);
-            }
-        }
-
-        // Cargar stakes del usuario desde Firestore
-        async function loadUserStakes() {
-            if (!db || !isAuthReady || !userId) {
-                console.log("Firestore, autenticación o userId no listos.");
-                return;
-            }
-            try {
-                const q = query(collection(db, `/artifacts/${appId}/users/${userId}/userStakes`));
-                onSnapshot(q, (snapshot) => {
-                    userStakes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    renderUserStakes();
-                });
-            } catch (error) {
-                console.error("Error al cargar los stakes del usuario:", error);
-                showModal('Error de Carga', 'No se pudieron cargar tus stakes.', true);
-            }
-        }
-
-        // Renderizar los pools de staking en la interfaz
-        function renderStakingPools() {
-            const container = document.getElementById('staking-pools-container');
-            container.innerHTML = '';
-            if (stakingPools.length === 0) {
-                container.innerHTML = '<p class="text-gray-400">No hay pools de staking disponibles.</p>';
-                return;
-            }
-            stakingPools.forEach(pool => {
-                const poolElement = document.createElement('div');
-                poolElement.className = 'bg-gray-700 p-6 rounded-lg shadow-lg mb-4 transform transition duration-300 hover:scale-105 hover:bg-gray-600';
-                poolElement.innerHTML = `
-                    <h3 class="text-2xl font-bold text-yellow-400 mb-2">${pool.name}</h3>
-                    <p class="text-gray-300 mb-1">Tipo: <span class="font-semibold">${pool.type === 'fixed' ? 'Fijo' : 'Flexible'}</span></p>
-                    <p class="text-gray-300 mb-1">APR: <span class="font-semibold text-green-400">${pool.apr}%</span></p>
-                    ${pool.type === 'fixed' ? `<p class="text-gray-300 mb-4">Duración: <span class="font-semibold">${pool.durationDays} días</span></p>` : ''}
-                    ${pool.type === 'fixed' ? `<p class="text-sm text-gray-400 mb-4">Penalización por retiro anticipado: ${pool.earlyWithdrawalFee}%</p>` : ''}
-                    <input type="number" id="amount-${pool.id}" placeholder="Cantidad de OROBIT" class="w-full p-3 rounded-md bg-gray-800 text-white border border-gray-600 focus:border-yellow-500 focus:ring focus:ring-yellow-500 focus:ring-opacity-50 mb-3" min="0.01" step="0.01">
-                    <button id="stake-btn-${pool.id}" class="w-full bg-yellow-500 text-gray-900 font-bold py-3 px-6 rounded-lg hover:bg-yellow-600 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-md">
-                        ¡Stakear Ahora!
-                    </button>
-                `;
-                container.appendChild(poolElement);
-
-                document.getElementById(`stake-btn-${pool.id}`).addEventListener('click', () => stakeTokens(pool.id));
-            });
-        }
-
-        // Renderizar los stakes del usuario en la interfaz
-        function renderUserStakes() {
-            const container = document.getElementById('user-stakes-container');
-            container.innerHTML = '';
-            if (userStakes.length === 0) {
-                container.innerHTML = '<p class="text-gray-400">No tienes tokens stakeados aún. ¡Empieza a ganar!</p>';
-                return;
-            }
-            // Ordenar los stakes para mostrar los activos primero
-            const sortedStakes = userStakes.sort((a, b) => {
-                const aEnded = a.endTime && Date.now() > a.endTime;
-                const bEnded = b.endTime && Date.now() > b.endTime;
-                if (aEnded && !bEnded) return 1; // b (no terminado) va antes que a (terminado)
-                if (!aEnded && bEnded) return -1; // a (no terminado) va antes que b (terminado)
-                return 0; // mantener el orden relativo
-            });
-
-            sortedStakes.forEach(stake => {
-                const pool = stakingPools.find(p => p.id === stake.poolId);
-                if (!pool) return; // Si el pool no se encuentra, no renderizar
-
-                const now = Date.now();
-                const stakeStartTime = stake.startTime.toDate().getTime();
-                const stakeEndTime = stake.endTime ? stake.endTime.toDate().getTime() : null;
-                const isEnded = stakeEndTime ? now > stakeEndTime : false;
-
-                // Calcular recompensas acumuladas
-                let accruedRewards = 0;
-                if (stake.amount > 0) {
-                    const timeElapsedMs = (isEnded && stakeEndTime) ? (stakeEndTime - stakeStartTime) : (now - stakeStartTime);
-                    const timeElapsedYears = timeElapsedMs / (1000 * 60 * 60 * 24 * 365);
-                    accruedRewards = stake.amount * (pool.apr / 100) * timeElapsedYears;
-                }
-                
-                // Asegurarse de que las recompensas no sean negativas (si por algún error de cálculo el tiempo fuera negativo)
-                if (accruedRewards < 0) accruedRewards = 0;
-
-                const stakeElement = document.createElement('div');
-                stakeElement.className = `bg-gray-700 p-6 rounded-lg shadow-lg mb-4 transform transition duration-300 hover:scale-105 ${isEnded ? 'opacity-60 border-2 border-green-500' : 'hover:bg-gray-600'}`;
-                stakeElement.innerHTML = `
-                    <h3 class="text-2xl font-bold text-yellow-400 mb-2">Stake en ${pool.name}</h3>
-                    <p class="text-gray-300 mb-1">Cantidad Stakeada: <span class="font-semibold">${stake.amount.toFixed(2)} OROBIT</span></p>
-                    <p class="text-gray-300 mb-1">APR del Pool: <span class="font-semibold text-green-400">${pool.apr}%</span></p>
-                    <p class="text-gray-300 mb-1">Recompensas Acumuladas: <span class="font-semibold text-purple-400">${accruedRewards.toFixed(2)} OROBIT</span></p>
-                    <p class="text-gray-300 mb-1">Fecha de Inicio: <span class="font-semibold">${new Date(stakeStartTime).toLocaleDateString()}</span></p>
-                    ${pool.type === 'fixed' ? `
-                        <p class="text-gray-300 mb-4">Fecha de Fin: <span class="font-semibold">${new Date(stakeEndTime).toLocaleDateString()}</span></p>
-                        ${isEnded ? '<p class="text-green-400 font-bold">¡Stake Finalizado!</p>' : '<p class="text-orange-400 font-bold">Activo</p>'}
-                    ` : '<p class="text-green-400 font-bold">Flexible</p>'}
-                    <button id="unstake-btn-${stake.id}" class="w-full bg-red-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-md mt-4">
-                        Retirar
-                    </button>
-                `;
-                container.appendChild(stakeElement);
-
-                document.getElementById(`unstake-btn-${stake.id}`).addEventListener('click', () => confirmUnstake(stake.id, stake.amount, pool.type, pool.earlyWithdrawalFee, stakeEndTime, accruedRewards));
-            });
-        }
-
-        // Función para confirmar el unstake
-        function confirmUnstake(stakeId, amount, poolType, earlyWithdrawalFee, stakeEndTime, accruedRewards) {
-            const now = Date.now();
-            const isEnded = stakeEndTime ? now > stakeEndTime : false;
-            let message = '';
-            let penaltyAmount = 0;
-            let finalAmount = amount + accruedRewards;
-
-            if (poolType === 'fixed' && !isEnded) {
-                // Calcular penalización solo si es fijo y no ha terminado
-                penaltyAmount = (amount * earlyWithdrawalFee / 100);
-                finalAmount -= penaltyAmount;
-                message = `Estás a punto de retirar ${amount.toFixed(2)} OROBIT y ${accruedRewards.toFixed(2)} OROBIT de recompensas. Dado que es un stake fijo y no ha terminado, se aplicará una penalización del ${earlyWithdrawalFee}% (${penaltyAmount.toFixed(2)} OROBIT). Recibirás un total de ${finalAmount.toFixed(2)} OROBIT. ¿Confirmas el retiro anticipado?`;
-            } else {
-                message = `Estás a punto de retirar ${amount.toFixed(2)} OROBIT y ${accruedRewards.toFixed(2)} OROBIT de recompensas (Total: ${finalAmount.toFixed(2)} OROBIT). ¿Confirmas el retiro?`;
-            }
-
-            document.getElementById('confirmationModalTitle').textContent = 'Confirmar Retiro';
-            document.getElementById('confirmationModalMessage').textContent = message;
-            document.getElementById('confirmActionButton').onclick = () => {
-                hideConfirmationModal();
-                unstakeTokens(stakeId, amount, penaltyAmount, finalAmount, accruedRewards);
-            };
-            document.getElementById('cancelActionButton').onclick = hideConfirmationModal;
-            document.getElementById('confirmationModal').classList.remove('hidden');
-        }
-
-        function hideConfirmationModal() {
-            document.getElementById('confirmationModal').classList.add('hidden');
-        }
-
-
-        // Funcionalidad para stakear tokens
-        async function stakeTokens(poolId) {
-            if (!db || !isAuthReady || !userId) {
-                showModal('Error', 'La aplicación no está lista. Por favor, espera a que cargue completamente o verifica tu conexión a Firebase.', true);
-                return;
-            }
-
-            const amountInput = document.getElementById(`amount-${poolId}`);
-            const amount = parseFloat(amountInput.value);
-
-            if (isNaN(amount) || amount <= 0) {
-                showModal('Error de Entrada', 'Por favor, introduce una cantidad válida y positiva de OROBIT para stakear.', true);
-                return;
-            }
-
-            const pool = stakingPools.find(p => p.id === poolId);
-            if (!pool) {
-                showModal('Error', 'Pool de staking no encontrado.', true);
-                return;
-            }
-
-            const now = serverTimestamp();
-            let endTime = null;
-            if (pool.type === 'fixed') {
-                const durationMs = pool.durationDays * 24 * 60 * 60 * 1000;
-                endTime = new Date(Date.now() + durationMs);
-            }
-
-            try {
-                // Añadir un nuevo stake
-                await setDoc(doc(db, `/artifacts/${appId}/users/${userId}/userStakes`, `stake_${Date.now()}_${userId}`), {
-                    userId: userId,
-                    poolId: poolId,
-                    amount: amount,
-                    startTime: now,
-                    endTime: endTime,
-                    status: 'active',
-                    poolType: pool.type, // Guardar el tipo de pool en el stake
-                    accruedRewards: 0 // Inicializar recompensas acumuladas
-                });
-
-                // Actualizar el balance total stakeado del usuario (opcional, para una vista global)
-                const userDocRef = doc(db, `/artifacts/${appId}/users/${userId}/profile/data`);
-                const userDocSnap = await getDoc(userDocRef);
-                const currentStakedBalance = userDocSnap.exists() ? (userDocSnap.data().totalStaked || 0) : 0;
-                await setDoc(userDocRef, { totalStaked: currentStakedBalance + amount }, { merge: true });
-
-                // Registrar la transacción de staking en el ledger de administración
-                await addStakingLedgerEntry(poolId, userId, amount, pool.type, 'stake', 0);
-
-                showModal('¡Éxito!', `Has stakeado ${amount} OROBIT en el pool ${pool.name}. ¡Empieza a ganar!`);
-                amountInput.value = ''; // Limpiar el campo
-            } catch (error) {
-                console.error("Error al stakear tokens:", error);
-                showModal('Error de Staking', `No se pudo stakear los tokens. ${error.message}`, true);
-            }
-        }
-
-        // Funcionalidad para retirar tokens (unstake)
-        async function unstakeTokens(stakeId, originalAmount, penaltyAmount, finalAmount, accruedRewards) {
-            if (!db || !isAuthReady || !userId) {
-                showModal('Error', 'La aplicación no está lista. Por favor, espera a que cargue completamente o verifica tu conexión a Firebase.', true);
-                return;
-            }
-
-            const stakeRef = doc(db, `/artifacts/${appId}/users/${userId}/userStakes`, stakeId);
-            const stakeDoc = await getDoc(stakeRef);
-
-            if (!stakeDoc.exists()) {
-                showModal('Error', 'Stake no encontrado.', true);
-                return;
-            }
-
-            const stakeData = stakeDoc.data();
-            const pool = stakingPools.find(p => p.id === stakeData.poolId);
-
-            if (!pool) {
-                showModal('Error', 'Pool de staking asociado no encontrado.', true);
-                return;
-            }
-
-            try {
-                // Actualizar el stake como 'finalizado'
-                await updateDoc(stakeRef, {
-                    status: 'completed',
-                    unStakeTime: serverTimestamp(),
-                    receivedAmount: finalAmount, // Cantidad final después de penalizaciones
-                    actualRewards: accruedRewards - penaltyAmount // Recompensas reales después de penalización
-                });
-
-                // Actualizar el balance total stakeado del usuario
-                const userDocRef = doc(db, `/artifacts/${appId}/users/${userId}/profile/data`);
-                const userDocSnap = await getDoc(userDocRef);
-                const currentStakedBalance = userDocSnap.exists() ? (userDocSnap.data().totalStaked || 0) : 0;
-                await setDoc(userDocRef, { totalStaked: Math.max(0, currentStakedBalance - originalAmount) }, { merge: true }); // Restar solo la cantidad original stakeada
-
-                // Registrar la transacción de unstake en el ledger de administración
-                await addStakingLedgerEntry(pool.id, userId, originalAmount, pool.type, 'unstake', finalAmount, penaltyAmount);
-
-
-                showModal('¡Retiro Exitoso!', `Has retirado ${finalAmount.toFixed(2)} OROBIT (incluyendo recompensas y aplicando penalizaciones si es el caso).`);
-            } catch (error) {
-                console.error("Error al retirar tokens:", error);
-                showModal('Error de Retiro', `No se pudo retirar los tokens. ${error.message}`, true);
-            }
-        }
-
-        // Función para añadir entradas al ledger de administración de staking
-        async function addStakingLedgerEntry(poolId, userId, amount, type, action, finalAmount = 0, penaltyAmount = 0) {
-            if (!db || !isAuthReady || !stakingAdminId) {
-                console.warn("No se pudo registrar en el ledger: Firestore, autenticación o ID de administrador no listos.");
-                return;
-            }
-            try {
-                // Ruta pública para el ledger de administración
-                const ledgerCollectionRef = collection(db, `/artifacts/${appId}/public/data/stakingAdminLedger`);
-
-                await setDoc(doc(ledgerCollectionRef, `entry_${Date.now()}_${crypto.randomUUID()}`), {
-                    poolId: poolId,
-                    userId: userId,
-                    amount: amount,
-                    type: type, // 'fixed' o 'flexible'
-                    action: action, // 'stake' o 'unstake'
-                    timestamp: serverTimestamp(),
-                    finalAmount: finalAmount, // Relevante para unstake
-                    penaltyAmount: penaltyAmount // Relevante para unstake
-                });
-                console.log(`Entrada del ledger registrada para ${action} de ${amount} OROBIT por ${userId}.`);
-            } catch (error) {
-                console.error("Error al registrar en el ledger de administración:", error);
-            }
-        }
-
-        // ADMIN FUNCTIONS (Solo para el administrador, no se muestran en la UI de usuario final)
-        async function createStakingPool(name, type, apr, durationDays = 0, earlyWithdrawalFee = 0) {
-            if (!db || !isAuthReady) {
-                showModal('Error', 'La aplicación no está lista para crear pools.', true);
-                return;
-            }
-            // Aquí se debería añadir una verificación si el userId actual es el stakingAdminId
-            if (userId !== stakingAdminId) {
-                showModal('Acceso Denegado', 'No tienes permisos para crear pools de staking.', true);
-                return;
-            }
-
-            try {
-                await setDoc(doc(db, `/artifacts/${appId}/public/data/stakingPools`, `pool_${Date.now()}`), {
-                    name,
-                    type,
-                    apr,
-                    durationDays,
-                    earlyWithdrawalFee,
-                    createdAt: serverTimestamp()
-                });
-                showModal('¡Éxito!', `Pool "${name}" creado exitosamente.`);
-            } catch (error) {
-                console.error("Error al crear pool:", error);
-                showModal('Error', `No se pudo crear el pool. ${error.message}`, true);
-            }
-        }
-
-        // Ejemplo de cómo el admin podría crear pools (no accesible en la UI de usuario)
-        // Descomentar y llamar solo para propósitos de prueba por parte del admin
-        /*
-        document.addEventListener('DOMContentLoaded', () => {
-             // Este es un ejemplo para que el ADMIN pueda crear pools.
-             // Normalmente, estas funciones no estarían en el código del cliente final o estarían detrás de una autenticación de administrador.
-             // Para probar, si userId es el adminId, se podrían habilitar botones o inputs para crear pools.
-            if (userId === stakingAdminId) {
-                // createStakingPool('OroBit Flexible', 'flexible', 10);
-                // createStakingPool('OroBit Fijo 30 Días', 'fixed', 15, 30, 5);
-                // createStakingPool('OroBit Fijo 90 Días', 'fixed', 20, 90, 10);
-            }
-        });
-        */
-    </script>
-    
-    <!-- Meta Etiquetas para Facebook (Open Graph) -->
-    <meta property="fb:app_id" content="1259307742369036"> <!-- ID de App de Facebook Integrado -->
-
+    <title>OroBit Staking App</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #1a202c; /* Fondo oscuro */
+            color: #e2e8f0; /* Texto claro */
+        }
+        .card {
+            background-color: #2d3748; /* Fondo de tarjeta más claro */
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #6366f1; /* Morado */
             color: white;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .header-bar {
-            background-color: rgba(26, 32, 44, 0.9);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            margin-bottom: 2rem;
-        }
-        .header-bar .logo-container {
-            display: flex;
-            align-items: center;
-        }
-        .header-bar nav a {
-            color: #fbd38d;
-            padding: 0.5rem 1rem;
             border-radius: 0.5rem;
-            transition: background-color 0.2s ease;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.3s ease;
         }
-        .header-bar nav a:hover {
+        .btn-primary:hover {
+            background-color: #4f46e5; /* Morado más oscuro al pasar el ratón */
+        }
+        .input-field {
             background-color: #4a5568;
-            text-decoration: none;
+            border-color: #6366f1;
+            color: white;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
         }
-        h1, h2, h3 {
-            font-weight: bold;
-            color: #fbd38d; /* Color dorado para los títulos */
-            margin-bottom: 1rem;
+        .header {
+            background-color: #4f46e5;
+            padding: 1.5rem;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
         }
+        .nav-link {
+            color: #cbd5e0;
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #e2e8f0;
+        }
+
+        /* Estilos para el modal */
         .modal {
+            display: none;
             position: fixed;
-            z-index: 1001;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-            display: flex;
+            background-color: rgba(0, 0, 0, 0.7);
             justify-content: center;
             align-items: center;
         }
         .modal-content {
             background-color: #2d3748;
             margin: auto;
-            padding: 2.5rem;
+            padding: 2rem;
             border-radius: 0.75rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             text-align: center;
-            position: relative;
+            color: #e2e8f0;
         }
         .close-button {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            cursor: pointer;
         }
         .close-button:hover,
         .close-button:focus {
@@ -535,72 +87,261 @@
         }
     </style>
 </head>
-<body class="bg-gray-900">
-    <!-- Modal de Mensajes -->
-    <div id="messageModal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-button" id="closeModalButton">&times;</span>
-            <h2 id="modalTitle" class="text-3xl font-bold mb-4 text-green-500"></h2>
-            <p id="modalMessage" class="text-gray-300 text-lg"></p>
-            <button class="mt-6 bg-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-lg hover:bg-yellow-600 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-md" onclick="hideModal()">
-                Entendido
-            </button>
-        </div>
-    </div>
+<body class="min-h-screen flex flex-col items-center py-8">
 
-    <!-- Modal de Confirmación -->
-    <div id="confirmationModal" class="modal hidden">
-        <div class="modal-content">
-            <h2 id="confirmationModalTitle" class="text-3xl font-bold mb-4 text-orange-400"></h2>
-            <p id="confirmationModalMessage" class="text-gray-300 text-lg mb-6"></p>
-            <div class="flex justify-center gap-4">
-                <button id="confirmActionButton" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-md">
-                    Confirmar
-                </button>
-                <button id="cancelActionButton" class="bg-gray-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-600 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-md">
-                    Cancelar
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Barra de Encabezado -->
-    <header class="header-bar">
-        <div class="logo-container">
-            <!-- Ruta corregida para la imagen del logo y ahora es un botón de volver a inicio -->
-            <a href="../index.html" class="flex items-center">
-                <img src="../images/orobit_logo_1280x720.png" alt="Logo de OroBit" class="h-10 rounded-full mr-3 shadow-lg">
-                <span class="text-2xl font-bold text-yellow-400">OroBitverse</span>
-            </a>
-        </div>
-        <nav>
-            <!-- Rutas corregidas para los enlaces de navegación -->
-            <a href="../index.html">Inicio</a>
-            <a href="../whitepaper.html">White Paper</a>
+    <!-- Header Section -->
+    <header class="header w-full text-center mb-8">
+        <h1 class="text-4xl font-bold text-white mb-2">OroBit Staking</h1>
+        <p class="text-lg text-white">¡Staking de próxima generación para OroBitverse!</p>
+        <nav class="mt-4">
+            <a href="index.html" class="nav-link mx-2">Inicio</a>
+            <a href="whitepaper.html" class="nav-link mx-2">White Paper</a>
+            <a href="orobit_staking_app.html" class="nav-link mx-2">Staking App</a>
         </nav>
     </header>
 
-    <div class="container text-center">
-        <h1 class="text-4xl mb-6">💰 Aplicación de Staking de OroBitverse</h1>
-        <p id="user-id-display" class="text-lg text-gray-400 mb-8">Cargando ID de usuario...</p>
+    <main class="w-full max-w-4xl px-4 flex-grow">
+        <!-- User ID Display -->
+        <div id="userIdDisplay" class="card p-4 mb-6 text-center text-sm">
+            Cargando ID de usuario...
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-            <!-- Sección de Pools de Staking -->
-            <div class="bg-gray-800 p-8 rounded-xl shadow-2xl">
-                <h2 class="text-3xl mb-6 text-yellow-300">Pools de Staking Disponibles</h2>
-                <div id="staking-pools-container">
+        <!-- Section: Staking Pools -->
+        <section class="card p-6 mb-8">
+            <h2 class="text-3xl font-bold text-center mb-6">Pools de Staking Disponibles</h2>
+            <div id="stakingPools" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Pool cards will be injected here -->
+                <div class="bg-gray-700 p-4 rounded-lg text-center">
                     <p class="text-gray-400">Cargando pools de staking...</p>
                 </div>
             </div>
+        </section>
 
-            <!-- Sección de Tus Stakes -->
-            <div class="bg-gray-800 p-8 rounded-xl shadow-2xl">
-                <h2 class="text-3xl mb-6 text-yellow-300">Tus Stakes Activos</h2>
-                <div id="user-stakes-container">
+        <!-- Section: My Stakes -->
+        <section class="card p-6 mb-8">
+            <h2 class="text-3xl font-bold text-center mb-6">Mis Stakes</h2>
+            <div id="myStakes" class="grid grid-cols-1 gap-6">
+                <!-- User's stakes will be injected here -->
+                <div class="bg-gray-700 p-4 rounded-lg text-center">
                     <p class="text-gray-400">Cargando tus stakes...</p>
                 </div>
             </div>
+        </section>
+    </main>
+
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <p id="modalMessage" class="text-lg"></p>
+            <button id="modalConfirmBtn" class="btn-primary mt-4 hidden" onclick="confirmAction()">Confirmar</button>
         </div>
     </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Importar las funciones necesarias de Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for Firebase instances
+        let app;
+        let db;
+        let auth;
+        let userId = 'loading...'; // Initialize with a loading state
+
+        // Initialize Firebase only once
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Ensure __firebase_config and __app_id are available
+                const firebaseConfigRaw = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+                if (!firebaseConfigRaw) {
+                    console.error("Error: __firebase_config no está definido. Firebase no se inicializará.");
+                    document.getElementById('userIdDisplay').textContent = 'Error: Configuración de Firebase no disponible. Funcionalidad limitada.';
+                    showMessageModal('Error de configuración: La persistencia de datos no está disponible. Por favor, asegúrese de que la configuración de Firebase sea proporcionada por el entorno.');
+                    return; // Exit if config is missing
+                }
+
+                const firebaseConfig = JSON.parse(firebaseConfigRaw);
+
+                // Check if app is already initialized
+                if (!app) {
+                    app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+                    console.log("Firebase initialized successfully.");
+                } else {
+                    console.log("Firebase already initialized.");
+                }
+
+                // Sign in with custom token or anonymously
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                    console.log("Signed in with custom token.");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("Signed in anonymously.");
+                }
+
+                // Listen for auth state changes
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid; // Firebase authenticated user ID
+                        document.getElementById('userIdDisplay').textContent = `Tu ID de usuario: ${userId}`;
+                        console.log(`User authenticated: ${userId}`);
+                        // Now that we have userId, we can fetch/listen to Firestore data
+                        // (This part will be replaced by Web3.js integration later)
+                        // fetchPoolsAndStakes(); 
+                    } else {
+                        userId = crypto.randomUUID(); // Fallback for anonymous or unauthenticated users
+                        document.getElementById('userIdDisplay').textContent = `Tu ID de sesión (anónimo): ${userId}`;
+                        console.log(`No user authenticated, using anonymous ID: ${userId}`);
+                        // fetchPoolsAndStakes(); 
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error al inicializar Firebase o autenticar:", error);
+                document.getElementById('userIdDisplay').textContent = 'Error: No se pudo inicializar Firebase. Funcionalidad limitada.';
+                showMessageModal(`Error crítico: ${error.message}. La aplicación no puede cargar datos.`);
+            }
+        });
+
+        // --- Mock Data and Modal Functions (will be replaced by contract interaction) ---
+        // Mock data structure for pools (for now, will come from contract later)
+        const mockStakingPools = [
+            { id: 0, duration: "Flexible", apr: "5%", isActive: true, isFlexible: true },
+            { id: 1, duration: "30 Días", apr: "10%", isActive: true, isFlexible: false },
+            { id: 2, duration: "90 Días", apr: "15%", isActive: true, isFlexible: false },
+            { id: 3, duration: "180 Días", apr: "20%", isActive: true, isFlexible: false },
+        ];
+
+        // Functions for modal (already defined in previous versions)
+        let resolveModalPromise;
+        let rejectModalPromise;
+
+        function showMessageModal(message, showConfirm = false) {
+            const modal = document.getElementById('messageModal');
+            document.getElementById('modalMessage').textContent = message;
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            if (showConfirm) {
+                confirmBtn.classList.remove('hidden');
+            } else {
+                confirmBtn.classList.add('hidden');
+            }
+            modal.style.display = 'flex'; // Use flex to center
+            return new Promise((resolve, reject) => {
+                resolveModalPromise = resolve;
+                rejectModalPromise = reject;
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('messageModal').style.display = 'none';
+            if (rejectModalPromise) {
+                rejectModalPromise(new Error('Modal cerrado por el usuario.'));
+                resolveModalPromise = null;
+                rejectModalPromise = null;
+            }
+        }
+
+        function confirmAction() {
+            document.getElementById('messageModal').style.display = 'none';
+            if (resolveModalPromise) {
+                resolveModalPromise(true);
+                resolveModalPromise = null;
+                rejectModalPromise = null;
+            }
+        }
+
+        // Render pools (mocked for now)
+        function renderStakingPools() {
+            const container = document.getElementById('stakingPools');
+            container.innerHTML = ''; // Clear previous content
+
+            mockStakingPools.forEach(pool => {
+                const poolCard = `
+                    <div class="card p-4 flex flex-col items-center">
+                        <h3 class="text-xl font-semibold mb-2">${pool.duration}</h3>
+                        <p class="text-lg text-indigo-300 mb-4">${pool.apr} APR</p>
+                        ${pool.isActive ? `
+                            <input type="number" id="stakeAmount-${pool.id}" placeholder="Cantidad de OroBit" class="input-field w-full mb-4 text-center">
+                            <button onclick="handleStake(${pool.id})" class="btn-primary w-full">Stakear</button>
+                        ` : `
+                            <p class="text-red-400">Pool Inactivo</p>
+                        `}
+                    </div>
+                `;
+                container.innerHTML += poolCard;
+            });
+        }
+
+        // Mock stake handler (will be replaced by actual contract call)
+        async function handleStake(poolId) {
+            const amountInput = document.getElementById(`stakeAmount-${poolId}`);
+            const amount = parseFloat(amountInput.value);
+
+            if (isNaN(amount) || amount <= 0) {
+                await showMessageModal("Por favor, introduce una cantidad válida.");
+                return;
+            }
+
+            try {
+                await showMessageModal(`Confirmar staking de ${amount} OroBit en el pool ${mockStakingPools[poolId].duration}.`, true);
+                // Simulate success
+                await showMessageModal(`¡Staking de ${amount} OroBit exitoso en el pool ${mockStakingPools[poolId].duration}!`);
+                amountInput.value = ''; // Clear input
+                // In a real scenario, you'd refresh the user's stakes
+            } catch (error) {
+                if (error.message !== 'Modal cerrado por el usuario.') {
+                    await showMessageModal(`Error al stakear: ${error.message}`);
+                }
+            }
+        }
+
+        // Mock render for user stakes (will be replaced by actual contract call)
+        function renderMyStakes() {
+            const container = document.getElementById('myStakes');
+            container.innerHTML = `
+                <div class="bg-gray-700 p-4 rounded-lg text-center">
+                    <p class="text-gray-400">Tus stakes aparecerán aquí cuando la integración con el contrato de Mainnet esté completa.</p>
+                    <p class="text-gray-400 mt-2">Actualmente, esta sección es para desarrollo.</p>
+                </div>
+            `;
+            // This is where user's actual stakes from the contract would be listed
+            // For now, it's a placeholder.
+        }
+
+        // Initial render calls
+        renderStakingPools();
+        renderMyStakes();
+
+        // Expose functions to global scope for onclick events
+        window.handleStake = handleStake;
+        window.showMessageModal = showMessageModal;
+        window.closeModal = closeModal;
+        window.confirmAction = confirmAction;
+
+        // Facebook SDK (already in your files)
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '1259307742369036',
+                xfbml      : true,
+                version    : 'v12.0'
+            });
+            FB.AppEvents.logPageView();
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
 </body>
 </html>
