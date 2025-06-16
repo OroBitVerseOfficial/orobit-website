@@ -576,19 +576,25 @@
         async function connectWallet() {
             if (typeof window.ethereum === 'undefined') {
                 showMessage('MetaMask no está instalado. Por favor, instálalo para usar esta DApp.', 'warning');
-                return;
-            }
-
-            // Cambiar a la red correcta o añadirla
-            const networkSwitched = await switchToBscTestnet();
-            if (!networkSwitched) {
-                showMessage('Por favor, conecta MetaMask a la BNB Smart Chain Testnet.', 'error');
+                // Opcional: Cambiar el texto del botón y el comportamiento para redirigir a la instalación
+                connectWalletBtn.textContent = 'Instalar MetaMask';
+                connectWalletBtn.onclick = () => window.open('https://metamask.io/download/', '_blank');
                 return;
             }
 
             try {
+                // Solicitar cuentas, esto también disparará una solicitud de conexión si no está ya conectado
                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                 userAddress = accounts[0];
+                
+                // Cambiar a la red correcta o añadirla DESPUÉS de obtener las cuentas
+                const networkSwitched = await switchToBscTestnet();
+                if (!networkSwitched) {
+                    showMessage('Por favor, conecta MetaMask a la BNB Smart Chain Testnet.', 'error');
+                    disconnectWallet(); // Desconectar si la red no es correcta
+                    return;
+                }
+
                 provider = new ethers.providers.Web3Provider(window.ethereum);
                 signer = provider.getSigner();
 
@@ -607,11 +613,22 @@
                 loadStakingPools(); // Cargar pools al conectar
 
                 // Escuchar cambios de cuenta y red
-                window.ethereum.on('accountsChanged', handleAccountsChanged);
-                window.ethereum.on('chainChanged', handleChainChanged);
+                // Solo añadir listeners una vez para evitar duplicados
+                if (!window.ethereum._has_listeners) { // Propiedad personalizada para evitar duplicados
+                    window.ethereum.on('accountsChanged', handleAccountsChanged);
+                    window.ethereum.on('chainChanged', handleChainChanged);
+                    window.ethereum._has_listeners = true; // Marcar que los listeners han sido añadidos
+                }
 
             } catch (error) {
-                showMessage(`Error al conectar la billetera: ${error.message}`, 'error');
+                console.error("Error en connectWallet:", error);
+                // Si el usuario rechaza la conexión, MetaMask lanza un error con code 4001
+                if (error.code === 4001) {
+                    showMessage('Conexión a MetaMask rechazada. Por favor, acepta la conexión.', 'warning');
+                } else {
+                    showMessage(`Error al conectar la billetera: ${error.message}`, 'error');
+                }
+                disconnectWallet(); // Asegurarse de que la UI refleje el estado desconectado
             }
         }
 
@@ -642,8 +659,12 @@
             showMessage('Billetera desconectada.', 'info');
 
             // Eliminar listeners para evitar fugas de memoria si se reconecta.
-            window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-            window.ethereum.removeListener('chainChanged', handleChainChanged);
+            // Es importante que estos listeners solo se eliminen si se añadieron previamente.
+            if (window.ethereum && window.ethereum._has_listeners) {
+                window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+                window.ethereum.removeListener('chainChanged', handleChainChanged);
+                window.ethereum._has_listeners = false;
+            }
         }
 
         /**
@@ -655,7 +676,7 @@
                 // MetaMask está bloqueado o el usuario desconectó todas las cuentas
                 disconnectWallet();
                 showMessage('Tu billetera ha sido desconectada. Por favor, reconecta.', 'warning');
-            } else if (accounts[0] !== userAddress) {
+            } else if (accounts[0].toLowerCase() !== userAddress?.toLowerCase()) { // Usar optional chaining y toLowerCase para comparación robusta
                 userAddress = accounts[0];
                 signer = provider.getSigner(); // Actualizar signer con la nueva cuenta
                 walletAddressDisplay.textContent = `Conectado: ${shortenAddress(userAddress)}`;
@@ -671,8 +692,9 @@
          * @param {string} chainId Hexadecimal ID de la nueva cadena.
          */
         function handleChainChanged(chainId) {
-            if (chainId !== CHAIN_ID) {
-                showMessage('Has cambiado a una red incorrecta. Cambiando a BNB Smart Chain Testnet...', 'warning');
+            // MetaMask pasa el chainId como string hexadecimal
+            if (chainId.toLowerCase() !== CHAIN_ID.toLowerCase()) {
+                showMessage('Has cambiado a una red incorrecta. Intentando cambiar a BNB Smart Chain Testnet...', 'warning');
                 switchToBscTestnet().then(success => {
                     if (success) {
                         // Una vez que se cambia a la red correcta, se recarga la página o se actualiza la DApp
@@ -686,7 +708,8 @@
             } else {
                 showMessage('Conectado a BNB Smart Chain Testnet.', 'success');
                 // Si ya estamos en la red correcta pero se disparó el evento (ej. después de agregar la red)
-                connectWallet(); // Reconectar para asegurar que todos los contratos se reinicialicen correctamente
+                // Es buena práctica re-inicializar para asegurar que todo esté en sync.
+                connectWallet();
             }
         }
 
@@ -1200,15 +1223,34 @@
         });
 
         // --- Inicialización ---
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             showTab(dashboardContent, dashboardTab); // Mostrar Dashboard por defecto
-            // Intentar conectar la billetera al cargar la página si MetaMask está disponible
-            if (window.ethereum) {
-                connectWallet();
-            } else {
+
+            if (typeof window.ethereum === 'undefined') {
                 showMessage('MetaMask no detectado. Por favor, instálalo para usar la DApp.', 'warning');
                 connectWalletBtn.textContent = 'Instalar MetaMask';
                 connectWalletBtn.onclick = () => window.open('https://metamask.io/download/', '_blank');
+                return;
+            }
+
+            // Intentar conectar automáticamente si ya hay una conexión autorizada
+            try {
+                const accounts = await window.ethereum.request({ method: 'eth_accounts' }); // No solicita conexión, solo devuelve si ya hay
+                if (accounts.length > 0) {
+                    await connectWallet(); // Si hay cuentas, intentar conectar completamente
+                } else {
+                    // Si no hay cuentas autorizadas, se mantiene en estado "Conectar Cartera"
+                    walletAddressDisplay.textContent = 'Desconectado';
+                    walletAddressDisplay.classList.remove('hidden'); // Mostrar "Desconectado" en vez de "Conectando..."
+                    connectWalletBtn.textContent = 'Conectar Cartera';
+                    connectWalletBtn.onclick = connectWallet;
+                }
+            } catch (error) {
+                console.error("Error durante la inicialización al verificar cuentas:", error);
+                showMessage('Error al inicializar la DApp. Por favor, revisa MetaMask.', 'error');
+                // Asegurarse de que el botón de conectar esté visible si hay un error
+                connectWalletBtn.textContent = 'Conectar Cartera';
+                connectWalletBtn.onclick = connectWallet;
             }
         });
     </script>
