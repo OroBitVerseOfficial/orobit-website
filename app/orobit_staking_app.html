@@ -431,18 +431,25 @@
 
         // --- Funciones de Utilidad ---
 
+        let messageBoxTimeout; // Para limpiar timeouts anteriores
+
         /**
          * @dev Muestra un mensaje en un cuadro de diálogo flotante.
          * @param {string} message El texto del mensaje.
          * @param {string} type El tipo de mensaje ('success', 'error', 'info', 'warning').
          */
         function showMessage(message, type = 'info') {
+            console.log(`[showMessage] Tipo: ${type}, Mensaje: ${message}`); // DEBUG: Log del mensaje
             messageText.textContent = message;
             messageBox.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-6 rounded-lg shadow-xl z-50'; // Reset classes
             messageBox.classList.remove('hidden');
 
+            // Limpiar cualquier timeout anterior antes de establecer uno nuevo
+            if (messageBoxTimeout) {
+                clearTimeout(messageBoxTimeout);
+            }
             // Ocultar automáticamente después de 5 segundos
-            setTimeout(() => {
+            messageBoxTimeout = setTimeout(() => {
                 hideMessageBox();
             }, 5000);
 
@@ -467,7 +474,12 @@
          * @dev Oculta el cuadro de diálogo de mensajes.
          */
         function hideMessageBox() {
+            console.log("[hideMessageBox] Ocultando messageBox."); // DEBUG: Log de ocultamiento
             messageBox.classList.add('hidden');
+            if (messageBoxTimeout) {
+                clearTimeout(messageBoxTimeout); // Limpiar timeout si se oculta manualmente
+                messageBoxTimeout = null;
+            }
         }
 
         /**
@@ -476,6 +488,7 @@
          * @param {string} address La dirección de la billetera (opcional, para estado 'connected').
          */
         function updateConnectionUI(state, address = '') {
+            console.log(`[updateConnectionUI] Nuevo estado: ${state}`); // DEBUG: Log del cambio de UI
             // Eliminar todas las clases de color existentes
             connectWalletBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'bg-yellow-600', 'hover:bg-yellow-700', 'bg-green-600', 'hover:bg-green-700', 'bg-red-600', 'hover:bg-red-700');
             walletAddressDisplay.classList.remove('text-gray-400', 'text-yellow-400', 'text-green-400', 'text-red-400');
@@ -635,7 +648,8 @@
          * @dev Conecta la billetera del usuario a la DApp.
          */
         async function connectWallet() {
-            // Verificar si MetaMask está instalado
+            hideMessageBox(); // Asegurarse de que cualquier mensaje previo se oculte al inicio de la conexión
+
             if (typeof window.ethereum === 'undefined') {
                 updateConnectionUI('install'); // Actualizar UI a estado de instalación
                 showMessage('MetaMask no está instalado. Por favor, instálalo para usar esta DApp.', 'warning');
@@ -702,8 +716,8 @@
             oroBitTokenContract = null;
             stakingContract = null;
 
+            hideMessageBox(); // Asegurarse de que el messageBox se oculte al desconectar
             updateConnectionUI('disconnected'); // Actualizar UI a estado "Desconectado"
-            // REMOVED: showMessage('Billetera desconectada.', 'info'); // This was causing the blocking central message
 
             // Limpiar datos del dashboard y otros elementos de la UI
             oroBitBalanceDisplay.textContent = '0.00 OROBIT';
@@ -1328,7 +1342,6 @@
                 return;
             }
 
-            // Al cargar la página, intentar conectar automáticamente si ya hay una sesión de MetaMask activa.
             try {
                 const accounts = await window.ethereum.request({ method: 'eth_accounts' }); // No solicita conexión, solo devuelve si ya hay
                 if (accounts.length > 0) {
@@ -1339,7 +1352,9 @@
             } catch (error) {
                 console.error("Error durante la inicialización al verificar cuentas:", error);
                 updateConnectionUI('disconnected'); // En caso de error, mostrar como desconectado
-                showMessage('Error al inicializar la DApp. Por favor, revisa MetaMask o recarga la página.', 'error');
+            } finally {
+                // Asegurarse de que el messageBox esté oculto al final de la inicialización, si no hay un mensaje activo
+                hideMessageBox(); 
             }
         });
     </script>
