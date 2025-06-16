@@ -27,7 +27,6 @@
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Ethers.js CDN para interacción con Web3 -->
-    <!-- MOVIDO EL SCRIPT DE ETHERS AQUI ARRIBA PARA ASEGURAR QUE ESTE CARGADO ANTES DE NUESTRO SCRIPT -->
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
 
     <style>
@@ -91,8 +90,9 @@
                 <a href="#" class="text-2xl font-bold text-yellow-400 neon-text">OroBitverse</a>
             </div>
             <div class="flex items-center space-x-4">
-                <!-- Por defecto, mostrar "Desconectado" o "Conectando..." -->
+                <!-- Estado de la billetera: Desconectado, Conectando..., Conectado -->
                 <span id="walletAddressDisplay" class="text-gray-400 text-sm md:text-base">Desconectado</span>
+                <!-- Botón de Conectar/Desconectar Cartera -->
                 <button id="connectWalletBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition duration-300">
                     Conectar Cartera
                 </button>
@@ -101,7 +101,7 @@
     </header>
 
     <main class="container mx-auto p-4 mt-8 flex-grow">
-        <!-- Message Box para alertas -->
+        <!-- Message Box para alertas personalizadas -->
         <div id="messageBox" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 text-gray-900 p-6 rounded-lg shadow-xl z-50 hidden" role="alert">
             <p id="messageText" class="text-lg font-semibold"></p>
             <button id="closeMessageBox" class="mt-4 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full float-right">Cerrar</button>
@@ -406,7 +406,7 @@
 
         // Admin
         const poolDurationInput = document.getElementById('poolDuration');
-        const poolAPRInput = document.getElementById('poolAPR');
+        const poolAPRInput = document = document.getElementById('poolAPR');
         const isFlexiblePoolCheckbox = document.getElementById('isFlexiblePool');
         const addPoolBtn = document.getElementById('addPoolBtn');
         const poolIdStatusInput = document.getElementById('poolIdStatus');
@@ -463,6 +463,52 @@
          */
         function hideMessageBox() {
             messageBox.classList.add('hidden');
+        }
+
+        /**
+         * @dev Actualiza el color y texto del botón de conexión y la pantalla de la dirección de la billetera.
+         * @param {'disconnected'|'connecting'|'connected'|'install'} state El estado de conexión.
+         * @param {string} address La dirección de la billetera (opcional, para estado 'connected').
+         */
+        function updateConnectionUI(state, address = '') {
+            // Eliminar todas las clases de color existentes
+            connectWalletBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'bg-yellow-600', 'hover:bg-yellow-700', 'bg-green-600', 'hover:bg-green-700', 'bg-red-600', 'hover:bg-red-700');
+            walletAddressDisplay.classList.remove('text-gray-400', 'text-yellow-400', 'text-green-400', 'text-red-400');
+
+            switch (state) {
+                case 'connecting':
+                    walletAddressDisplay.textContent = 'Conectando...';
+                    walletAddressDisplay.classList.add('text-yellow-400');
+                    connectWalletBtn.textContent = 'Conectando...';
+                    connectWalletBtn.classList.add('bg-yellow-600', 'hover:bg-yellow-700');
+                    connectWalletBtn.disabled = true; // Deshabilitar durante la conexión
+                    break;
+                case 'connected':
+                    walletAddressDisplay.textContent = `Conectado: ${shortenAddress(address)}`;
+                    walletAddressDisplay.classList.add('text-green-400');
+                    connectWalletBtn.textContent = 'Desconectar';
+                    connectWalletBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    connectWalletBtn.disabled = false;
+                    connectWalletBtn.onclick = disconnectWallet;
+                    break;
+                case 'install':
+                    walletAddressDisplay.textContent = 'MetaMask no detectado';
+                    walletAddressDisplay.classList.add('text-red-400');
+                    connectWalletBtn.textContent = 'Instalar MetaMask';
+                    connectWalletBtn.classList.add('bg-red-600', 'hover:bg-red-700');
+                    connectWalletBtn.disabled = false;
+                    connectWalletBtn.onclick = () => window.open('https://metamask.io/download/', '_blank');
+                    break;
+                case 'disconnected':
+                default:
+                    walletAddressDisplay.textContent = 'Desconectado';
+                    walletAddressDisplay.classList.add('text-gray-400');
+                    connectWalletBtn.textContent = 'Conectar Cartera';
+                    connectWalletBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    connectWalletBtn.disabled = false;
+                    connectWalletBtn.onclick = connectWallet; // Asegurar que el click intente conectar
+                    break;
+            }
         }
 
         /**
@@ -585,15 +631,14 @@
          */
         async function connectWallet() {
             if (typeof window.ethereum === 'undefined') {
+                updateConnectionUI('install'); // Actualizar UI a estado de instalación
                 showMessage('MetaMask no está instalado. Por favor, instálalo para usar esta DApp.', 'warning');
-                // Cambiar el texto del botón y el comportamiento para redirigir a la instalación
-                connectWalletBtn.textContent = 'Instalar MetaMask';
-                connectWalletBtn.onclick = () => window.open('https://metamask.io/download/', '_blank');
                 return;
             }
 
+            updateConnectionUI('connecting'); // Mostrar estado "Conectando..."
+
             try {
-                walletAddressDisplay.textContent = 'Conectando...'; // Mostrar estado de conexión
                 // Solicitar cuentas. Esto disparará una solicitud de conexión si no está ya conectado.
                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                 userAddress = accounts[0];
@@ -614,10 +659,7 @@
                 oroBitTokenContract = new ethers.Contract(OROBIT_TOKEN_ADDRESS, OROBIT_TOKEN_ABI, signer);
                 stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_CONTRACT_ABI, signer);
 
-                walletAddressDisplay.textContent = `Conectado: ${shortenAddress(userAddress)}`;
-                connectWalletBtn.textContent = 'Desconectar';
-                connectWalletBtn.onclick = disconnectWallet; // Cambiar acción del botón
-
+                updateConnectionUI('connected', userAddress); // Actualizar UI a estado "Conectado"
                 showMessage('¡Billetera conectada a BNB Smart Chain Testnet!', 'success');
                 // Cargar datos iniciales del dashboard
                 loadDashboardData();
@@ -654,9 +696,8 @@
             oroBitTokenContract = null;
             stakingContract = null;
 
-            walletAddressDisplay.textContent = 'Desconectado';
-            connectWalletBtn.textContent = 'Conectar Cartera';
-            connectWalletBtn.onclick = connectWallet; // Cambiar acción del botón para reconectar
+            updateConnectionUI('disconnected'); // Actualizar UI a estado "Desconectado"
+            showMessage('Billetera desconectada.', 'info');
 
             // Limpiar datos del dashboard y otros elementos de la UI
             oroBitBalanceDisplay.textContent = '0.00 OROBIT';
@@ -666,8 +707,6 @@
             adminPanel.classList.add('hidden');
             adminMessage.classList.remove('hidden'); // Mostrar mensaje de acceso restringido
             
-            showMessage('Billetera desconectada.', 'info');
-
             // Eliminar listeners para evitar fugas de memoria si se reconecta.
             if (window.ethereum && window.ethereum._has_listeners) {
                 window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
@@ -686,16 +725,14 @@
                 // MetaMask está bloqueado o el usuario desconectó todas las cuentas
                 disconnectWallet();
                 showMessage('Tu billetera ha sido desconectada. Por favor, reconecta.', 'warning');
-            } else if (userAddress && accounts[0].toLowerCase() !== userAddress.toLowerCase()) { // Usar toLowerCase para comparación robusta
-                // Solo si la cuenta realmente cambió y no es una reconexión a la misma cuenta
+            } else if (userAddress && accounts[0].toLowerCase() !== userAddress.toLowerCase()) {
                 userAddress = accounts[0];
-                // Reinicializar provider/signer/contratos para asegurar que apunten a la nueva cuenta
                 provider = new ethers.providers.Web3Provider(window.ethereum);
                 signer = provider.getSigner();
                 oroBitTokenContract = new ethers.Contract(OROBIT_TOKEN_ADDRESS, OROBIT_TOKEN_ABI, signer);
                 stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_CONTRACT_ABI, signer);
 
-                walletAddressDisplay.textContent = `Conectado: ${shortenAddress(userAddress)}`;
+                updateConnectionUI('connected', userAddress); // Actualizar UI a estado "Conectado"
                 showMessage(`Cuenta cambiada a: ${shortenAddress(userAddress)}`, 'info');
                 loadDashboardData(); // Recargar datos para la nueva cuenta
                 checkAdminAccess(); // Re-chequear acceso de admin
@@ -712,13 +749,11 @@
          */
         function handleChainChanged(chainId) {
             console.log("Chain changed to:", chainId);
-            // MetaMask pasa el chainId como string hexadecimal
             if (chainId.toLowerCase() !== CHAIN_ID.toLowerCase()) {
                 showMessage('Has cambiado a una red incorrecta. Intentando cambiar a BNB Smart Chain Testnet...', 'warning');
                 switchToBscTestnet().then(success => {
                     if (success) {
-                        // Una vez que se cambia a la red correcta, se recarga la página o se actualiza la DApp
-                        connectWallet(); // Reconectar para asegurar que todos los contratos se reinicialicen correctamente
+                        connectWallet(); // Reconectar para asegurar que todo se reinicialice correctamente
                     } else {
                         showMessage('Falló el cambio automático de red. Por favor, hazlo manualmente.', 'error');
                         disconnectWallet();
@@ -726,9 +761,7 @@
                 });
             } else {
                 showMessage('Conectado a BNB Smart Chain Testnet.', 'success');
-                // Si ya estamos en la red correcta pero se disparó el evento (ej. después de agregar la red)
-                // Es buena práctica re-inicializar para asegurar que todo esté en sync.
-                connectWallet();
+                connectWallet(); // Re-inicializar si ya estamos en la red correcta
             }
         }
 
@@ -738,7 +771,6 @@
          */
         async function loadDashboardData() {
             if (!userAddress || !oroBitTokenContract || !stakingContract) {
-                // Si no hay userAddress, o los contratos no están inicializados con signer, no se puede cargar
                 oroBitBalanceDisplay.textContent = 'Conecta tu cartera';
                 totalRewardsDisplay.textContent = 'Conecta tu cartera';
                 activeStakesDiv.innerHTML = '<p class="text-gray-400" id="noActiveStakesMessage">No tienes stakes activos.</p>';
@@ -759,7 +791,9 @@
                 if (userStakesLength == 0) {
                     activeStakesDiv.innerHTML = '<p class="text-gray-400" id="noActiveStakesMessage">No tienes stakes activos.</p>';
                 } else {
-                    noActiveStakesMessage.classList.add('hidden'); // Ocultar mensaje si hay stakes
+                    if (document.getElementById('noActiveStakesMessage')) {
+                        document.getElementById('noActiveStakesMessage').classList.add('hidden'); // Ocultar mensaje si hay stakes
+                    }
 
                     for (let i = 0; i < userStakesLength; i++) {
                         const stake = await stakingContract.getUserStake(userAddress, i);
@@ -826,7 +860,7 @@
                 const poolsLength = await readOnlyStakingContract.getStakingPoolsLength();
                 stakingPoolSelect.innerHTML = ''; // Limpiar opciones existentes
 
-                if (poolsLength === 0) {
+                if (poolsLength == 0) {
                     stakingPoolSelect.innerHTML = '<option value="">No hay pools disponibles</option>';
                     stakeBtn.disabled = true; // El botón de stake sigue deshabilitado si no hay pools
                     approveBtn.disabled = true;
@@ -918,9 +952,9 @@
         // --- Manejadores de Eventos ---
 
         connectWalletBtn.addEventListener('click', () => {
-            if (userAddress) {
+            if (userAddress) { // Si ya hay una dirección de usuario (conectado)
                 disconnectWallet();
-            } else {
+            } else { // Si no hay dirección de usuario (desconectado o intentando conectar)
                 connectWallet();
             }
         });
@@ -1283,29 +1317,22 @@
             publicProvider = new ethers.providers.JsonRpcProvider(RPC_URL);
 
             if (typeof window.ethereum === 'undefined') {
+                updateConnectionUI('install'); // Mostrar estado de "Instalar MetaMask" si no se detecta
                 showMessage('MetaMask no detectado. Por favor, instálalo para usar la DApp.', 'warning');
-                connectWalletBtn.textContent = 'Instalar MetaMask';
-                connectWalletBtn.onclick = () => window.open('https://metamask.io/download/', '_blank');
                 return;
             }
 
             // Al cargar la página, intentar conectar automáticamente si ya hay una sesión de MetaMask activa.
-            // Si no hay cuentas o el usuario no está conectado, el botón se mantendrá en "Conectar Cartera".
             try {
-                const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                const accounts = await window.ethereum.request({ method: 'eth_accounts' }); // No solicita conexión, solo devuelve si ya hay
                 if (accounts.length > 0) {
                     await connectWallet(); // Si ya hay cuentas autorizadas, intentar la conexión completa
                 } else {
-                    // Si no hay cuentas autorizadas, asegurar el estado inicial como desconectado
-                    walletAddressDisplay.textContent = 'Desconectado';
-                    connectWalletBtn.textContent = 'Conectar Cartera';
-                    connectWalletBtn.onclick = connectWallet; // Asegurar que el click intente conectar
+                    updateConnectionUI('disconnected'); // Si no hay cuentas autorizadas, asegurar el estado inicial como desconectado
                 }
             } catch (error) {
                 console.error("Error durante la inicialización al verificar cuentas:", error);
-                // Si hay un error, asegurar que el botón de conectar esté visible
-                connectWalletBtn.textContent = 'Conectar Cartera';
-                connectWalletBtn.onclick = connectWallet;
+                updateConnectionUI('disconnected'); // En caso de error, mostrar como desconectado
                 showMessage('Error al inicializar la DApp. Por favor, revisa MetaMask o recarga la página.', 'error');
             }
         });
