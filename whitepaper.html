@@ -12,6 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Meta Etiquetas para Facebook (Open Graph) -->
+    <meta property="fb:app_id" content="1259307742369036"> <!-- ID de App de Facebook Integrado -->
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -98,6 +102,33 @@
             background-color: #4a5568;
             text-decoration: none;
         }
+
+        /* Nuevo estilo para el botón "Ganar OroBit" (copiado de index.html) */
+        .earn-button {
+            display: inline-block;
+            padding: 1.25rem 3rem; /* Más grande y prominente */
+            font-size: 1.5rem;
+            font-weight: 800; /* Más bold */
+            border-radius: 9999px;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Curva de transición suave */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            background-image: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FFD700 100%); /* Oro con centro naranja */
+            color: #1a202c; /* Texto oscuro */
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); /* Efecto de brillo en el texto */
+            text-decoration: none;
+            border: 3px solid #ffeb3b; /* Borde más pronunciado y brillante */
+            cursor: pointer;
+        }
+        .earn-button:hover {
+            transform: translateY(-7px) scale(1.07); /* Mayor elevación y crecimiento */
+            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.8); /* Sombra más grande y glow dorado */
+            background-image: linear-gradient(45deg, #FFA500 0%, #FFD700 50%, #FFA500 100%); /* Invierte el gradiente al hover */
+        }
+        .earn-button i {
+            margin-right: 0.75rem;
+            color: #1a202c; /* Color del icono para contraste */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
     </style>
 </head>
 <body class="bg-gray-900">
@@ -158,7 +189,7 @@
 
         <h3 class="mt-4">Visión de OroBitverse:</h3>
         <p class="mb-4">
-            Nuestra visión en OroBitverse es la creación de un ecosistema DeFi inquebrantable, arraigado en la solidez, la sostenibilidad y la generación de valor tangible. Más allá de la efímera promesa de un token más, aspiramos a <strong>revolucionar la percepción, el almacenamiento y el intercambio de valor en la era digital</strong>. Visualizamos un universo de oportunidades financieras descentralizadas donde el valor no fluctúa erráticamente por la especulación, sino que se construye con fundamentos robustos: la utilidad inherente, la fuerza de una comunidad comprometida y la adhesión innegociable a principios económicos sólidos. El pináculo de nuestra aspiración es edificar una economía digital estable, un bastión donde la confianza no se impone, sino que se labra con cada transacción transparente y cada hito alcanzado. Aunque el inicio de OroBitverse se caracteriza por una gestión controlada, esencial para salvaguardar la seguridad y la estabilidad, nuestra hoja de ruta está claramente trazada hacia la <strong>descentralización plena</strong>, empoderando progresivamente a nuestra comunidad en la gobernanza y operación del ecosistema, fiel a los preceptos fundamentales de la tecnología blockchain.
+            Nuestra visión en OroBitverse es la creación de un ecosistema DeFi inquebrantable, arraigado en la solidez, la sostenibilidad y la generación de valor tangible. Más allá de la efímera promesa de un token más, aspiramos a <strong>revolucionar la percepción, el almacenamiento y el intercambio de valor en la era digital</strong>. Visualizamos un universo de oportunidades financieras descentralizadas donde el valor no fluctúa erráticamente por la especulación, sino que se construye con fundamentos robustos: la utilidad inherente, la fuerza de una comunidad comprometida y la adhesión inquebrantable a principios económicos sólidos. El pináculo de nuestra aspiración es edificar una economía digital estable, un bastión donde la confianza no se impone, sino que se labra con cada transacción transparente y cada hito alcanzado. Aunque el inicio de OroBitverse se caracteriza por una gestión controlada, esencial para salvaguardar la seguridad y la estabilidad, nuestra hoja de ruta está claramente trazada hacia la <strong>descentralización plena</strong>, empoderando progresivamente a nuestra comunidad en la gobernanza y operación del ecosistema, fiel a los preceptos fundamentales de la tecnología blockchain.
         </p>
 
         <h3 class="mt-4">Declaración de Misión:</h3>
@@ -502,15 +533,22 @@
         <p class="mb-4">
             El verdadero poder de OroBitverse reside en su comunidad. Te invitamos a ser parte de esta revolución financiera.
         </p>
-        <ul class="mb-4">
-            <li><strong>Únete a nuestra Comunidad en Telegram:</strong> <a href="https://t.me/OroBitverseOfficial" target="_blank">https://t.me/OroBitverseOfficial</a></li>
-            <li><strong>Síguenos en X (Twitter):</strong> <a href="https://x.com/OroBitverse" target="_blank">https://x.com/OroBitverse</a></li>
-            <li><strong>Suscríbete a nuestro canal de YouTube:</strong> <a href="https://www.youtube.com/@OroBitverse" target="_blank">https://www.youtube.com/@OroBitverse</a></li>
-            <li><strong>Síguenos en TikTok:</strong> <a href="https://www.tiktok.com/@orobitverse.com" target="_blank">https://www.tiktok.com/@orobitverse.com</a></li>
-            <li><strong>Síguenos en Instagram:</strong> <a href="https://www.instagram.com/orobitverse/" target="_blank">https://www.instagram.com/orobitverse/</a></li>
-            <li><strong>Únete a nuestro Facebook:</strong> <a href="https://www.facebook.com/orobitverse" target="_blank">https://www.facebook.com/orobitverse</a></li>
-            <li><strong>Contáctanos por WhatsApp:</strong> <a href="https://wa.me/yourphonenumber?text=Hola%20OroBitverse!" target="_blank">Haz clic aquí para WhatsApp</a></li>
-        </ul>
+        <div class="flex flex-col items-center gap-4 mb-8">
+            <!-- Nuevo botón "¡Gana OroBit Ahora!" en el White Paper -->
+            <a href="app/orobit_staking_app.html" class="earn-button">
+                <i class="fas fa-money-bill-wave"></i> ¡Gana OroBit Ahora!
+            </a>
+            <!-- Links existentes -->
+            <ul class="text-center">
+                <li><strong>Únete a nuestra Comunidad en Telegram:</strong> <a href="https://t.me/OroBitverseOfficial" target="_blank">https://t.me/OroBitverseOfficial</a></li>
+                <li><strong>Síguenos en X (Twitter):</strong> <a href="https://x.com/OroBitverse" target="_blank">https://x.com/OroBitverse</a></li>
+                <li><strong>Suscríbete a nuestro canal de YouTube:</strong> <a href="https://www.youtube.com/@OroBitverse" target="_blank">https://www.youtube.com/@OroBitverse</a></li>
+                <li><strong>Síguenos en TikTok:</strong> <a href="https://www.tiktok.com/@orobitverse.com" target="_blank">https://www.tiktok.com/@orobitverse.com</a></li>
+                <li><strong>Síguenos en Instagram:</strong> <a href="https://www.instagram.com/orobitverse/" target="_blank">https://www.instagram.com/orobitverse/</a></li>
+                <li><strong>Únete a nuestro Facebook:</strong> <a href="https://www.facebook.com/orobitverse" target="_blank">https://www.facebook.com/orobitverse</a></li>
+                <li><strong>Contáctanos por WhatsApp:</strong> <a href="https://wa.me/yourphonenumber?text=Hola%20OroBitverse!" target="_blank">Haz clic aquí para WhatsApp</a></li>
+            </ul>
+        </div>
 
         <h3 class="mt-4">Invitación a participar en el staking o a explorar el ecosistema:</h3>
         <p class="mb-4">
