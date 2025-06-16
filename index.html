@@ -6,10 +6,36 @@
     <title>OroBitverse: El Oro Digital del Futuro - Conecta Oro y Bitcoin en DeFi</title>
     <!-- Favicon de OroBit -->
     <link rel="icon" href="images/orobit_logo_1280x720.png" type="image/png">
+    
+    <!-- Meta Etiquetas para Redes Sociales (Open Graph y Twitter Cards) -->
+    <meta property="og:title" content="OroBitverse - Staking y Recompensas DeFi con la solidez del Oro y BTC">
+    <meta property="og:description" content="Invierte en OroBit, el token que fusiona la estabilidad del oro con el potencial de crecimiento de Bitcoin. Staking flexible y seguro en BNB Smart Chain.">
+    <meta property="og:image" content="https://orobitverseoficial.github.io/orobit-website/images/yt-thumbnail-1280-x-720-gemini_generated_image_p1963tp1963tp196-jpg_custom_resized.jpg"> <!-- Reemplaza con URL ABSOLUTA REAL -->
+    <meta property="og:url" content="https://orobitverseoficial.github.io/orobit-website/"> <!-- Reemplaza con URL ABSOLUTA REAL -->
+    <meta property="og:type" content="website">
+    <meta property="fb:app_id" content="TU_FACEBOOK_APP_ID_AQUI"> <!-- ¡PEGA TU ID DE APP DE FACEBOOK AQUÍ! -->
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@OroBitverse"> <!-- Tu handle de Twitter -->
+    <meta name="twitter:title" content="OroBitverse - Oro Digital y DeFi">
+    <meta name="twitter:description" content="El futuro del valor digital. Staking seguro con OroBit, fusionando lo mejor del oro y Bitcoin.">
+    <meta name="twitter:image" content="https://orobitverseoficial.github.io/orobit-website/images/tw-profile-photo-400-x-400-gemini_generated_image_p1963tp1963tp196-jpg_custom_resized.jpg"> <!-- Reemplaza con URL ABSOLUTA REAL -->
+
+    <!-- Content Security Policy (CSP) - Esencial para la seguridad -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' data: https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
+        script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;
+        style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://fonts.googleapis.com;
+        img-src 'self' data: https://placehold.co https://* ;
+        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
+        object-src 'none';
+        base-uri 'self';
+    ">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos de redes sociales -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -20,6 +46,7 @@
             color: white;
             line-height: 1.6;
             scroll-behavior: smooth; /* Desplazamiento suave para anclas */
+            overflow-x: hidden; /* Evitar el scroll horizontal */
         }
 
         /* Estilos generales para títulos */
@@ -28,9 +55,34 @@
             color: #fbd38d; /* Dorado para los títulos principales */
             margin-bottom: 1rem;
         }
-        h1 { font-size: 3.5rem; line-height: 1.2; }
-        h2 { font-size: 2.5rem; border-bottom: 2px solid #a0aec0; padding-bottom: 0.5rem; margin-top: 2rem; }
-        h3 { font-size: 2rem; }
+        h1 { 
+            font-size: 3.5rem; 
+            line-height: 1.2; 
+            /* Gradiente de texto con brillo */
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-glow 2s infinite alternate; /* Animación de brillo */
+            letter-spacing: -0.05em; /* Ligeramente más apretado */
+        }
+        h2 { 
+            font-size: 2.8rem; 
+            border-bottom: 2px solid #a0aec0; 
+            padding-bottom: 0.5rem; 
+            margin-top: 2rem; 
+            color: #d6bcfa; /* Púrpura suave para h2 */
+            text-shadow: 0 0 10px rgba(214, 188, 250, 0.4); /* Sombra para brillo */
+        }
+        h3 { 
+            font-size: 2.2rem; 
+            color: #fbd38d; /* Dorado para h3 */
+        }
+
+        /* Animación para el brillo del texto h1 */
+        @keyframes text-glow {
+            0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5), 0 0 10px rgba(255, 165, 0, 0.3); }
+            100% { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 25px rgba(255, 165, 0, 0.6); }
+        }
 
         /* Estilos para enlaces */
         a {
@@ -51,6 +103,8 @@
             background-color: #2d3748; /* Fondo ligeramente más claro para el contenido */
             border-radius: 1.5rem; /* Esquinas más redondeadas */
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            position: relative; /* Para posibles efectos de partículas o brillo */
+            z-index: 10;
         }
 
         /* Secciones con espaciado */
@@ -74,6 +128,7 @@
             top: 0;
             z-index: 1000;
             backdrop-filter: blur(8px); /* Efecto de desenfoque para la barra de navegación */
+            width: 100%;
         }
         .header-nav .logo-container {
             display: flex;
@@ -115,7 +170,7 @@
             margin: 0 auto 2.5rem;
         }
 
-        /* Estilos para botones de acción principales */
+        /* Estilos para botones de acción principales (dorados) */
         .action-button {
             display: inline-block;
             padding: 1rem 2.5rem;
@@ -124,7 +179,7 @@
             border-radius: 9999px; /* Botón completamente redondeado (pill shape) */
             transition: all 0.3s ease;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            background-image: linear-gradient(to right, #fbd38d 0%, #fed7aa 100%);
+            background-image: linear-gradient(to right, #fbd38d 0%, #ffa500 100%); /* Dorado a naranja dorado */
             color: #2d3748; /* Texto oscuro sobre fondo dorado */
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             text-decoration: none;
@@ -134,7 +189,34 @@
         .action-button:hover {
             transform: translateY(-5px) scale(1.05); /* Efecto de elevación y ligero crecimiento */
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-            background-image: linear-gradient(to right, #fed7aa 0%, #fbd38d 100%); /* Ligeramente invertido el gradiente */
+            background-image: linear-gradient(to right, #fed7aa 0%, #ff8c00 100%); /* Ligeramente invertido el gradiente y más intenso */
+        }
+
+        /* Nuevo botón para "Ganar" o "Explorar Staking" */
+        .earn-button {
+            display: inline-block;
+            padding: 1.25rem 3rem; /* Más grande y prominente */
+            font-size: 1.5rem;
+            font-weight: 800; /* Más bold */
+            border-radius: 9999px;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Curva de transición suave */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            background-image: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FFD700 100%); /* Oro con centro naranja */
+            color: #1a202c; /* Texto oscuro */
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); /* Efecto de brillo en el texto */
+            text-decoration: none;
+            border: 3px solid #ffeb3b; /* Borde más pronunciado y brillante */
+            cursor: pointer;
+        }
+        .earn-button:hover {
+            transform: translateY(-7px) scale(1.07); /* Mayor elevación y crecimiento */
+            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.8); /* Sombra más grande y glow dorado */
+            background-image: linear-gradient(45deg, #FFA500 0%, #FFD700 50%, #FFA500 100%); /* Invierte el gradiente al hover */
+        }
+        .earn-button i {
+            margin-right: 0.75rem;
+            color: #1a202c; /* Color del icono para contraste */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
         }
 
         /* Estilos para los botones sociales */
@@ -170,6 +252,16 @@
         .social-button i {
             margin-right: 0.75rem; /* Espacio entre el icono y el texto */
             font-size: 1.25rem;
+        }
+
+        /* Animación para el logo en el encabezado */
+        @keyframes pulse-logo {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .animate-pulse-logo {
+            animation: pulse-logo 3s infinite ease-in-out;
         }
 
         /* Pie de página */
@@ -239,7 +331,7 @@
     <!-- Encabezado y Barra de Navegación -->
     <header class="header-nav">
         <div class="logo-container">
-            <!-- El logo es un botón que lleva a la página de inicio -->
+            <!-- El logo y el nombre son un botón que llevan a la página de inicio -->
             <a href="index.html" class="flex items-center">
                 <img src="images/orobit_logo_1280x720.png" alt="Logo de OroBit" class="h-12 rounded-full mr-4 shadow-xl transform hover:scale-105 transition-transform duration-300">
                 <span class="text-3xl font-extrabold text-yellow-400 cursor-pointer animate-pulse-logo">OroBitverse</span>
@@ -259,7 +351,7 @@
         <section class="hero-section">
             <h1 class="mb-4">Descubre OroBitverse: El Refugio Dorado del Valor Digital</h1>
             <p class="mb-8">
-                Fusionando la estabilidad del oro con la innovación de Bitcoin, OroBitverse redefine el valor en la era DeFi. Invierte en un futuro próspero, seguro y descentralizado.
+                Fusionando la estabilidad inmutable del oro con la innovación disruptiva de Bitcoin, OroBitverse redefine el valor en la era DeFi. Invierte en un futuro próspero, seguro y descentralizado.
             </p>
             <a href="app/orobit_staking_app.html" class="action-button">¡Empieza a Stakear Ahora!</a>
         </section>
@@ -312,29 +404,40 @@
             </div>
         </section>
 
-        <!-- Sección Cómo Funciona -->
+        <!-- Sección Cómo Funciona - Con nuevo botón "¡Gana OroBit!" -->
         <section id="how-it-works" class="text-center">
             <h2 class="text-yellow-300 mb-6">Cómo Funciona</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-200">
-                <div class="bg-gray-700 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
-                    <i class="fas fa-wallet text-yellow-400 text-4xl mb-4"></i>
-                    <h3 class="text-yellow-300 text-xl font-semibold mb-2">1. Adquiere OroBit</h3>
-                    <p>Consigue tokens OroBit en exchanges descentralizados como PancakeSwap (Testnet).</p>
-                    <a href="https://pancakeswap.finance/swap?outputCurrency=0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3&chainId=97" target="_blank" class="text-blue-400 hover:underline text-sm mt-2 block">Comprar OroBit</a>
+                <div class="bg-gray-700 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 flex flex-col items-center justify-between">
+                    <div>
+                        <i class="fas fa-wallet text-yellow-400 text-4xl mb-4"></i>
+                        <h3 class="text-yellow-300 text-xl font-semibold mb-2">1. Adquiere OroBit</h3>
+                        <p>Consigue tokens OroBit en exchanges descentralizados como PancakeSwap (Testnet).</p>
+                    </div>
+                    <a href="https://pancakeswap.finance/swap?outputCurrency=0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3&chainId=97" target="_blank" class="text-blue-400 hover:underline text-sm mt-4 block">Comprar OroBit</a>
                 </div>
-                <div class="bg-gray-700 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
-                    <i class="fas fa-piggy-bank text-yellow-400 text-4xl mb-4"></i>
-                    <h3 class="text-yellow-300 text-xl font-semibold mb-2">2. Staking Inteligente</h3>
-                    <p>Deposita tus OroBit en nuestros pools de staking flexibles o fijos para generar recompensas.</p>
-                    <a href="app/orobit_staking_app.html" class="text-blue-400 hover:underline text-sm mt-2 block">Ir a la App de Staking</a>
+                <div class="bg-gray-700 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 flex flex-col items-center justify-between">
+                    <div>
+                        <i class="fas fa-piggy-bank text-yellow-400 text-4xl mb-4"></i>
+                        <h3 class="text-yellow-300 text-xl font-semibold mb-2">2. Staking Inteligente</h3>
+                        <p>Deposita tus OroBit en nuestros pools de staking flexibles o fijos para generar recompensas.</p>
+                    </div>
+                    <a href="app/orobit_staking_app.html" class="text-blue-400 hover:underline text-sm mt-4 block">Ir a la App de Staking</a>
                 </div>
-                <div class="bg-gray-700 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
-                    <i class="fas fa-hand-holding-usd text-yellow-400 text-4xl mb-4"></i>
-                    <h3 class="text-yellow-300 text-xl font-semibold mb-2">3. Gana Recompensas</h3>
-                    <p>Recibe rendimientos en OroBit directamente en tu cartera por tu participación y apoyo al ecosistema.</p>
+                <div class="bg-gray-700 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 flex flex-col items-center justify-between">
+                    <div>
+                        <i class="fas fa-hand-holding-usd text-yellow-400 text-4xl mb-4"></i>
+                        <h3 class="text-yellow-300 text-xl font-semibold mb-2">3. Gana Recompensas</h3>
+                        <p>Recibe rendimientos en OroBit directamente en tu cartera por tu participación y apoyo al ecosistema.</p>
+                    </div>
+                    <!-- Nuevo botón para "Ganar OroBit" -->
+                    <a href="app/orobit_staking_app.html" class="earn-button mt-6">
+                        <i class="fas fa-money-bill-wave"></i> ¡Gana OroBit Ahora!
+                    </a>
                 </div>
             </div>
         </section>
+
 
         <!-- Sección Conéctate con Nosotros (Redes Sociales) -->
         <section id="contact" class="text-center">
@@ -387,6 +490,10 @@
         <p>&copy; 2025 OroBitverse. Todos los derechos reservados.</p>
         <p class="mt-2 text-xs">
             <span class="text-yellow-400">Nota:</span> Aunque el token se llama "OroBit", el proyecto o ecosistema más amplio es "OroBitverse".
+        </p>
+        <!-- Disclaimer para cumplimiento normativo de la UE -->
+        <p class="mt-4 text-xs text-red-300">
+            <strong>Descargo de Responsabilidad:</strong> Este sitio web y el proyecto OroBitverse operan en una fase inicial de desarrollo y pruebas. Los detalles aquí presentados están sujetos a cambios y no constituyen asesoramiento financiero, de inversión, legal o fiscal. Los usuarios deben realizar su propia investigación y consultar a profesionales cualificados antes de tomar cualquier decisión de inversión. Se pretende cumplir con las normativas vigentes en la Unión Europea, especialmente en lo que respecta a la Ley de Mercados de Criptoactivos (MiCA) y otras regulaciones aplicables. La información sobre la tokenomía, incluyendo aspectos "reflacionarios" o similares, se basa en las leyes y entendimientos actuales al día de hoy y está sujeta a la evolución del marco regulatorio. La inversión en criptoactivos conlleva riesgos inherentes.
         </p>
     </footer>
 </body>
