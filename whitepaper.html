@@ -71,9 +71,51 @@
             h2 { font-size: 1.75rem; }
             h3 { font-size: 1.5rem; }
         }
+        /* Estilos para el encabezado del White Paper */
+        .whitepaper-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: rgba(26, 32, 44, 0.9); /* Fondo ligeramente transparente para el header */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            margin-bottom: 2rem; /* Espacio para separar del contenido */
+        }
+        .whitepaper-header .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .whitepaper-header nav a {
+            color: #fbd38d; /* Dorado para enlaces de navegación */
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+        .whitepaper-header nav a:hover {
+            background-color: #4a5568;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body class="bg-gray-900">
+    <!-- Header/Navigation Bar para el White Paper -->
+    <header class="whitepaper-header">
+        <div class="logo-container">
+            <!-- Ruta corregida para la imagen del logo -->
+            <img src="images/orobit_logo_1280x720.png" alt="Logo de OroBit" class="h-10 rounded-full mr-3 shadow-lg">
+            <!-- Ruta corregida para el enlace del logo -->
+            <a href="index.html" class="text-2xl font-bold text-yellow-400">OroBitverse</a>
+        </div>
+        <nav>
+            <!-- Rutas corregidas para los enlaces de navegación -->
+            <a href="index.html">Inicio</a>
+            <a href="app/orobit_staking_app.html">App de Staking</a>
+        </nav>
+    </header>
+
     <div class="container">
         <h1 class="text-center mb-8">📄 White Paper Oficial de OroBitverse</h1>
 
@@ -209,7 +251,7 @@
                 <strong>Funcionalidades Centrales:</strong>
                 <ul>
                     <li>
-                        <strong>Staking Flexible y Fijo:</strong> Los usuarios pueden elegir entre diferentes pools de staking. Los **pools fijos** ofrecen períodos de bloqueo predefinidos con APRs más elevados, mientras que los **pools flexibles** permiten retirar los fondos en cualquier momento, proporcionando liquidez a cambio de un APR adaptado.
+                        <strong>Staking Flexible y Fijo:</strong> Los usuarios pueden elegir entre diferentes pools de staking. Los <strong>pools fijos</strong> ofrecen períodos de bloqueo predefinidos con APRs más elevados, mientras que los <strong>pools flexibles</strong> permiten retirar los fondos en cualquier momento, proporcionando liquidez a cambio de un APR adaptado.
                     </li>
                     <li>
                         <strong>Cálculo de Recompensas (APR):</strong> Las recompensas se calculan en base al Porcentaje de Rendimiento Anual (APR) del pool seleccionado y el tiempo que los tokens permanecen stakeados. La fórmula garantiza una una acumulación precisa y transparente de recompensas.
@@ -294,7 +336,7 @@
                 <strong>Origen de Recompensas:</strong> Las recompensas de staking provienen directamente del "Pool de Recompensas de Staking", un fondo pre-asignado del suministro total, asegurando que no haya una inflación ilimitada de tokens.
             </li>
             <li>
-                <strong>Penalizaciones y Tesorería:</strong> Las penalizaciones por retiro anticipado de stakes fijos se dirigen a la `stakingAdminWallet`. Estos fondos contribuirán a la tesorería del proyecto, la cual puede ser utilizada para recompras, inyecciones de liquidez o futuras iniciativas de quema (burning) de tokens para aumentar la escasez, si la gobernanza de la comunidad lo decide en el futuro.
+                <strong>Penalizaciones y Tesorería:</strong> Las penalizaciones por retiro anticipado de stakes fijos se dirigen a la <code>stakingAdminWallet</code>. Estos fondos contribuirán a la tesorería del proyecto, la cual puede ser utilizada para recompras, inyecciones de liquidez o futuras iniciativas de quema (burning) de tokens para aumentar la escasez, si la gobernanza de la comunidad lo decide en el futuro.
             </li>
             <li>
                 <strong>Potencial de Quema:</strong> Aunque no hay un mecanismo de quema automático inicial, la tesorería acumulada por penalizaciones y otros ingresos del ecosistema podría ser utilizada para implementar quemas de tokens en el futuro, reduciendo aún más el suministro circulante y fomentando la deflación a largo plazo.
@@ -460,11 +502,13 @@
             El verdadero poder de OroBitverse reside en su comunidad. Te invitamos a ser parte de esta revolución financiera.
         </p>
         <ul class="mb-4">
-            <li><strong>Únete a nuestra Comunidad en Telegram:</strong> <a href="#" target="_blank"> [Enlace a Telegram] (Placeholder)</a></li>
-            <li><strong>Síguenos en X (Twitter):</strong> <a href="#" target="_blank"> [Enlace a X] (Placeholder)</a></li>
-            <li><strong>Suscríbete a nuestro canal de YouTube:</strong> <a href="https://www.youtube.com/@Cripto%C3%81guila" target="_blank">https://www.youtube.com/@Cripto%C3%81guila</a></li>
-            <li><strong>Síguenos en TikTok:</strong> <a href="https://www.tiktok.com/@chefpaulogomes" target="_blank">https://www.tiktok.com/@chefpaulogomes</a></li>
-            <li><strong>Síguenos en Instagram:</strong> <a href="https://www.instagram.com/chefpaulo_gomes/" target="_blank">https://www.instagram.com/chefpaulo_gomes/</a></li>
+            <li><strong>Únete a nuestra Comunidad en Telegram:</strong> <a href="https://t.me/OroBitverseOfficial" target="_blank">https://t.me/OroBitverseOfficial</a></li>
+            <li><strong>Síguenos en X (Twitter):</strong> <a href="https://x.com/OroBitverse" target="_blank">https://x.com/OroBitverse</a></li>
+            <li><strong>Suscríbete a nuestro canal de YouTube:</strong> <a href="https://www.youtube.com/@OroBitverse" target="_blank">https://www.youtube.com/@OroBitverse</a></li>
+            <li><strong>Síguenos en TikTok:</strong> <a href="https://www.tiktok.com/@orobitverse.com" target="_blank">https://www.tiktok.com/@orobitverse.com</a></li>
+            <li><strong>Síguenos en Instagram:</strong> <a href="https://www.instagram.com/orobitverse/" target="_blank">https://www.instagram.com/orobitverse/</a></li>
+            <li><strong>Únete a nuestro Facebook:</strong> <a href="https://www.facebook.com/orobitverse" target="_blank">https://www.facebook.com/orobitverse</a></li>
+            <li><strong>Contáctanos por WhatsApp:</strong> <a href="https://wa.me/yourphonenumber?text=Hola%20OroBitverse!" target="_blank">Haz clic aquí para WhatsApp</a></li>
         </ul>
 
         <h3 class="mt-4">Invitación a participar en el staking o a explorar el ecosistema:</h3>
@@ -472,8 +516,17 @@
             La oportunidad de ser parte de OroBitverse comienza ahora. Explora nuestra DApp de Staking, adquiere tus tokens OroBit y empieza a construir un futuro financiero más seguro y rentable. El valor real está a tu alcance.
         </p>
         <ul class="mb-4">
-            <li><strong>Lanzar App de Staking:</strong> <a href="https://paulogomes10.github.io/orobit-website/app/orobit_withdraw.html" target="_blank">https://paulogomes10.github.io/orobit-website/app/orobit_withdraw.html</a></li>
-            <li><strong>Adquirir OroBit (PancakeSwap Testnet):</strong> <a href="https://pancakeswap.finance/swap?outputCurrency=0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3&chainId=97" target="_blank">https://pancakeswap.finance/swap?outputCurrency=0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3&chainId=97</a></li>
+            <li><strong>Lanzar App de Staking:</strong> <a href="app/orobit_staking_app.html" target="_blank">Acceder a la App de Staking</a></li>
+            <li><strong>Adquirir OroBit (PancakeSwap Testnet):</strong> <a href="https://pancakeswap.finance/swap?outputCurrency=0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3&chainId=97" target="_blank">Comprar OroBit en PancakeSwap</a></li>
+        </ul>
+
+        <div class="section-separator"></div>
+
+        <h2 id="anexos">11. Anexos (Opcional)</h2>
+        <ul>
+            <li>Direcciones de contratos importantes (Testnet y Mainnet cuando estén disponibles).</li>
+            <li>Enlaces a repositorios de código (GitHub).</li>
+            <li>Preguntas Frecuentes (FAQ).</li>
         </ul>
     </div>
 </body>
