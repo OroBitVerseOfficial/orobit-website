@@ -203,7 +203,6 @@
             <a href="https://www.facebook.com/orobitverse" target="_blank" class="hover:text-white">Facebook</a>
             <a href="https://t.me/orobitverse" target="_blank" class="hover:text-white">Telegram</a>
             <a href="https://twitter.com/orobitverse" target="_blank" class="hover:text-white">X (Twitter)</a>
-            <a href="https://youtube.com/@orobitverse" target="_blank" class="hover:text-white">YouTube</a>
             <a href="https://reddit.com/r/orobitverse" target="_blank" class="hover:text-white">Reddit</a>
         </div>
     </footer>
@@ -404,7 +403,7 @@
                         console.error("Error al conectar la cartera:", error);
                         let errorMessage = "Error al conectar la cartera.";
                         if (error.code === 4001) {
-                            errorMessage = "Conexión de cartera rechazada por el usuario en MetaMask.";
+                            errorMessage = "Transacción rechazada por el usuario en MetaMask.";
                         } else if (error.message) {
                             errorMessage += " Detalle: " + error.message;
                         }
@@ -723,6 +722,7 @@
 
 
             // Intenta autoconectar MetaMask si ya estaba logeado de una sesión anterior
+            // ESTO SÓLO FUNCIONARÁ CUANDO SE SIRVA DESDE UN SERVIDOR WEB (NO file://)
             if (typeof window.ethereum !== 'undefined' && window.ethereum.selectedAddress) {
                 connectWallet();
             }
