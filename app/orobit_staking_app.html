@@ -3,1248 +3,492 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OroBitverse Staking App</title>
-    <!-- Favicon de OroBit -->
-    <link rel="icon" href="../images/orobit_logo_1280x720.png" type="image/png">
+    <title>OroBitverse DApp - Staking & Retiro</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://www.orobitverse.com/app/assets/img/favicons/favicon.ico" type="image/x-icon">
 
-    <!-- Content Security Policy (CSP) - CORREGIDO Y VALIDADO para permitir 'unsafe-eval' -->
     <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self' data: https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
-        style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com;
-        img-src 'self' data: https://placehold.co https://* ;
-        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
-        connect-src 'self' https://testnet.bscscan.com https://api-testnet.bscscan.com https://data-seed-prebsc-1-s1.binance.org:8545 https://bsc-testnet.public.blastapi.io https://bsc-testnet.drpc.org;
-        object-src 'none';
-        base-uri 'self';
+        default-src 'self' data: gap: https://ssl.gstatic.com;
+        style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+        script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://www.gstatic.com;
+        connect-src 'self' https://data-seed-prebsc-1-s1.binance.org:8545 https://bsc-dataseed.binance.org https://bsc-dataseed1.binance.org https://rpc.ankr.com https://data-seed-prebsc-2-s1.binance.org:8545 https://data-seed-prebsc-1-s2.binance.org:8545 https://data-seed-prebsc-2-s2.binance.org:8545 https://data-seed-prebsc-1-s3.binance.org:8545 https://data-seed-prebsc-2-s3.binance.org:8545 https://data-seed-prebsc-1-s4.binance.org:8545 https://data-seed-prebsc-2-s4.binance.org:8545;
+        img-src 'self' data: content: https://www.orobitverse.com;
+        media-src *;
+        font-src 'self' data: https://fonts.gstatic.com;
+        frame-src 'self' https://www.facebook.com;
     ">
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Ethers.js CDN para interacción con Web3 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-
     <style>
+        /* Estilos base con Inter font y colores oscuros */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* bg-gray-900 oscuro */
-            color: #e2e8f0; /* text-gray-200 */
-        }
-        .btn-primary {
-            background: linear-gradient(to right, #FFD700, #FFA500); /* Dorado */
-            color: #333;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
-        }
-        .btn-primary:hover {
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
-            transform: translateY(-2px);
-        }
-        .btn-secondary {
-            background: linear-gradient(to right, #6366f1, #8b5cf6); /* Azul-Púrpura */
-            color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
-        }
-        .btn-secondary:hover {
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.7);
-            transform: translateY(-2px);
-        }
-        .tab-button.active {
-            border-bottom: 3px solid #FFD700;
-            color: #FFD700;
+            background-color: #1a1a2e; /* Fondo oscuro principal */
+            color: #e0e0e0; /* Texto claro */
         }
         .card {
-            background-color: rgba(45, 55, 72, 0.6); /* bg-gray-700 con opacidad */
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(74, 85, 104, 0.5); /* border-gray-600 con opacidad */
+            background-color: #16213e; /* Fondo ligeramente más claro para tarjetas */
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        /* Animación para el logo */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .btn-primary {
+            background-color: #0f3460;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
         }
-        .animate-pulse-effect {
-            animation: pulse 2s infinite ease-in-out;
+        .btn-primary:hover {
+            background-color: #1a4d7d;
         }
-        /* Estilos para el texto de neón (OroBitverse) */
-        .neon-text {
-            text-shadow: 0 0 5px #8B5CF6, 0 0 10px #8B5CF6, 0 0 15px #8B5CF6, 0 0 20px #8B5CF6; /* purple-500 */
+        .input-field {
+            background-color: #0f3460;
+            border: 1px solid #1a1a2e;
+            color: #e0e0e0;
+            padding: 10px 15px;
+            border-radius: 8px;
         }
-        /* Message Box specific styles */
-        #messageBox {
-            animation: fadeIn 0.5s ease-out;
-            min-width: 300px;
+        /* Estilos para el cuadro de mensajes (no es un alert() nativo) */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745; /* Verde para éxito */
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none; /* Oculto por defecto */
             text-align: center;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -60%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
+        .message-box.error {
+            background-color: #dc3545; /* Rojo para error */
         }
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid #6366f1;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem auto;
+        .message-box.warning {
+            background-color: #ffc107; /* Naranja para advertencia */
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .message-box.info {
+            background-color: #17a2b8; /* Azul para información */
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col items-center">
+<body class="flex flex-col min-h-screen">
+    <div id="messageBox" class="message-box"></div>
 
-    <!-- Header / Navbar -->
-    <header class="w-full bg-gray-800 bg-opacity-70 backdrop-filter backdrop-blur-lg sticky top-0 z-50 shadow-lg py-4">
-        <nav class="container mx-auto px-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <!-- Logo con animación -->
-                <img src="../images/orobit_logo_1280x720.png" alt="OroBitverse Logo" class="h-10 mr-3 animate-pulse-effect rounded-lg">
-                <!-- Enlace del logo y nombre a la página principal -->
-                <a href="../index.html" class="text-2xl font-bold text-yellow-400 neon-text">OroBitverse</a>
+    <header class="bg-gray-800 text-white p-4 shadow-md flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="https://www.orobitverse.com/app/assets/img/logo/main-logo.svg" alt="OroBitverse Logo" class="h-10 mr-3">
+            <h1 class="text-2xl font-bold">OroBitverse</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div id="walletStatus" class="flex items-center hidden"> <span id="walletAddress" class="text-sm">Conectado: 0x000...0000</span>
+                <button id="disconnectWalletBtn" class="ml-2 px-3 py-1 bg-red-600 hover:bg-red-700 rounded-md text-sm">Desconectar Cartera</button>
             </div>
-            <div class="flex items-center space-x-4">
-                <!-- Estado de la billetera: Desconectado, Conectando..., Conectado -->
-                <span id="walletAddressDisplay" class="text-gray-400 text-sm md:text-base">Desconectado</span>
-                <!-- Botón de Conectar/Desconectar Cartera -->
-                <button id="connectWalletBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition duration-300">
-                    Conectar Cartera
-                </button>
-            </div>
-        </nav>
+            <button id="connectWalletBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-sm">Conectar Cartera</button>
+        </div>
     </header>
 
-    <main class="container mx-auto p-4 mt-8 flex-grow">
-        <!-- Message Box para alertas personalizadas -->
-        <div id="messageBox" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 text-gray-900 p-6 rounded-lg shadow-xl z-50 hidden" role="alert">
-            <div id="messageSpinner" class="spinner hidden"></div>
-            <p id="messageText" class="text-lg font-semibold"></p>
-            <button id="closeMessageBox" class="mt-4 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full">Cerrar</button>
-        </div>
-
-        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-            <!-- Pestañas de navegación -->
-            <div class="flex justify-center border-b border-gray-700 mb-6">
-                <button id="dashboardTab" class="tab-button py-3 px-6 text-lg font-semibold transition duration-300 active">
-                    Mi Dashboard
-                </button>
-                <button id="stakeTab" class="tab-button py-3 px-6 text-lg font-semibold transition duration-300">
-                    Stakear
-                </button>
-                <button id="withdrawTab" class="tab-button py-3 px-6 text-lg font-semibold transition duration-300">
-                    Retirar
-                </button>
-                <button id="adminTab" class="tab-button py-3 px-6 text-lg font-semibold transition duration-300">
-                    Admin
-                </button>
+    <main class="flex-grow container mx-auto p-6">
+        <div class="flex flex-col md:flex-row justify-center items-start md:space-x-8 space-y-6 md:space-y-0">
+            <div class="w-full md:w-1/4 bg-gray-700 card p-4">
+                <nav class="flex flex-col space-y-2">
+                    <button id="miDashboardTab" class="tab-button bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-md text-left active">Mi Dashboard</button>
+                    <button id="stakeTab" class="tab-button bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-md text-left">Stakear</button>
+                    <button id="withdrawTab" class="tab-button bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-md text-left">Retirar</button>
+                    <button id="adminTab" class="tab-button bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-md text-left">Admin</button>
+                </nav>
             </div>
 
-            <!-- Contenido del Dashboard -->
-            <div id="dashboardContent" class="tab-content">
-                <h2 class="text-3xl font-bold text-yellow-400 mb-6 text-center">Mi Dashboard</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div class="card p-6 rounded-xl shadow-md">
-                        <h3 class="text-xl font-semibold text-blue-300 mb-3">Balance OroBit</h3>
-                        <p id="oroBitBalance" class="text-3xl font-bold">0.00 OROBIT</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-md">
-                        <h3 class="text-xl font-semibold text-green-300 mb-3">Recompensas Totales Acumuladas</h3>
-                        <p id="totalRewards" class="text-3xl font-bold">0.00 OROBIT</p>
+            <div class="w-full md:w-3/4 bg-gray-700 card p-6">
+                <div id="miDashboardContent" class="tab-content">
+                    <h2 class="text-xl font-semibold mb-4">Mi Dashboard</h2>
+                    <p>Aquí verás un resumen de tus tokens stakeados y recompensas.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div class="bg-gray-600 p-4 rounded-md">
+                            <h3 class="font-semibold">Tokens Stakeados</h3>
+                            <p id="stakedBalance" class="text-2xl mt-2">0 OROBIT</p>
+                        </div>
+                        <div class="bg-gray-600 p-4 rounded-md">
+                            <h3 class="font-semibold">Recompensas Pendientes</h3>
+                            <p id="pendingRewards" class="text-2xl mt-2">0 OROBIT</p>
+                        </div>
                     </div>
                 </div>
 
-                <h3 class="text-2xl font-bold text-yellow-300 mb-4">Mis Stakes Activos</h3>
-                <div id="activeStakes" class="space-y-4">
-                    <!-- Los stakes activos se cargarán aquí -->
-                    <p class="text-gray-400" id="noActiveStakesMessage">Conecta tu cartera para ver tus stakes.</p>
-                </div>
-            </div>
-
-            <!-- Contenido de Staking -->
-            <div id="stakeContent" class="tab-content hidden">
-                <h2 class="text-3xl font-bold text-yellow-400 mb-6 text-center">Stakear OroBit</h2>
-                <div class="card p-8 rounded-xl shadow-lg max-w-lg mx-auto">
+                <div id="stakeContent" class="tab-content hidden">
+                    <h2 class="text-xl font-semibold mb-4">Stakear OroBit</h2>
                     <div class="mb-4">
-                        <label for="stakeAmount" class="block text-gray-300 text-sm font-bold mb-2">Cantidad a Stakear (OROBIT):</label>
-                        <div class="flex items-center border border-gray-600 rounded-lg overflow-hidden">
-                            <input type="number" id="stakeAmount" class="shadow appearance-none border-none rounded w-full py-3 px-4 bg-gray-700 text-gray-200 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ej. 1000">
-                            <button id="maxStakeBtn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-4 rounded-r-lg transition duration-300">MAX</button>
+                        <label for="stakeAmount" class="block text-sm font-medium text-gray-300 mb-2">Cantidad a Stakear (OROBIT)</label>
+                        <div class="flex">
+                            <input type="number" id="stakeAmount" class="input-field flex-grow mr-2" placeholder="Ej: 100" min="1">
+                            <button id="maxStakeBtn" class="btn-primary px-4 py-2">MAX</button>
                         </div>
-                        <p class="text-gray-400 text-sm mt-1">Balance Disponible: <span id="availableBalance">0.00 OROBIT</span></p>
                     </div>
+                    <button id="approveStakeBtn" class="btn-primary w-full mb-3">Aprobar OroBit</button>
+                    <button id="confirmStakeBtn" class="btn-primary w-full">Confirmar Stake</button>
 
-                    <div class="mb-6">
-                        <label for="stakingPool" class="block text-gray-300 text-sm font-bold mb-2">Seleccionar Pool de Staking:</label>
-                        <select id="stakingPool" class="shadow border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200 leading-tight focus:outline-none focus:shadow-outline">
-                            <!-- Opciones de pools se cargarán aquí dinámicamente -->
-                            <option value="">Conecta tu cartera para ver los pools</option>
-                        </select>
+                    <div id="stakingApprovalMessage" class="hidden mt-4 p-4 bg-blue-800 text-white rounded-md">
+                        <p>Aprobando <span id="approvalAmount">0</span> OROBIT para el contrato de staking. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**</p>
                     </div>
-
-                    <button id="approveBtn" class="w-full btn-secondary font-bold py-3 px-6 rounded-xl text-lg mb-4">
-                        Aprobar OroBit
-                    </button>
-                    <button id="stakeBtn" class="w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">
-                        Confirmar Stake
-                    </button>
                 </div>
-            </div>
 
-            <!-- Contenido de Retiro -->
-            <div id="withdrawContent" class="tab-content hidden">
-                <h2 class="text-3xl font-bold text-yellow-400 mb-6 text-center">Retirar Stake y Recompensas</h2>
-                <div class="card p-8 rounded-xl shadow-lg max-w-lg mx-auto">
+                <div id="withdrawContent" class="tab-content hidden">
+                    <h2 class="text-xl font-semibold mb-4">Retirar OroBit</h2>
                     <div class="mb-4">
-                        <label for="withdrawStakeId" class="block text-gray-300 text-sm font-bold mb-2">ID de tu Stake a Retirar:</label>
-                        <input type="number" id="withdrawStakeId" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ej. 0">
+                        <label for="withdrawAmount" class="block text-sm font-medium text-gray-300 mb-2">Cantidad a Retirar (OROBIT)</label>
+                        <div class="flex">
+                            <input type="number" id="withdrawAmount" class="input-field flex-grow mr-2" placeholder="Ej: 50" min="1">
+                            <button id="maxWithdrawBtn" class="btn-primary px-4 py-2">MAX</button>
+                        </div>
                     </div>
-                    <button id="calculateRewardBtn" class="w-full btn-secondary font-bold py-3 px-6 rounded-xl text-lg mb-4">
-                        Calcular Recompensa
-                    </button>
-                    <p id="calculatedRewardDisplay" class="text-center text-lg text-green-300 mb-6 hidden">
-                        Recompensa estimada: <span class="font-bold">0.00 OROBIT</span>
-                    </p>
-                    <button id="withdrawConfirmBtn" class="w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">
-                        Retirar Stake
-                    </button>
+                    <button id="confirmWithdrawBtn" class="btn-primary w-full">Confirmar Retiro</button>
+
+                    <div id="withdrawalMessage" class="hidden mt-4 p-4 bg-yellow-800 text-white rounded-md">
+                        <p>Iniciando el retiro de <span id="withdrawalAmount">0</span> OROBIT. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**</p>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Contenido de Admin (solo para el propietario) -->
-            <div id="adminContent" class="tab-content hidden">
-                <h2 class="text-3xl font-bold text-yellow-400 mb-6 text-center">Panel de Administración</h2>
-                <p id="adminMessage" class="text-red-400 text-center mb-6">
-                    Acceso restringido. Solo el propietario del contrato puede ver este panel.
-                </p>
-
-                <div id="adminPanel" class="space-y-8 hidden">
-                    <!-- Sección Añadir Pool -->
-                    <div class="card p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold text-blue-300 mb-4">Añadir Nuevo Pool de Staking</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="poolDuration" class="block text-gray-300 text-sm font-bold mb-2">Duración (segundos, 0 para flexible):</label>
-                                <input type="number" id="poolDuration" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="Ej. 2592000 (30 días)">
-                            </div>
-                            <div>
-                                <label for="poolAPR" class="block text-gray-300 text-sm font-bold mb-2">APR (puntos base, Ej. 500 para 5%):</label>
-                                <input type="number" id="poolAPR" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="Ej. 500">
-                            </div>
-                        </div>
-                        <div class="mt-4 flex items-center">
-                            <input type="checkbox" id="isFlexiblePool" class="form-checkbox h-5 w-5 text-blue-600 rounded">
-                            <label for="isFlexiblePool" class="ml-2 text-gray-300">Es Flexible</label>
-                        </div>
-                        <button id="addPoolBtn" class="mt-6 w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">Añadir Pool</button>
+                <div id="adminContent" class="tab-content hidden">
+                    <h2 class="text-xl font-semibold mb-4">Panel de Administración</h2>
+                    <p>Funcionalidades exclusivas para administradores del contrato.</p>
                     </div>
-
-                    <!-- Sección Actualizar Estado de Pool -->
-                    <div class="card p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold text-blue-300 mb-4">Actualizar Estado de Pool Existente</h3>
-                        <div class="mb-4">
-                            <label for="poolIdStatus" class="block text-gray-300 text-sm font-bold mb-2">ID del Pool:</label>
-                            <input type="number" id="poolIdStatus" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="Ej. 0">
-                        </div>
-                        <div class="mt-4 flex items-center">
-                            <input type="checkbox" id="isActivePool" class="form-checkbox h-5 w-5 text-green-600 rounded" checked>
-                            <label for="isActivePool" class="ml-2 text-gray-300">Activo</label>
-                        </div>
-                        <button id="setPoolStatusBtn" class="mt-6 w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">Actualizar Estado</button>
-                    </div>
-
-                    <!-- Sección Actualizar Penalización Retiro Anticipado -->
-                    <div class="card p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold text-blue-300 mb-4">Configuración de Penalizaciones y Bonus</h3>
-                        <div class="mb-4">
-                            <label for="earlyWithdrawPenalty" class="block text-gray-300 text-sm font-bold mb-2">Penalización Retiro Anticipado (puntos base, Ej. 2000 para 20%):</label>
-                            <input type="number" id="earlyWithdrawPenalty" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="Ej. 2000">
-                        </div>
-                        <button id="setPenaltyBtn" class="mt-6 w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">Establecer Penalización</button>
-                        
-                        <div class="mt-6 mb-4">
-                            <label for="whaleBonusAPR" class="block text-gray-300 text-sm font-bold mb-2">Bonus APR para Ballenas (puntos base, Ej. 100 para 1%):</label>
-                            <input type="number" id="whaleBonusAPR" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="Ej. 100">
-                        </div>
-                        <button id="setWhaleBonusAPRBtn" class="mt-6 w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">Establecer Bonus APR Ballenas</button>
-
-                        <div class="mt-6 mb-4">
-                            <label for="whaleThreshold" class="block text-gray-300 text-sm font-bold mb-2">Umbral de Ballena (OROBIT, Ej. 500000):</label>
-                            <input type="number" id="whaleThreshold" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="Ej. 500000">
-                        </div>
-                        <button id="setWhaleThresholdBtn" class="mt-6 w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">Establecer Umbral Ballenas</button>
-                    </div>
-
-                    <!-- Sección Depositar Recompensas -->
-                    <div class="card p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold text-blue-300 mb-4">Depositar Recompensas</h3>
-                        <div class="mb-4">
-                            <label for="rewardsAmount" class="block text-gray-300 text-sm font-bold mb-2">Cantidad de OroBit a Depositar:</label>
-                            <input type="number" id="rewardsAmount" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="Ej. 1000">
-                        </div>
-                        <button id="depositRewardsBtn" class="mt-6 w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">Depositar Recompensas</button>
-                    </div>
-
-                    <!-- Sección Cambiar Cartera de Admin -->
-                    <div class="card p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold text-blue-300 mb-4">Cambiar Cartera de Administración de Staking</h3>
-                        <div class="mb-4">
-                            <label for="newAdminWalletAddress" class="block text-gray-300 text-sm font-bold mb-2">Nueva Dirección de Cartera:</label>
-                            <input type="text" id="newAdminWalletAddress" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="0x...">
-                        </div>
-                        <button id="setAdminWalletBtn" class="mt-6 w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">Establecer Cartera de Admin</button>
-                    </div>
-
-                    <!-- Sección Retiro de Tokens de Emergencia -->
-                    <div class="card p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold text-blue-300 mb-4">Retiro de Tokens de Emergencia</h3>
-                        <div class="mb-4">
-                            <label for="emergencyTokenAddress" class="block text-gray-300 text-sm font-bold mb-2">Dirección del Token (ERC20):</label>
-                            <input type="text" id="emergencyTokenAddress" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="0x...">
-                        </div>
-                        <div class="mb-4">
-                            <label for="emergencyAmount" class="block text-gray-300 text-sm font-bold mb-2">Cantidad a Retirar:</label>
-                            <input type="number" id="emergencyAmount" class="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 bg-gray-700 text-gray-200" placeholder="Ej. 1000">
-                        </div>
-                        <button id="emergencyWithdrawBtn" class="mt-6 w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg">Retirar Tokens de Emergencia</button>
-                    </div>
-
-                    <!-- Sección Pausar/Reanudar Contrato -->
-                    <div class="card p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold text-blue-300 mb-4">Control de Pausa del Contrato</h3>
-                        <button id="pauseContractBtn" class="mt-6 w-full btn-primary font-bold py-3 px-6 rounded-xl text-lg mb-4">Pausar Contrato</button>
-                        <button id="unpauseContractBtn" class="w-full btn-secondary font-bold py-3 px-6 rounded-xl text-lg">Reanudar Contrato</button>
-                    </div>
-
-                </div>
             </div>
         </div>
     </main>
 
-    <footer class="w-full bg-gray-800 py-6 mt-8">
-        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
-            <p>&copy; 2025 OroBitverse. Todos los derechos reservados.</p>
+    <footer class="bg-gray-800 text-gray-400 p-4 text-center mt-auto">
+        <p>&copy; 2025 OroBitverse. Todos los derechos reservados.</p>
+        <div class="flex justify-center space-x-4 mt-2">
+            <a href="https://www.facebook.com/orobitverse" target="_blank" class="hover:text-white">Facebook</a>
+            <a href="https://t.me/orobitverse" target="_blank" class="hover:text-white">Telegram</a>
+            <a href="https://twitter.com/orobitverse" target="_blank" class="hover:text-white">X (Twitter)</a>
+            <a href="https://youtube.com/@orobitverse" target="_blank" class="hover:text-white">YouTube</a>
+            <a href="https://reddit.com/r/orobitverse" target="_blank" class="hover:text-white">Reddit</a>
         </div>
     </footer>
 
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="application/javascript"></script>
     <script>
-        // --- Constantes de Contrato y Red (BNB Smart Chain Testnet) ---
-        const OROBIT_TOKEN_ADDRESS = "0x8bC4B9238047843C3Cb0508b9EdeB3a7729D72c3"; // Token OroBit en Testnet
-        const STAKING_CONTRACT_ADDRESS = "0x8278eBAdBC25BEea94d6370174b8Eeb7b5bfD253"; // Contrato de Staking en Testnet
-        const OWNER_ADDRESS = "0x0C6DA70B1BB307D78d154ec6adbD57ff696E0660"; // Dirección del propietario del contrato
+        // --- Configuración de Contratos Inteligentes ---
+        // ¡IMPORTANTE! Reemplaza estas direcciones con las direcciones REALES de tus contratos en la red que uses.
+        const OROBIT_TOKEN_ADDRESS = "0x89D9113d964f4A864198D65b75a18a901C9A1493"; // Dirección de tu token OroBit
+        const STAKING_CONTRACT_ADDRESS = "0x89D9113d964f4A864198D65b75a18a901C9A1493"; // Dirección de tu contrato de Staking
 
-        const CHAIN_ID = "0x61"; // ID de la cadena para BNB Smart Chain Testnet (97 en decimal)
-        const CHAIN_NAME = "BNB Smart Chain Testnet";
-        const BLOCK_EXPLORER_URL = "https://testnet.bscscan.com";
-
-        const BASIS_POINTS_DIVISOR = 10000; // Para convertir puntos base a porcentajes
-
-        // --- Variables Globales de Ethers.js y Contratos ---
-        let provider;
-        let signer;
-        let userAddress = null;
-        let orobitTokenContract;
-        let stakingContract;
-        let tokenDecimals = 18; // Asumimos 18 decimales por defecto, se actualizará al cargar el token.
-        let isWalletConnected = false; // Nuevo estado para la UI
-
-        // ABIs (Application Binary Interfaces)
-        // ABI del Token OroBit (IERC20 simplificado y CORRECTO)
+        // ABI del Token OroBit (funciones esenciales)
         const OROBIT_TOKEN_ABI = [
+            "function approve(address spender, uint256 amount) returns (bool)",
+            "function allowance(address owner, address spender) view returns (uint256)",
+            "function balanceOf(address account) view returns (uint256)",
             "function name() view returns (string)",
             "function symbol() view returns (string)",
-            "function decimals() view returns (uint8)",
-            "function totalSupply() view returns (uint256)",
-            "function balanceOf(address account) view returns (uint256)",
-            "function allowance(address owner, address spender) view returns (uint256)",
-            "function approve(address spender, uint256 amount) returns (bool)",
-            "event Transfer(address indexed from, address indexed to, uint256 value)",
-            "event Approval(address indexed owner, address indexed spender, uint256 value)"
+            "function decimals() view returns (uint8)"
         ];
 
-        // ABI del Contrato de Staking (OroBitStakingVault) - Este es el ABI que proporcionaste, ya limpio.
-        const STAKING_CONTRACT_ABI = [{"inputs":[{"internalType":"contract IERC20","name":"_oroBitToken","type":"address"},{"internalType":"address","name":"_stakingAdminWallet","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newPenaltyBP","type":"uint256"}],"name":"EarlyWithdrawPenaltyUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"tokenAddress","type":"address"},{"indexed":true,"internalType":"address","name":"ownerAddress","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EmergencyTokensWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"poolId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"duration","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"aprBP","type":"uint256"},{"indexed":false,"internalType":"bool","name":"isFlexible","type":"bool"}],"name":"PoolAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"poolId","type":"uint256"},{"indexed":false,"internalType":"bool","name":"isActive","type":"bool"}],"name":"PoolStatusUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"depositor","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsDeposited","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"poolId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"stakeId","type":"uint256"}],"name":"Staked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"oldAddress","type":"address"},{"indexed":true,"internalType":"address","name":"newAddress","type":"address"}],"name":"StakingAdminWalletUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newAPR_BP","type":"uint256"}],"name":"WhaleBonusAPRUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newThreshold","type":"uint256"}],"name":"WhaleThresholdUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"stakeId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"principalAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"rewardedAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"penaltyAmount","type":"uint256"},{"indexed":false,"internalType":"bool","name":"earlyWithdrawal","type":"bool"}],"name":"Withdrawn","type":"event"},{"inputs":[{"internalType":"uint256","name":"_duration","type":"uint256"},{"internalType":"uint256","name":"_aprBP","type":"uint256"},{"internalType":"bool","name":"_isFlexible","type":"bool"}],"name":"addPool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint256","name":"_stakeId","type":"uint256"}],"name":"calculateReward","outputs":[{"internalType":"uint256","name":"reward","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"depositRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"earlyWithdrawPenaltyBP","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"emergencyWithdrawToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getContractTokenBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_poolId","type":"uint256"}],"name":"getPool","outputs":[{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"bool","name":"isFlexible","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getStakingPoolsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint256","name":"_stakeId","type":"uint256"}],"name":"getUserStake","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"startTime","type":"uint256"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"withdrawn","type":"bool"},{"internalType":"uint256","name":"lastRewardClaimTime","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserStakesLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"oroBitToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newPenaltyBP","type":"uint256"}],"name":"setEarlyWithdrawPenalty","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_poolId","type":"uint256"},{"internalType":"bool","name":"_isActive","type":"bool"}],"name":"setPoolStatus","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newAdminWallet","type":"address"}],"name":"setStakingAdminWallet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newAPR_BP","type":"uint256"}],"name":"setWhaleBonusAPR","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newThreshold","type":"uint256"}],"name":"setWhaleThreshold","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_poolId","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"stake","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"stakingAdminWallet","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"stakingPools","outputs":[{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"bool","name":"isFlexible","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userStakes","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"startTime","type":"uint256"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"aprBP","type":"uint256"},{"internalType":"bool","name":"withdrawn","type":"bool"},{"internalType":"uint256","name":"lastRewardClaimTime","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"whaleBonusAPR_BP","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"whaleThreshold","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_stakeId","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+        // ABI del Contrato de Staking (funciones esenciales para stake y retiro, y saldos)
+        const STAKING_CONTRACT_ABI = [
+            "function stake(uint256 amount)",
+            "function withdraw(uint256 amount)",
+            "function getStakedBalance(address user) view returns (uint256)",
+            "function getPendingRewards(address user) view returns (uint256)",
+            "function totalStaked() view returns (uint256)"
+        ];
 
+        // --- Variables Globales ---
+        let signer;
+        let provider;
+        let orobitTokenContract;
+        let stakingContract;
+        let currentAccount = null;
 
-        // --- Funciones de Utilidad de UI (Message Box) ---
-        function showMessageBox(message, type = 'info', spinner = false) {
+        // --- Funciones de Utilidad ---
+        // Muestra mensajes personalizados en la DApp (no usa alert() nativo)
+        function showMessage(message, type = 'info', duration = 5000) {
             const msgBox = document.getElementById('messageBox');
-            const msgText = document.getElementById('messageText');
-            const spinnerElem = document.getElementById('messageSpinner');
-            const closeBtn = document.getElementById('closeMessageBox');
+            msgBox.textContent = message;
+            msgBox.className = `message-box ${type}`; // Reinicia clases y añade el tipo
+            msgBox.style.display = 'block';
 
-            msgText.innerHTML = message;
-            msgBox.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-6 rounded-lg shadow-xl z-50'; // Reset classes
-            
-            if (type === 'info') {
-                msgBox.classList.add('bg-blue-400', 'text-gray-900');
-            } else if (type === 'success') {
-                msgBox.classList.add('bg-green-400', 'text-gray-900');
-            } else if (type === 'error') {
-                msgBox.classList.add('bg-red-500', 'text-white');
-            } else if (type === 'warning') {
-                msgBox.classList.add('bg-yellow-400', 'text-gray-900');
-            }
-
-            if (spinner) {
-                spinnerElem.classList.remove('hidden');
-                closeBtn.classList.add('hidden');
-            } else {
-                spinnerElem.classList.add('hidden');
-                closeBtn.classList.remove('hidden');
-            }
-
-            msgBox.classList.remove('hidden');
-            return new Promise(resolve => {
-                closeBtn.onclick = () => {
-                    msgBox.classList.add('hidden');
-                    resolve(true); // Resolve when closed
-                };
-            });
+            // Oculta el mensaje después de 'duration' milisegundos
+            setTimeout(() => {
+                msgBox.style.display = 'none';
+            }, duration);
         }
 
-        function hideMessageBox() {
-            document.getElementById('messageBox').classList.add('hidden');
-            document.getElementById('messageSpinner').classList.add('hidden');
-        }
-
-        // --- Conexión a Cartera y Ethers.js ---
-        async function initializeWeb3() {
-            if (!window.ethereum) {
-                await showMessageBox("MetaMask no detectado. Por favor, instala MetaMask para usar esta DApp.", 'warning');
-                userAddress = null;
-                isWalletConnected = false;
-                updateWalletUI();
-                return;
-            }
-
-            try {
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                
-                // Pedir cuentas si aún no están expuestas
-                const accounts = await provider.send("eth_requestAccounts", []);
-                userAddress = accounts[0]; // La primera cuenta conectada
-
-                signer = provider.getSigner();
-
-                // Verificar la red
-                const network = await provider.getNetwork();
-                if (network.chainId !== parseInt(CHAIN_ID, 16)) {
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_switchEthereumChain',
-                            params: [{ chainId: CHAIN_ID }],
-                        });
-                        // Re-inicializar después de cambiar de red, si es exitoso
-                        provider = new ethers.providers.Web3Provider(window.ethereum);
-                        signer = provider.getSigner();
-                        userAddress = await signer.getAddress();
-                    } catch (switchError) {
-                        if (switchError.code === 4902 || switchError.code === 4001) {
-                            await showMessageBox(`Por favor, cambia a ${CHAIN_NAME} en MetaMask o añade la red manualmente.`, 'error');
-                        } else {
-                            await showMessageBox(`Error al cambiar de red: ${switchError.message}`, 'error');
-                        }
-                        userAddress = null;
-                        isWalletConnected = false;
-                        updateWalletUI();
-                        return;
-                    }
-                }
-
-                // Inicializar contratos
-                orobitTokenContract = new ethers.Contract(OROBIT_TOKEN_ADDRESS, OROBIT_TOKEN_ABI, signer);
-                stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_CONTRACT_ABI, signer);
+        // Actualiza la interfaz de usuario con el estado de la cartera y saldos
+        async function updateUI() {
+            if (currentAccount) {
+                document.getElementById('walletAddress').textContent = `Conectado: ${currentAccount.substring(0, 6)}...${currentAccount.substring(currentAccount.length - 4)}`;
+                document.getElementById('walletStatus').classList.remove('hidden');
+                document.getElementById('connectWalletBtn').classList.add('hidden');
 
                 try {
-                    tokenDecimals = await orobitTokenContract.decimals();
-                } catch (e) {
-                    console.warn("No se pudieron obtener los decimales del token, usando 18 por defecto.", e);
-                    tokenDecimals = 18; // Fallback
+                    // Obtener y mostrar saldo stakeado
+                    const stakedBalanceWei = await stakingContract.getStakedBalance(currentAccount);
+                    const stakedBalanceEth = ethers.utils.formatUnits(stakedBalanceWei, 18); // Asumiendo 18 decimales para OroBit
+                    document.getElementById('stakedBalance').textContent = `${parseFloat(stakedBalanceEth).toFixed(2)} OROBIT`;
+
+                    // Obtener y mostrar recompensas pendientes
+                    const pendingRewardsWei = await stakingContract.getPendingRewards(currentAccount);
+                    const pendingRewardsEth = ethers.utils.formatUnits(pendingRewardsWei, 18);
+                    document.getElementById('pendingRewards').textContent = `${parseFloat(pendingRewardsEth).toFixed(2)} OROBIT`;
+
+                } catch (error) {
+                    console.error("Error al actualizar saldos de UI:", error);
+                    showMessage("Error al cargar saldos: " + error.message, 'error');
                 }
-
-                isWalletConnected = true;
-                updateWalletUI();
-                // Actualizar todos los datos después de una conexión exitosa
-                await updateDashboardData();
-                await renderStakingPools();
-                await renderMyStakes();
-                checkAdminAccess(); // Verificar acceso admin después de la conexión
-
-            } catch (error) {
-                console.error("Error al inicializar Web3/conectar la cartera:", error);
-                await showMessageBox(`Error al conectar la cartera: ${error.message}. Asegúrate de que MetaMask esté instalado y desbloqueado.`, 'error');
-                userAddress = null;
-                isWalletConnected = false;
-                updateWalletUI();
-            }
-        }
-
-        async function connectWallet() {
-            if (isWalletConnected) {
-                // Si ya está conectado, esto actúa como desconectar
-                disconnectWallet();
             } else {
-                await initializeWeb3();
+                // Estado de no conectado
+                document.getElementById('walletStatus').classList.add('hidden');
+                document.getElementById('connectWalletBtn').classList.remove('hidden');
+                document.getElementById('stakedBalance').textContent = '0 OROBIT';
+                document.getElementById('pendingRewards').textContent = '0 OROBIT';
             }
         }
 
+        // --- Conexión de Cartera ---
+        async function connectWallet() {
+            // Verifica si MetaMask está instalado
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    // Solicita acceso a las cuentas de MetaMask
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    // Crea un proveedor Ethers.js
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    // Obtiene el signer (para firmar transacciones)
+                    signer = provider.getSigner();
+                    // Obtiene la dirección de la cuenta conectada
+                    currentAccount = await signer.getAddress();
+
+                    // Inicializa los contratos con el signer
+                    orobitTokenContract = new ethers.Contract(OROBIT_TOKEN_ADDRESS, OROBIT_TOKEN_ABI, signer);
+                    stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_CONTRACT_ABI, signer);
+
+                    showMessage("Cartera conectada exitosamente!", "success");
+                    updateUI(); // Actualiza la UI con la cartera conectada
+
+                    // Escucha cambios de cuenta en MetaMask
+                    window.ethereum.on('accountsChanged', (accounts) => {
+                        if (accounts.length > 0) {
+                            currentAccount = accounts[0];
+                            signer = provider.getSigner(); // Actualiza el signer para la nueva cuenta
+                            updateUI();
+                        } else {
+                            // Usuario ha desconectado todas las cuentas
+                            currentAccount = null;
+                            updateUI();
+                            showMessage("Cartera desconectada.", "info");
+                        }
+                    });
+
+                    // Escucha cambios de red en MetaMask
+                    window.ethereum.on('chainChanged', (chainId) => {
+                        window.location.reload(); // Recarga la página para re-inicializar todo en la nueva red
+                    });
+
+                } catch (error) {
+                    console.error("Error al conectar la cartera:", error);
+                    showMessage("Error al conectar la cartera: " + error.message, "error");
+                }
+            } else {
+                showMessage("MetaMask no detectado. Por favor, instala MetaMask para usar esta DApp.", "warning");
+                console.error("MetaMask no detectado.");
+            }
+        }
+
+        // Función para desconectar la cartera (solo a nivel de la DApp)
         function disconnectWallet() {
-            userAddress = null;
+            // MetaMask no tiene un método directo para revocar permisos, pero podemos limpiar nuestro estado interno.
+            currentAccount = null;
+            provider = null;
+            signer = null;
             orobitTokenContract = null;
             stakingContract = null;
-            isWalletConnected = false;
-            updateWalletUI();
-            // Limpiar la UI
-            document.getElementById('oroBitBalance').textContent = '0.00 OROBIT';
-            document.getElementById('totalRewards').textContent = '0.00 OROBIT';
-            document.getElementById('availableBalance').textContent = '0.00 OROBIT';
-            document.getElementById('activeStakes').innerHTML = '<p class="text-gray-400" id="noActiveStakesMessage">Conecta tu cartera para ver tus stakes.</p>';
-            document.getElementById('stakingPool').innerHTML = '<option value="">Conecta tu cartera para ver los pools</option>';
-            document.getElementById('adminPanel').classList.add('hidden');
-            document.getElementById('adminMessage').classList.remove('hidden');
-            showMessageBox("Cartera desconectada.", 'info');
+            updateUI();
+            showMessage("Cartera desconectada.", "info");
         }
 
-        function updateWalletUI() {
-            const connectBtn = document.getElementById('connectWalletBtn');
-            const walletDisplay = document.getElementById('walletAddressDisplay');
-            if (isWalletConnected && userAddress) {
-                walletDisplay.textContent = `Conectado: ${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
-                connectBtn.textContent = 'Desconectar Cartera';
-                connectBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                connectBtn.classList.add('bg-red-600', 'hover:bg-red-700');
-            } else {
-                walletDisplay.textContent = 'Desconectado';
-                connectBtn.textContent = 'Conectar Cartera';
-                connectBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
-                connectBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        // --- Funciones de Staking ---
+        async function approveOrobit() {
+            if (!signer) {
+                showMessage("Por favor, conecta tu cartera primero.", "warning");
+                return;
             }
-            // Asegura que las pestañas muestren el contenido apropiado si no está conectado
-            if (!isWalletConnected) {
-                document.getElementById('activeStakes').innerHTML = '<p class="text-gray-400">Conecta tu cartera para ver tus stakes.</p>';
-                document.getElementById('stakingPool').innerHTML = '<option value="">Conecta tu cartera para ver los pools</option>';
-                document.getElementById('adminPanel').classList.add('hidden');
-                document.getElementById('adminMessage').classList.remove('hidden');
-            }
-        }
 
-        // Event handlers for MetaMask
-        if (window.ethereum) {
-            window.ethereum.on('accountsChanged', async (accounts) => {
-                if (accounts.length === 0) {
-                    console.log('Por favor, conecta a MetaMask.');
-                    disconnectWallet();
-                } else if (userAddress && accounts[0].toLowerCase() !== userAddress.toLowerCase()) {
-                    console.log(`Cuenta cambiada a: ${accounts[0]}`);
-                    await initializeWeb3(); // Re-initialize with new account
-                } else if (!userAddress) { // Case where user connects an account for the first time
-                    await initializeWeb3();
-                }
-            });
-
-            window.ethereum.on('chainChanged', async (chainId) => {
-                console.log(`Cambio de red a Chain ID: ${chainId}`);
-                // Simplemente re-inicializamos todo para asegurar la consistencia
-                await initializeWeb3(); 
-            });
-        }
-
-        // --- Funciones de Interacción con Contratos ---
-
-        // Actualizar datos del Dashboard
-        async function updateDashboardData() {
-            if (!isWalletConnected || !orobitTokenContract || !userAddress) {
-                document.getElementById('oroBitBalance').textContent = '0.00 OROBIT';
-                document.getElementById('availableBalance').textContent = '0.00 OROBIT';
-                document.getElementById('totalRewards').textContent = '0.00 OROBIT';
+            const amount = document.getElementById('stakeAmount').value;
+            if (!amount || parseFloat(amount) <= 0) {
+                showMessage("Introduce una cantidad válida para aprobar.", "warning");
                 return;
             }
 
             try {
-                const balanceWei = await orobitTokenContract.balanceOf(userAddress);
-                document.getElementById('oroBitBalance').textContent = `${ethers.utils.formatUnits(balanceWei, tokenDecimals)} OROBIT`;
-                document.getElementById('availableBalance').textContent = `${ethers.utils.formatUnits(balanceWei, tokenDecimals)} OROBIT`;
+                const amountWei = ethers.utils.parseUnits(amount, 18); // Convierte a Wei (asumiendo 18 decimales)
+                document.getElementById('approvalAmount').textContent = amount;
+                document.getElementById('stakingApprovalMessage').classList.remove('hidden'); // Muestra mensaje de aprobación
 
-                let totalAccruedRewards = ethers.BigNumber.from(0);
-                const userStakesLength = await stakingContract.getUserStakesLength(userAddress);
-                for (let i = 0; i < userStakesLength; i++) {
-                    const stake = await stakingContract.getUserStake(userAddress, i);
-                    if (!stake.withdrawn) {
-                        const reward = await stakingContract.calculateReward(userAddress, i);
-                        totalAccruedRewards = totalAccruedRewards.add(reward);
-                    }
-                }
-                document.getElementById('totalRewards').textContent = `${ethers.utils.formatUnits(totalAccruedRewards, tokenDecimals)} OROBIT`;
-
-            } catch (error) {
-                console.error("Error al actualizar datos del dashboard:", error);
-                document.getElementById('oroBitBalance').textContent = 'Error';
-                document.getElementById('availableBalance').textContent = 'Error';
-                document.getElementById('totalRewards').textContent = 'Error';
-            }
-        }
-
-        // Renderizar los pools de staking en la pestaña "Stakear"
-        async function renderStakingPools() {
-            const selectElement = document.getElementById('stakingPool');
-            if (!isWalletConnected || !stakingContract) {
-                selectElement.innerHTML = '<option value="">Conecta tu cartera para ver los pools</option>';
-                return;
-            }
-            selectElement.innerHTML = '<option value="">Cargando pools...</option>';
-
-            try {
-                const poolsLength = await stakingContract.getStakingPoolsLength();
-                let optionsHtml = '<option value="">Selecciona un Pool</option>';
-                if (poolsLength == 0) {
-                     optionsHtml = '<option value="">No hay pools disponibles</option>';
-                } else {
-                    for (let i = 0; i < poolsLength; i++) {
-                        const pool = await stakingContract.stakingPools(i);
-                        if (pool.isActive) {
-                            const durationText = pool.isFlexible ? "Flexible" : `${pool.duration / (24 * 60 * 60)} Días`;
-                            const aprText = (pool.aprBP / BASIS_POINTS_DIVISOR * 100).toFixed(2);
-                            optionsHtml += `<option value="${i}">Pool ${durationText} - ${aprText}% APR</option>`;
-                        }
-                    }
-                }
-                selectElement.innerHTML = optionsHtml;
-            } catch (error) {
-                console.error("Error al cargar los pools de staking:", error);
-                selectElement.innerHTML = '<option value="">Error al cargar pools</option>';
-            }
-        }
-
-        // Renderizar los stakes del usuario en el Dashboard
-        async function renderMyStakes() {
-            const container = document.getElementById('activeStakes');
-            if (!isWalletConnected || !stakingContract || !userAddress) {
-                container.innerHTML = '<p class="text-gray-400" id="noActiveStakesMessage">Conecta tu cartera para ver tus stakes.</p>';
-                return;
-            }
-            container.innerHTML = '<p class="text-gray-400" id="noActiveStakesMessage">Cargando tus stakes...</p>';
-
-            try {
-                const userStakesLength = await stakingContract.getUserStakesLength(userAddress);
-                let stakesHtml = '';
-                let hasActiveStakes = false;
-
-                if (userStakesLength === 0) {
-                    stakesHtml = '<p class="text-gray-400" id="noActiveStakesMessage">No tienes stakes activos.</p>';
-                } else {
-                    for (let i = 0; i < userStakesLength; i++) {
-                        const stake = await stakingContract.getUserStake(userAddress, i);
-                        if (!stake.withdrawn) {
-                            hasActiveStakes = true;
-                            const pool = await stakingContract.stakingPools(stake.poolId);
-                            const currentReward = await stakingContract.calculateReward(userAddress, i);
-                            
-                            const stakedAmountFormatted = ethers.utils.formatUnits(stake.amount, tokenDecimals);
-                            const rewardAmountFormatted = ethers.utils.formatUnits(currentReward, tokenDecimals);
-                            
-                            const durationText = pool.isFlexible ? "Flexible" : `${stake.duration / (24 * 60 * 60)} Días`;
-                            const aprText = (stake.aprBP / BASIS_POINTS_DIVISOR * 100).toFixed(2);
-
-                            const endTime = new Date((parseInt(stake.startTime) + parseInt(stake.duration)) * 1000);
-                            const now = new Date();
-                            const isEnded = pool.isFlexible ? false : (now > endTime);
-                            const statusText = isEnded ? 'Finalizado' : 'Activo';
-                            const statusColor = isEnded ? 'text-green-400' : 'text-orange-400';
-
-                            stakesHtml += `
-                                <div class="card p-4 rounded-xl shadow-md">
-                                    <h3 class="text-xl font-semibold mb-2">Stake ID: ${i} | Pool: ${durationText}</h3>
-                                    <p class="text-gray-300">Cantidad Staked: <span class="font-bold">${parseFloat(stakedAmountFormatted).toFixed(4)} OROBIT</span></p>
-                                    <p class="text-300">APR: <span class="font-bold">${aprText}%</span></p>
-                                    <p class="text-gray-300">Recompensas Acumuladas: <span class="font-bold text-green-300">${parseFloat(rewardAmountFormatted).toFixed(4)} OROBIT</span></p>
-                                    <p class="text-gray-300">Estado: <span class="font-bold ${statusColor}">${statusText}</span></p>
-                                    <p class="text-gray-300">Inicio: ${new Date(parseInt(stake.startTime) * 1000).toLocaleDateString()}</p>
-                                    ${pool.isFlexible ? '' : `<p class="text-gray-300">Fin: ${endTime.toLocaleDateString()}</p>`}
-                                </div>
-                            `;
-                        }
-                    }
-                }
-                container.innerHTML = hasActiveStakes ? stakesHtml : '<p class="text-gray-400" id="noActiveStakesMessage">No tienes stakes activos.</p>';
-            } catch (error) {
-                console.error("Error al cargar mis stakes:", error);
-                container.innerHTML = '<p class="text-red-400" id="noActiveStakesMessage">Error al cargar tus stakes. Asegúrate de estar conectado a la red correcta y que el ABI sea exacto.</p>';
-            }
-        }
-
-        // --- Funciones de Staking y Retiro ---
-
-        document.getElementById('maxStakeBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || !orobitTokenContract) {
-                await showMessageBox("Por favor, conecta tu cartera primero.", 'warning');
-                return;
-            }
-            try {
-                const balanceWei = await orobitTokenContract.balanceOf(userAddress);
-                const balanceFormatted = ethers.utils.formatUnits(balanceWei, tokenDecimals);
-                document.getElementById('stakeAmount').value = parseFloat(balanceFormatted).toFixed(4);
-            } catch (error) {
-                console.error("Error al obtener el balance MAX:", error);
-                await showMessageBox("No se pudo obtener el balance máximo.", 'error');
-            }
-        });
-
-        document.getElementById('approveBtn').addEventListener('click', async () => {
-            console.log("------------------------------------------");
-            console.log("INICIO DE PROCESO DE APROBACIÓN (APPROVE)");
-            console.log("------------------------------------------");
-
-            if (!isWalletConnected || !orobitTokenContract) {
-                console.error("APPROVE ERROR: Cartera no conectada o contrato OroBit no inicializado. Abortando.");
-                await showMessageBox("Por favor, conecta tu cartera y asegúrate de que el token OroBit esté inicializado.", 'warning');
-                return;
-            }
-            console.log("APPROVE LOG: Cartera conectada y contrato OroBit disponible.");
-
-            const amountInput = document.getElementById('stakeAmount');
-            let amount = parseFloat(amountInput.value);
-
-            if (isNaN(amount) || amount <= 0) {
-                console.error("APPROVE ERROR: Cantidad a aprobar inválida o cero. Abortando.");
-                await showMessageBox("Introduce una cantidad válida y positiva para aprobar.", 'warning');
-                return;
-            }
-            
-            const amountWei = ethers.utils.parseUnits(amount.toString(), tokenDecimals);
-            console.log(`APPROVE LOG: Cantidad a aprobar (Wei): ${amountWei.toString()}`);
-            console.log(`APPROVE LOG: Contrato OroBit Token Address: ${orobitTokenContract.address}`);
-            console.log(`APPROVE LOG: Contrato de Staking (Spender) Address: ${STAKING_CONTRACT_ADDRESS}`);
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Aprobando ${amount} OROBIT para el contrato de staking. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
-            
-            try {
-                console.log("APPROVE LOG: Intentando enviar transacción de aprobación a MetaMask...");
-                // Esta línea es donde MetaMask debería mostrar la ventana emergente.
+                showMessage(`Aprobando ${amount} OROBIT... Por favor, confirma en MetaMask.`, "info", 60000); // Duración larga para la transacción
                 const tx = await orobitTokenContract.approve(STAKING_CONTRACT_ADDRESS, amountWei);
-                console.log("APPROVE LOG: Transacción de aprobación enviada (a MetaMask). Hash de Tx (antes de esperar confirmación):", tx.hash);
-                console.log("APPROVE LOG: Esperando confirmación de la transacción en la blockchain...");
-                
-                // Esperar a que la transacción sea minada (confirmada en la blockchain)
-                await tx.wait(); 
-                console.log("APPROVE LOG: Transacción de aprobación confirmada en la blockchain. Status:", tx.status);
-                
-                await showMessageBox(`Aprobación exitosa. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-                await updateDashboardData(); // Refrescar balance disponible
+                await tx.wait(); // Espera a que la transacción sea minada
+
+                document.getElementById('stakingApprovalMessage').classList.add('hidden'); // Oculta el mensaje al terminar
+                showMessage(`¡${amount} OROBIT aprobados exitosamente! Ahora puedes confirmar el stake.`, "success");
+
             } catch (error) {
-                console.error("APPROVE CATCH BLOCK: Error detectado durante el proceso de aprobación:", error);
-                let errorMessage = `Error al aprobar tokens: ${error.message}.`;
-                if (error.code === 4001) { // User rejected transaction
-                    errorMessage = "Transacción rechazada por el usuario en MetaMask. Por favor, inténtalo de nuevo y acepta la transacción.";
-                } else if (error.data && error.data.message) { // Contract revert message
-                    errorMessage = `Error del contrato: ${error.data.message}.`;
-                } else if (error.code === -32603) { // Internal JSON-RPC error
-                     errorMessage = `Error interno de MetaMask/RPC: ${error.message}. Esto puede ser un problema temporal de red, o un rechazo silencioso de la transacción. Verifica tu MetaMask.`;
-                } else {
-                    errorMessage = `Se ha producido un error inesperado: ${error.message}. Por favor, revisa la consola del navegador para más detalles.`;
-                }
-                await showMessageBox(errorMessage, 'error');
-            } finally {
-                console.log("------------------------------------------");
-                console.log("FIN DE PROCESO DE APROBACIÓN (APPROVE)");
-                console.log("------------------------------------------");
-                hideMessageBox(); // Asegura que el mensaje se oculte, incluso en caso de error.
+                console.error("Error al aprobar OroBit:", error);
+                document.getElementById('stakingApprovalMessage').classList.add('hidden'); // Oculta el mensaje en caso de error
+                showMessage("Error al aprobar OroBit: " + error.message, "error");
             }
-        });
+        }
 
-        document.getElementById('stakeBtn').addEventListener('click', async () => {
-            console.log("------------------------------------------");
-            console.log("INICIO DE PROCESO DE STAKING (STAKE)");
-            console.log("------------------------------------------");
-            if (!isWalletConnected || !stakingContract || !orobitTokenContract) {
-                console.error("STAKE ERROR: Cartera no conectada o contratos no inicializados. Abortando.");
-                await showMessageBox("Por favor, conecta tu cartera y asegúrate de que los contratos estén inicializados.", 'warning');
+        async function confirmStake() {
+            if (!signer) {
+                showMessage("Por favor, conecta tu cartera primero.", "warning");
                 return;
             }
-            console.log("STAKE LOG: Cartera conectada y contratos disponibles.");
 
-            const stakeAmountInput = document.getElementById('stakeAmount');
-            const poolSelect = document.getElementById('stakingPool');
-
-            const amount = parseFloat(stakeAmountInput.value);
-            const poolId = parseInt(poolSelect.value);
-
-            if (isNaN(amount) || amount <= 0) {
-                console.error("STAKE ERROR: Cantidad a stakear inválida o cero. Abortando.");
-                await showMessageBox("Introduce una cantidad válida para stakear.", 'warning');
+            const amount = document.getElementById('stakeAmount').value;
+            if (!amount || parseFloat(amount) <= 0) {
+                showMessage("Introduce una cantidad válida para stakear.", "warning");
                 return;
             }
-            if (isNaN(poolId) || poolSelect.value === "") {
-                console.error("STAKE ERROR: Pool de staking no seleccionado o inválido. Abortando.");
-                await showMessageBox("Selecciona un pool de staking válido.", 'warning');
-                return;
-            }
-            
-            const amountWei = ethers.utils.parseUnits(amount.toString(), tokenDecimals);
-            console.log(`STAKE LOG: Cantidad a stakear (Wei): ${amountWei.toString()}`);
-            console.log(`STAKE LOG: Pool ID seleccionado: ${poolId}`);
 
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Confirmando stake de ${amount} OROBIT en el Pool ID ${poolId}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             try {
-                // Verificar aprobación antes de stakear
-                console.log("STAKE LOG: Verificando allowance para el contrato de staking...");
-                const allowance = await orobitTokenContract.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
-                console.log(`STAKE LOG: Allowance actual para ${STAKING_CONTRACT_ADDRESS}: ${ethers.utils.formatUnits(allowance, tokenDecimals)} OROBIT`);
+                const amountWei = ethers.utils.parseUnits(amount, 18);
 
+                // Opcional: Verificar la aprobación antes de stakear
+                const allowance = await orobitTokenContract.allowance(currentAccount, STAKING_CONTRACT_ADDRESS);
                 if (allowance.lt(amountWei)) {
-                    console.warn("STAKE WARNING: Allowance insuficiente. Necesaria aprobación antes de stakear.");
-                    await showMessageBox("Necesitas aprobar el contrato de staking para gastar esta cantidad de OroBit primero. Haz clic en 'Aprobar OroBit'.", 'warning');
+                    showMessage("Primero necesitas aprobar esta cantidad de tokens o más. Haz clic en 'Aprobar OroBit'.", "warning");
                     return;
                 }
-                console.log("STAKE LOG: Allowance suficiente. Procediendo a stakear.");
 
-                console.log("STAKE LOG: Intentando enviar transacción de stake a MetaMask...");
-                const tx = await stakingContract.stake(poolId, amountWei);
-                console.log("STAKE LOG: Transacción de stake enviada (a MetaMask). Hash de Tx (antes de esperar confirmación):", tx.hash);
-                console.log("STAKE LOG: Esperando confirmación de la transacción en la blockchain...");
+                showMessage(`Staking ${amount} OROBIT... Por favor, confirma en MetaMask.`, "info", 60000); // Duración larga para la transacción
+                const tx = await stakingContract.stake(amountWei);
                 await tx.wait();
-                console.log("STAKE LOG: Transacción de stake confirmada en la blockchain. Status:", tx.status);
 
-                await showMessageBox(`¡Stake exitoso! Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-                
-                stakeAmountInput.value = '';
-                await updateDashboardData();
-                await renderMyStakes();
+                showMessage(`¡${amount} OROBIT stakeados exitosamente!`, "success");
+                document.getElementById('stakeAmount').value = ''; // Limpia el input
+                updateUI(); // Actualiza los saldos
+
             } catch (error) {
-                console.error("STAKE CATCH BLOCK: Error detectado durante el proceso de staking:", error);
-                let errorMessage = `Error al stakear: ${error.message}.`;
-                if (error.code === 4001) { // User rejected transaction
-                    errorMessage = "Transacción rechazada por el usuario en MetaMask. Por favor, inténtalo de nuevo y acepta la transacción.";
-                } else if (error.data && error.data.message) { // Contract revert message
-                    errorMessage = `Error del contrato: ${error.data.message}.`;
-                } else if (error.code === -32603) {
-                     errorMessage = `Error interno de MetaMask/RPC: ${error.message}. Esto puede ser un problema temporal de red, o un rechazo silencioso de la transacción. Verifica tu MetaMask.`;
-                } else {
-                    errorMessage = `Se ha producido un error inesperado: ${error.message}. Por favor, revisa la consola del navegador para más detalles.`;
-                }
-                await showMessageBox(errorMessage, 'error');
-            } finally {
-                console.log("------------------------------------------");
-                console.log("FIN DE PROCESO DE STAKING (STAKE)");
-                console.log("------------------------------------------");
-                hideMessageBox();
-            }
-        });
-
-        document.getElementById('calculateRewardBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || !stakingContract) {
-                await showMessageBox("Por favor, conecta tu cartera primero.", 'warning');
-                return;
-            }
-            const stakeId = parseInt(document.getElementById('withdrawStakeId').value);
-            if (isNaN(stakeId)) {
-                await showMessageBox("Introduce un ID de stake válido.", 'warning');
-                return;
-            }
-
-            hideMessageBox();
-            await showMessageBox("Calculando recompensa...", 'info', true);
-            try {
-                // Verificar si el stake existe y no ha sido retirado
-                const userStakesLength = await stakingContract.getUserStakesLength(userAddress);
-                if (stakeId < 0 || stakeId >= userStakesLength) {
-                    throw new Error(`ID de stake ${stakeId} no válido o inexistente para tu cartera.`);
-                }
-                const stakeInfo = await stakingContract.getUserStake(userAddress, stakeId);
-                if (stakeInfo.withdrawn) {
-                    throw new Error("Este stake ya ha sido retirado.");
-                }
-
-                const rewardWei = await stakingContract.calculateReward(userAddress, stakeId);
-                const rewardFormatted = ethers.utils.formatUnits(rewardWei, tokenDecimals);
-                
-                document.getElementById('calculatedRewardDisplay').innerHTML = `Recompensa estimada: <span class="font-bold">${parseFloat(rewardFormatted).toFixed(4)} OROBIT</span>`;
-                document.getElementById('calculatedRewardDisplay').classList.remove('hidden');
-                await showMessageBox("Cálculo de recompensa completado.", 'success');
-            } catch (error) {
-                console.error("Error al calcular recompensa:", error);
-                document.getElementById('calculatedRewardDisplay').classList.add('hidden');
-                let errorMessage = `Error al calcular recompensa: ${error.message}.`;
-                 if (error.data && error.data.message) { // Contract revert message
-                    errorMessage = `Error del contrato: ${error.data.message}`;
-                }
-                await showMessageBox(errorMessage, 'error');
-            } finally {
-                hideMessageBox();
-            }
-        });
-
-        document.getElementById('withdrawConfirmBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || !stakingContract) {
-                await showMessageBox("Por favor, conecta tu cartera primero.", 'warning');
-                return;
-            }
-            const stakeId = parseInt(document.getElementById('withdrawStakeId').value);
-            if (isNaN(stakeId)) {
-                await showMessageBox("Introduce un ID de stake válido.", 'warning');
-                return;
-            }
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Confirmando retiro del Stake ID ${stakeId}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
-            try {
-                const tx = await stakingContract.withdraw(stakeId);
-                await tx.wait();
-                await showMessageBox(`¡Retiro exitoso del Stake ID ${stakeId}! Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-                
-                document.getElementById('withdrawStakeId').value = '';
-                document.getElementById('calculatedRewardDisplay').classList.add('hidden');
-                await updateDashboardData();
-                await renderMyStakes();
-            } catch (error) {
-                console.error("Error al retirar stake:", error);
-                let errorMessage = `Error al retirar stake: ${error.message}.`;
-                if (error.code === 4001) { // User rejected transaction
-                    errorMessage = "Transacción rechazada por el usuario en MetaMask. Por favor, inténtalo de nuevo y acepta la transacción.";
-                } else if (error.data && error.data.message) { // Contract revert message
-                    errorMessage = `Error del contrato: ${error.data.message}`;
-                } else if (error.code === -32603) {
-                     errorMessage = `Error interno de MetaMask/RPC: ${error.message}. Esto puede ser un problema temporal de red, o un rechazo silencioso de la transacción. Verifica tu MetaMask.`;
-                } else {
-                    errorMessage = `Se ha producido un error inesperado: ${error.message}. Por favor, revisa la consola del navegador para más detalles.`;
-                }
-                await showMessageBox(errorMessage, 'error');
-            } finally {
-                hideMessageBox();
-            }
-        });
-
-        // --- Funciones de Administración --- (Solo visibles/accesibles para el propietario del contrato)
-
-        function checkAdminAccess() {
-            if (userAddress && userAddress.toLowerCase() === OWNER_ADDRESS.toLowerCase()) {
-                document.getElementById('adminPanel').classList.remove('hidden');
-                document.getElementById('adminMessage').classList.add('hidden');
-            } else {
-                document.getElementById('adminPanel').classList.add('hidden');
-                document.getElementById('adminMessage').classList.remove('hidden');
+                console.error("Error al stakear OroBit:", error);
+                showMessage("Error al stakear OroBit: " + error.message, "error");
             }
         }
-        
-        document.getElementById('addPoolBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
 
-            const duration = parseInt(document.getElementById('poolDuration').value);
-            const apr = parseInt(document.getElementById('poolAPR').value);
-            const isFlexible = document.getElementById('isFlexiblePool').checked;
-
-            if (isNaN(duration) || isNaN(apr)) { await showMessageBox("Introduce valores válidos para duración y APR.", 'warning'); return; }
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox("Añadiendo nuevo pool de staking. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**", 'info', true);
-            try {
-                const tx = await stakingContract.addPool(duration, apr, isFlexible);
-                await tx.wait();
-                await showMessageBox(`Pool añadido exitosamente. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-                await renderStakingPools();
-            } catch (error) {
-                console.error("Error al añadir pool:", error);
-                let errorMessage = `Error al añadir pool: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-        document.getElementById('setPoolStatusBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
-
-            const poolId = parseInt(document.getElementById('poolIdStatus').value);
-            const isActive = document.getElementById('isActivePool').checked;
-
-            if (isNaN(poolId)) { await showMessageBox("Introduce un ID de pool válido.", 'warning'); return; }
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Actualizando estado del pool ${poolId} a ${isActive ? 'Activo' : 'Inactivo'}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
-            try {
-                const tx = await stakingContract.setPoolStatus(poolId, isActive);
-                await tx.wait();
-                await showMessageBox(`Estado del Pool ${poolId} actualizado. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-                await renderStakingPools();
-            } catch (error) { // Corrección: 'else' no es una palabra clave válida aquí, debe ser 'catch'
-                console.error("Error al actualizar estado del pool:", error);
-                let errorMessage = `Error al actualizar estado del pool: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-        document.getElementById('setPenaltyBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
-
-            const penalty = parseInt(document.getElementById('earlyWithdrawPenalty').value);
-            if (isNaN(penalty)) { await showMessageBox("Introduce un valor válido para la penalización.", 'warning'); return; }
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Estableciendo penalización por retiro anticipado a ${penalty} puntos base. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
-            try {
-                const tx = await stakingContract.setEarlyWithdrawPenalty(penalty);
-                await tx.wait();
-                await showMessageBox(`Penalización establecida. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-            } catch (error) {
-                console.error("Error al establecer penalización:", error);
-                let errorMessage = `Error al establecer penalización: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-        document.getElementById('setWhaleBonusAPRBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
-
-            const bonusApr = parseInt(document.getElementById('whaleBonusAPR').value);
-            if (isNaN(bonusApr)) { await showMessageBox("Introduce un valor válido para el bonus APR.", 'warning'); return; }
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Estableciendo bonus APR para ballenas a ${bonusApr} puntos base. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
-            try {
-                const tx = await stakingContract.setWhaleBonusAPR(bonusApr);
-                await tx.wait();
-                await showMessageBox(`Bonus APR para ballenas establecido. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-            } catch (error) {
-                console.error("Error al establecer bonus APR de ballenas:", error);
-                let errorMessage = `Error al establecer bonus APR de ballenas: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-        document.getElementById('setWhaleThresholdBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
-
-            const threshold = parseFloat(document.getElementById('whaleThreshold').value);
-            if (isNaN(threshold) || threshold <= 0) { await showMessageBox("Introduce un umbral válido (>0).", 'warning'); return; }
-            
-            const thresholdWei = ethers.utils.parseUnits(threshold.toString(), tokenDecimals);
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Estableciendo umbral de ballenas a ${threshold} OROBIT. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
-            try {
-                const tx = await stakingContract.setWhaleThreshold(thresholdWei);
-                await tx.wait();
-                await showMessageBox(`Umbral de ballenas establecido. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-            } catch (error) {
-                console.error("Error al establecer umbral de ballenas:", error);
-                let errorMessage = `Error al establecer umbral de ballenas: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-        document.getElementById('depositRewardsBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract || !orobitTokenContract) { await showMessageBox("Contratos no inicializados.", 'warning'); return; }
-
-            const amount = parseFloat(document.getElementById('rewardsAmount').value);
-            if (isNaN(amount) || amount <= 0) { await showMessageBox("Introduce una cantidad válida (>0) para depositar recompensas.", 'warning'); return; }
-            
-            const amountWei = ethers.utils.parseUnits(amount.toString(), tokenDecimals);
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Aprobando ${amount} OROBIT para el depósito de recompensas. Por favor, **revisa y confirma las transacciones en tu extensión de MetaMask.** (Primero Aprobación, luego Depósito)`, 'info', true);
-            try {
-                // Primero, aprobar los tokens al contrato de staking
-                let approveTx = await orobitTokenContract.approve(STAKING_CONTRACT_ADDRESS, amountWei);
-                await approveTx.wait();
-                await showMessageBox("Aprobación de recompensas exitosa. Ahora confirmando el depósito...", 'info', true);
-
-                // Luego, depositar las recompensas
-                const tx = await stakingContract.depositRewards(amountWei);
-                await tx.wait();
-                await showMessageBox(`Recompensas depositadas exitosamente. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-            } catch (error) {
-                console.error("Error al depositar recompensas:", error);
-                let errorMessage = `Error al depositar recompensas: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-        document.getElementById('setAdminWalletBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
-
-            const newAdmin = document.getElementById('newAdminWalletAddress').value;
-            if (!ethers.utils.isAddress(newAdmin)) { await showMessageBox("Introduce una dirección de cartera válida.", 'warning'); return; }
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Cambiando cartera de administración a ${newAdmin}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
-            try {
-                const tx = await stakingContract.setStakingAdminWallet(newAdmin);
-                await tx.wait();
-                await showMessageBox(`Cartera de administración cambiada. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-            } catch (error) {
-                console.error("Error al cambiar cartera de admin:", error);
-                let errorMessage = `Error al cambiar cartera de admin: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-        document.getElementById('emergencyWithdrawBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
-
-            const tokenAddress = document.getElementById('emergencyTokenAddress').value;
-            const amount = parseFloat(document.getElementById('emergencyAmount').value);
-
-            if (!ethers.utils.isAddress(tokenAddress) || isNaN(amount) || amount <= 0) {
-                await showMessageBox("Introduce una dirección de token válida y una cantidad válida (>0).", 'warning');
+        // --- Funciones de Retiro ---
+        async function confirmWithdraw() {
+            if (!signer) {
+                showMessage("Por favor, conecta tu cartera primero.", "warning");
                 return;
             }
-            
-            const amountWei = ethers.utils.parseUnits(amount.toString(), 18); // Asumimos 18 decimales para tokens de emergencia
 
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox(`Retirando ${amount} tokens de emergencia de ${tokenAddress}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
-            try {
-                const tx = await stakingContract.emergencyWithdrawToken(tokenAddress, amountWei);
-                await tx.wait();
-                await showMessageBox(`Retiro de emergencia exitoso. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-            } catch (error) {
-                console.error("Error al retirar tokens de emergencia:", error);
-                let errorMessage = `Error al retirar tokens de emergencia: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-        document.getElementById('pauseContractBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
-            
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox("Pausando el contrato. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**", 'info', true);
-            try {
-                const tx = await stakingContract.pause();
-                await tx.wait();
-                await showMessageBox(`Contrato pausado. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-            } catch (error) {
-                console.error("Error al pausar contrato:", error);
-                let errorMessage = `Error al pausar contrato: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-        document.getElementById('unpauseContractBtn').addEventListener('click', async () => {
-            if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
-            if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
-
-            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
-            await showMessageBox("Reanudando el contrato. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**", 'info', true);
-            try {
-                const tx = await stakingContract.unpause();
-                await tx.wait();
-                await showMessageBox(`Contrato reanudado. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
-            } catch (error) {
-                console.error("Error al reanudar contrato:", error);
-                let errorMessage = `Error al reanudar contrato: ${error.message}.`;
-                if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
-                else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
-                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
-                await showMessageBox(errorMessage, 'error');
-            } finally { hideMessageBox(); }
-        });
-
-
-        // --- Lógica de Pestañas (Tabs) ---
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.add('hidden');
-            });
-            document.getElementById(tabId).classList.remove('hidden');
-
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            document.querySelector(`[id="${tabId.replace('Content', 'Tab')}"]`).classList.add('active');
-
-            // Refresh data when switching to relevant tabs, ONLY IF CONNECTED
-            if (isWalletConnected) {
-                if (tabId === 'dashboardContent') {
-                    updateDashboardData();
-                    renderMyStakes();
-                } else if (tabId === 'stakeContent') {
-                    updateDashboardData(); // To update available balance
-                    renderStakingPools();
-                } else if (tabId === 'adminContent') {
-                    checkAdminAccess(); // Re-check admin access on tab switch
-                }
-            } else {
-                // Ensure default messages if not connected
-                document.getElementById('oroBitBalance').textContent = '0.00 OROBIT';
-                document.getElementById('totalRewards').textContent = '0.00 OROBIT';
-                document.getElementById('availableBalance').textContent = '0.00 OROBIT';
-                document.getElementById('activeStakes').innerHTML = '<p class="text-gray-400">Conecta tu cartera para ver tus stakes.</p>';
-                document.getElementById('stakingPool').innerHTML = '<option value="">Conecta tu cartera para ver los pools</option>';
-                document.getElementById('adminPanel').classList.add('hidden');
-                document.getElementById('adminMessage').classList.remove('hidden');
+            const amount = document.getElementById('withdrawAmount').value;
+            if (!amount || parseFloat(amount) <= 0) {
+                showMessage("Introduce una cantidad válida para retirar.", "warning");
+                return;
             }
-            hideMessageBox(); // Hide any lingering message box on tab change
+
+            try {
+                const amountWei = ethers.utils.parseUnits(amount, 18);
+                document.getElementById('withdrawalAmount').textContent = amount;
+                document.getElementById('withdrawalMessage').classList.remove('hidden'); // Muestra mensaje de retiro
+
+                showMessage(`Retirando ${amount} OROBIT... Por favor, confirma en MetaMask.`, "info", 60000); // Duración larga para la transacción
+                const tx = await stakingContract.withdraw(amountWei);
+                await tx.wait();
+
+                document.getElementById('withdrawalMessage').classList.add('hidden'); // Oculta el mensaje al terminar
+                showMessage(`¡${amount} OROBIT retirados exitosamente!`, "success");
+                document.getElementById('withdrawAmount').value = ''; // Limpia el input
+                updateUI(); // Actualiza los saldos
+
+            } catch (error) {
+                console.error("Error al retirar OroBit:", error);
+                document.getElementById('withdrawalMessage').classList.add('hidden'); // Oculta el mensaje en caso de error
+                showMessage("Error al retirar OroBit: " + error.message, "error");
+            }
         }
 
-        document.getElementById('dashboardTab').addEventListener('click', () => showTab('dashboardContent'));
-        document.getElementById('stakeTab').addEventListener('click', () => showTab('stakeContent'));
-        document.getElementById('withdrawTab').addEventListener('click', () => showTab('withdrawContent'));
-        document.getElementById('adminTab').addEventListener('click', () => showTab('adminContent'));
+        // --- Event Listeners y Lógica de UI ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lógica para el cambio de pestañas
+            const tabs = {
+                'miDashboardTab': 'miDashboardContent',
+                'stakeTab': 'stakeContent',
+                'withdrawTab': 'withdrawContent',
+                'adminTab': 'adminContent'
+            };
 
-        // --- Initial Load ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Inicializar provider solo si window.ethereum está disponible
-            if (window.ethereum) {
-                provider = new ethers.providers.Web3Provider(window.ethereum);
+            function switchTab(activeTabId) {
+                for (const tabId in tabs) {
+                    document.getElementById(tabId).classList.remove('active', 'bg-gray-500');
+                    document.getElementById(tabId).classList.add('bg-gray-600');
+                    document.getElementById(tabs[tabId]).classList.add('hidden');
+                }
+                document.getElementById(activeTabId).classList.add('active', 'bg-gray-500');
+                document.getElementById(activeTabId).classList.remove('bg-gray-600');
+                document.getElementById(tabs[activeTabId]).classList.remove('hidden');
             }
 
-            // Si MetaMask ya está conectado, intentar conectar automáticamente
-            if (window.ethereum && window.ethereum.selectedAddress) {
-                await initializeWeb3();
-            } else {
-                updateWalletUI(); // Establecer UI a desconectado
+            for (const tabId in tabs) {
+                document.getElementById(tabId).addEventListener('click', () => switchTab(tabId));
             }
-            showTab('dashboardContent'); // Mostrar dashboard por defecto
+
+            // Muestra el Dashboard por defecto al cargar la página
+            switchTab('miDashboardTab');
+
+            // Botones de Cartera
+            document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+            document.getElementById('disconnectWalletBtn').addEventListener('click', disconnectWallet);
+
+            // Botones de Staking
+            document.getElementById('approveStakeBtn').addEventListener('click', approveOrobit);
+            document.getElementById('confirmStakeBtn').addEventListener('click', confirmStake);
+            document.getElementById('maxStakeBtn').addEventListener('click', async () => {
+                if (currentAccount && orobitTokenContract) {
+                    try {
+                        const balance = await orobitTokenContract.balanceOf(currentAccount);
+                        const balanceEth = ethers.utils.formatUnits(balance, 18);
+                        document.getElementById('stakeAmount').value = parseFloat(balanceEth).toFixed(2);
+                    } catch (error) {
+                        console.error("Error al obtener el saldo máximo para stake:", error);
+                        showMessage("Error al obtener el saldo máximo: " + error.message, "error");
+                    }
+                } else {
+                    showMessage("Conecta tu cartera para obtener el saldo máximo.", "warning");
+                }
+            });
+
+            // Botones de Retiro
+            document.getElementById('confirmWithdrawBtn').addEventListener('click', confirmWithdraw);
+            document.getElementById('maxWithdrawBtn').addEventListener('click', async () => {
+                if (currentAccount && stakingContract) {
+                    try {
+                        const stakedBalance = await stakingContract.getStakedBalance(currentAccount);
+                        const stakedBalanceEth = ethers.utils.formatUnits(stakedBalance, 18);
+                        document.getElementById('withdrawAmount').value = parseFloat(stakedBalanceEth).toFixed(2);
+                    } catch (error) {
+                        console.error("Error al obtener el saldo máximo para retiro:", error);
+                        showMessage("Error al obtener el saldo máximo de stake para retiro: " + error.message, "error");
+                    }
+                } else {
+                    showMessage("Conecta tu cartera para obtener el saldo máximo de stake.", "warning");
+                }
+            });
+
+
+            // Intenta autoconectar MetaMask si ya estaba logeado de una sesión anterior
+            if (typeof window.ethereum !== 'undefined' && window.ethereum.selectedAddress) {
+                connectWallet();
+            }
         });
 
-        // Event listener for connect/disconnect button
-        document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+        // NOTA IMPORTANTE (información recordada): Aunque el token se llama "OroBit",
+        // el proyecto o ecosistema más amplio puede tener un nombre más distintivo
+        // para evitar confusiones.
+        console.log("Nota: Aunque el token se llama 'OroBit', el proyecto o ecosistema más amplio puede tener un nombre más distintivo para evitar confusiones.");
     </script>
 </body>
 </html>
