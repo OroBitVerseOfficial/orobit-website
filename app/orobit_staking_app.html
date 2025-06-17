@@ -7,7 +7,7 @@
     <!-- Favicon de OroBit -->
     <link rel="icon" href="../images/orobit_logo_1280x720.png" type="image/png">
 
-    <!-- Content Security Policy (CSP) -->
+    <!-- Content Security Policy (CSP) - CORREGIDO Y VALIDADO para permitir 'unsafe-eval' -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' data: https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;
         script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
@@ -724,8 +724,8 @@
             console.log(`APPROVE LOG: Contrato OroBit Token Address: ${orobitTokenContract.address}`);
             console.log(`APPROVE LOG: Contrato de Staking (Spender) Address: ${STAKING_CONTRACT_ADDRESS}`);
 
-            hideMessageBox(); // Esconde mensajes anteriores
-            await showMessageBox(`Aprobando ${amount} OROBIT para el contrato de staking... Se abrirá MetaMask.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Aprobando ${amount} OROBIT para el contrato de staking. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             
             try {
                 console.log("APPROVE LOG: Intentando enviar transacción de aprobación a MetaMask...");
@@ -744,11 +744,13 @@
                 console.error("APPROVE CATCH BLOCK: Error detectado durante el proceso de aprobación:", error);
                 let errorMessage = `Error al aprobar tokens: ${error.message}.`;
                 if (error.code === 4001) { // User rejected transaction
-                    errorMessage = "Transacción rechazada por el usuario en MetaMask.";
+                    errorMessage = "Transacción rechazada por el usuario en MetaMask. Por favor, inténtalo de nuevo y acepta la transacción.";
                 } else if (error.data && error.data.message) { // Contract revert message
-                    errorMessage = `Error del contrato: ${error.data.message}`;
-                } else if (error.code === -32603 && error.message.includes("could not be found")) {
-                    errorMessage = "Error RPC interno: Transacción no encontrada o problema de nodo. Intenta de nuevo o verifica tu conexión a la red.";
+                    errorMessage = `Error del contrato: ${error.data.message}.`;
+                } else if (error.code === -32603) { // Internal JSON-RPC error
+                     errorMessage = `Error interno de MetaMask/RPC: ${error.message}. Esto puede ser un problema temporal de red, o un rechazo silencioso de la transacción. Verifica tu MetaMask.`;
+                } else {
+                    errorMessage = `Se ha producido un error inesperado: ${error.message}. Por favor, revisa la consola del navegador para más detalles.`;
                 }
                 await showMessageBox(errorMessage, 'error');
             } finally {
@@ -792,8 +794,8 @@
             console.log(`STAKE LOG: Pool ID seleccionado: ${poolId}`);
 
 
-            hideMessageBox();
-            await showMessageBox(`Confirmando stake de ${amount} OROBIT en el Pool ID ${poolId}... Se abrirá MetaMask.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Confirmando stake de ${amount} OROBIT en el Pool ID ${poolId}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             try {
                 // Verificar aprobación antes de stakear
                 console.log("STAKE LOG: Verificando allowance para el contrato de staking...");
@@ -823,11 +825,13 @@
                 console.error("STAKE CATCH BLOCK: Error detectado durante el proceso de staking:", error);
                 let errorMessage = `Error al stakear: ${error.message}.`;
                 if (error.code === 4001) { // User rejected transaction
-                    errorMessage = "Transacción rechazada por el usuario en MetaMask.";
+                    errorMessage = "Transacción rechazada por el usuario en MetaMask. Por favor, inténtalo de nuevo y acepta la transacción.";
                 } else if (error.data && error.data.message) { // Contract revert message
-                    errorMessage = `Error del contrato: ${error.data.message}`;
-                } else if (error.code === -32603 && error.message.includes("could not be found")) {
-                    errorMessage = "Error RPC interno: Transacción no encontrada o problema de nodo. Intenta de nuevo o verifica tu conexión a la red.";
+                    errorMessage = `Error del contrato: ${error.data.message}.`;
+                } else if (error.code === -32603) {
+                     errorMessage = `Error interno de MetaMask/RPC: ${error.message}. Esto puede ser un problema temporal de red, o un rechazo silencioso de la transacción. Verifica tu MetaMask.`;
+                } else {
+                    errorMessage = `Se ha producido un error inesperado: ${error.message}. Por favor, revisa la consola del navegador para más detalles.`;
                 }
                 await showMessageBox(errorMessage, 'error');
             } finally {
@@ -892,8 +896,8 @@
                 return;
             }
 
-            hideMessageBox();
-            await showMessageBox(`Confirmando retiro del Stake ID ${stakeId}... Se abrirá MetaMask.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Confirmando retiro del Stake ID ${stakeId}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             try {
                 const tx = await stakingContract.withdraw(stakeId);
                 await tx.wait();
@@ -907,9 +911,13 @@
                 console.error("Error al retirar stake:", error);
                 let errorMessage = `Error al retirar stake: ${error.message}.`;
                 if (error.code === 4001) { // User rejected transaction
-                    errorMessage = "Transacción rechazada por el usuario en MetaMask.";
+                    errorMessage = "Transacción rechazada por el usuario en MetaMask. Por favor, inténtalo de nuevo y acepta la transacción.";
                 } else if (error.data && error.data.message) { // Contract revert message
                     errorMessage = `Error del contrato: ${error.data.message}`;
+                } else if (error.code === -32603) {
+                     errorMessage = `Error interno de MetaMask/RPC: ${error.message}. Esto puede ser un problema temporal de red, o un rechazo silencioso de la transacción. Verifica tu MetaMask.`;
+                } else {
+                    errorMessage = `Se ha producido un error inesperado: ${error.message}. Por favor, revisa la consola del navegador para más detalles.`;
                 }
                 await showMessageBox(errorMessage, 'error');
             } finally {
@@ -939,8 +947,8 @@
 
             if (isNaN(duration) || isNaN(apr)) { await showMessageBox("Introduce valores válidos para duración y APR.", 'warning'); return; }
 
-            hideMessageBox();
-            await showMessageBox("Añadiendo nuevo pool de staking... Se abrirá MetaMask.", 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox("Añadiendo nuevo pool de staking. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**", 'info', true);
             try {
                 const tx = await stakingContract.addPool(duration, apr, isFlexible);
                 await tx.wait();
@@ -951,6 +959,7 @@
                 let errorMessage = `Error al añadir pool: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -964,18 +973,19 @@
 
             if (isNaN(poolId)) { await showMessageBox("Introduce un ID de pool válido.", 'warning'); return; }
 
-            hideMessageBox();
-            await showMessageBox(`Actualizando estado del pool ${poolId} a ${isActive ? 'Activo' : 'Inactivo'}... Se abrirá MetaMask.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Actualizando estado del pool ${poolId} a ${isActive ? 'Activo' : 'Inactivo'}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             try {
                 const tx = await stakingContract.setPoolStatus(poolId, isActive);
                 await tx.wait();
                 await showMessageBox(`Estado del Pool ${poolId} actualizado. Hash de Tx: <a href="${BLOCK_EXPLORER_URL}/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a>`, 'success');
                 await renderStakingPools();
-            } catch (error) {
+            } catch (error) { // Corrección: 'else' no es una palabra clave válida aquí, debe ser 'catch'
                 console.error("Error al actualizar estado del pool:", error);
                 let errorMessage = `Error al actualizar estado del pool: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -987,8 +997,8 @@
             const penalty = parseInt(document.getElementById('earlyWithdrawPenalty').value);
             if (isNaN(penalty)) { await showMessageBox("Introduce un valor válido para la penalización.", 'warning'); return; }
 
-            hideMessageBox();
-            await showMessageBox(`Estableciendo penalización por retiro anticipado a ${penalty} puntos base... Se abrirá MetaMask.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Estableciendo penalización por retiro anticipado a ${penalty} puntos base. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             try {
                 const tx = await stakingContract.setEarlyWithdrawPenalty(penalty);
                 await tx.wait();
@@ -998,6 +1008,7 @@
                 let errorMessage = `Error al establecer penalización: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -1009,8 +1020,8 @@
             const bonusApr = parseInt(document.getElementById('whaleBonusAPR').value);
             if (isNaN(bonusApr)) { await showMessageBox("Introduce un valor válido para el bonus APR.", 'warning'); return; }
 
-            hideMessageBox();
-            await showMessageBox(`Estableciendo bonus APR para ballenas a ${bonusApr} puntos base... Se abrirá MetaMask.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Estableciendo bonus APR para ballenas a ${bonusApr} puntos base. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             try {
                 const tx = await stakingContract.setWhaleBonusAPR(bonusApr);
                 await tx.wait();
@@ -1020,6 +1031,7 @@
                 let errorMessage = `Error al establecer bonus APR de ballenas: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -1033,8 +1045,8 @@
             
             const thresholdWei = ethers.utils.parseUnits(threshold.toString(), tokenDecimals);
 
-            hideMessageBox();
-            await showMessageBox(`Estableciendo umbral de ballenas a ${threshold} OROBIT... Se abrirá MetaMask.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Estableciendo umbral de ballenas a ${threshold} OROBIT. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             try {
                 const tx = await stakingContract.setWhaleThreshold(thresholdWei);
                 await tx.wait();
@@ -1044,6 +1056,7 @@
                 let errorMessage = `Error al establecer umbral de ballenas: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -1057,8 +1070,8 @@
             
             const amountWei = ethers.utils.parseUnits(amount.toString(), tokenDecimals);
 
-            hideMessageBox();
-            await showMessageBox(`Aprobando ${amount} OROBIT para el depósito de recompensas... Se abrirá MetaMask para aprobación y luego para el depósito.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Aprobando ${amount} OROBIT para el depósito de recompensas. Por favor, **revisa y confirma las transacciones en tu extensión de MetaMask.** (Primero Aprobación, luego Depósito)`, 'info', true);
             try {
                 // Primero, aprobar los tokens al contrato de staking
                 let approveTx = await orobitTokenContract.approve(STAKING_CONTRACT_ADDRESS, amountWei);
@@ -1074,6 +1087,7 @@
                 let errorMessage = `Error al depositar recompensas: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -1085,8 +1099,8 @@
             const newAdmin = document.getElementById('newAdminWalletAddress').value;
             if (!ethers.utils.isAddress(newAdmin)) { await showMessageBox("Introduce una dirección de cartera válida.", 'warning'); return; }
 
-            hideMessageBox();
-            await showMessageBox(`Cambiando cartera de administración a ${newAdmin}... Se abrirá MetaMask.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Cambiando cartera de administración a ${newAdmin}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             try {
                 const tx = await stakingContract.setStakingAdminWallet(newAdmin);
                 await tx.wait();
@@ -1096,6 +1110,7 @@
                 let errorMessage = `Error al cambiar cartera de admin: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -1114,8 +1129,8 @@
             
             const amountWei = ethers.utils.parseUnits(amount.toString(), 18); // Asumimos 18 decimales para tokens de emergencia
 
-            hideMessageBox();
-            await showMessageBox(`Retirando ${amount} tokens de emergencia de ${tokenAddress}... Se abrirá MetaMask.`, 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox(`Retirando ${amount} tokens de emergencia de ${tokenAddress}. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**`, 'info', true);
             try {
                 const tx = await stakingContract.emergencyWithdrawToken(tokenAddress, amountWei);
                 await tx.wait();
@@ -1125,6 +1140,7 @@
                 let errorMessage = `Error al retirar tokens de emergencia: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -1133,8 +1149,8 @@
             if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
             if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
             
-            hideMessageBox();
-            await showMessageBox("Pausando el contrato... Se abrirá MetaMask.", 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox("Pausando el contrato. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**", 'info', true);
             try {
                 const tx = await stakingContract.pause();
                 await tx.wait();
@@ -1144,6 +1160,7 @@
                 let errorMessage = `Error al pausar contrato: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -1152,8 +1169,8 @@
             if (!isWalletConnected || userAddress.toLowerCase() !== OWNER_ADDRESS.toLowerCase()) { await showMessageBox("Acceso denegado. Conecta tu cartera de propietario.", 'error'); return; }
             if (!stakingContract) { await showMessageBox("Contrato de Staking no inicializado.", 'warning'); return; }
 
-            hideMessageBox();
-            await showMessageBox("Reanudando el contrato... Se abrirá MetaMask.", 'info', true);
+            // Cambiamos el mensaje para que el usuario sepa que tiene que revisar MetaMask
+            await showMessageBox("Reanudando el contrato. Por favor, **revisa y confirma la transacción en tu extensión de MetaMask.**", 'info', true);
             try {
                 const tx = await stakingContract.unpause();
                 await tx.wait();
@@ -1163,6 +1180,7 @@
                 let errorMessage = `Error al reanudar contrato: ${error.message}.`;
                 if (error.code === 4001) { errorMessage = "Transacción rechazada por el usuario en MetaMask."; }
                 else if (error.data && error.data.message) { errorMessage = `Error del contrato: ${error.data.message}`; }
+                else if (error.code === -32603) { errorMessage = `Error interno de MetaMask/RPC: ${error.message}.`; }
                 await showMessageBox(errorMessage, 'error');
             } finally { hideMessageBox(); }
         });
@@ -1186,8 +1204,8 @@
                     updateDashboardData();
                     renderMyStakes();
                 } else if (tabId === 'stakeContent') {
-                    renderStakingPools();
                     updateDashboardData(); // To update available balance
+                    renderStakingPools();
                 } else if (tabId === 'adminContent') {
                     checkAdminAccess(); // Re-check admin access on tab switch
                 }
