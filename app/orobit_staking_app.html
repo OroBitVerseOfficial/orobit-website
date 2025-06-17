@@ -7,12 +7,12 @@
     <!-- Favicon para OroBitverse -->
     <link rel="icon" href="../images/favicons/favicon.ico" type="image/x-icon">
 
-    <!-- Content Security Policy (CSP): AJUSTADO CRÍTICAMENTE para ethers.io y nodos BSC -->
+    <!-- Content Security Policy (CSP): AJUSTADO para ethers.js y conexiones de red -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' data: gap: https://ssl.gstatic.com;
-        style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
-        script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://www.gstatic.com https://cdn.ethers.io;
-        connect-src 'self' https://*.binance.org:8545 https://*.binance.org https://rpc.ankr.com;
+        style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com;
+        script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com;
+        connect-src 'self' https://*.binance.org:8545 https://*.binance.org https://rpc.ankr.com https://data-seed-prebsc-*;
         img-src 'self' data: content: https://www.orobitverse.com;
         media-src *;
         font-src 'self' data: https://fonts.gstatic.com;
@@ -206,13 +206,14 @@
         </div>
     </footer>
 
-    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="application/javascript"></script>
+    <!-- CAMBIO CRÍTICO: Usando un CDN diferente para ethers.js -->
+    <script src="https://unpkg.com/ethers@5.7.0/dist/ethers.umd.min.js" type="application/javascript"></script>
     <script>
         // VERIFICACIÓN CRÍTICA: ¿Se cargó ethers.js?
         // Este log y mensaje nos dirán inmediatamente si la librería esencial está faltando.
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof ethers === 'undefined') {
-                console.error("ERROR CRÍTICO: La librería Ethers.js NO se ha cargado. Esto impedirá toda interacción con la blockchain. Posibles causas: problemas de red, CSP bloqueando 'cdn.ethers.io', o el archivo no se encontró. Asegúrate de haber reiniciado completamente el navegador después de cualquier cambio.");
+                console.error("ERROR CRÍTICO: La librería Ethers.js NO se ha cargado. Esto impedirá toda interacción con la blockchain. Posibles causas: problemas de red, CSP bloqueando 'unpkg.com', o el archivo no se encontró. Asegúrate de haber reiniciado completamente el navegador después de cualquier cambio.");
                 const msgBox = document.getElementById('messageBox');
                 msgBox.textContent = "ERROR CRÍTICO: Ethers.js no cargado. Revisa la consola del navegador.";
                 msgBox.className = 'message-box error';
